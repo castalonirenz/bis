@@ -112,3 +112,7 @@ a {
   flex: 1 0 auto;
   height: 100vh;
 }
+
+.f-white{
+  color: #FFFF;
+}
