@@ -6,7 +6,7 @@ export default function About() {
   return (
     <main >
       <div className=" d-flex bg-white">
-        Aboutsss
+        About
 
         
       </div>

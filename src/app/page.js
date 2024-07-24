@@ -1,7 +1,17 @@
+"use client"
+
+import { useRouter } from 'next/navigation'
 import Image from "next/image";
 import styles from "./page.module.css";
 
+
 export default function Home() {
+  const router = useRouter()
+
+  const login = () => {
+    router.push('/Admin/Official', { scroll: false })
+  }
+
   return (
     <main className={`container-fluid ${styles.fullHeight}`}>
       <div className="row vh-100">
@@ -18,6 +28,10 @@ export default function Home() {
             DOCUMENT REQUEST SYSTEM
           </h4>
 
+          <h5 className="f-white mt-5">
+            Sign in to start your session.
+          </h5>
+
           <div class="mb-3 mt-5 w-100">
             <input type="email" class="form-control rounded-pill" id="exampleFormControlInput1" placeholder="Username" />
           </div>
@@ -28,7 +42,7 @@ export default function Home() {
 
       
           <div className="d-flex flex-column align-items-center" style={{width:"80%"}}>
-          <button type="button" class="btn fw-bold f-white w-100" style={{backgroundColor: "yellow"}}>SIGN IN</button>
+          <button onClick={() => login()} type="button" class="btn fw-bold f-white w-100" style={{backgroundColor: "yellow"}}>SIGN IN</button>
             <span className="f-white align-self-end">
               Forgot password?
             </span>
