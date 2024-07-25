@@ -120,3 +120,16 @@ a {
 .active-nav{
   background-color: orange;
 }
+
+
+.my-button{
+  background-color: yellow;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-item-container:nth-child(even){
+  background-color: darkgreen;
+}
