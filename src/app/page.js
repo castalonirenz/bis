@@ -36,6 +36,7 @@ export default function Home() {
 
         <div className="col-lg-5 p-5 d-flex flex-column align-items-center justify-content-center bg-1">
 
+    {/* u */}
           <div>
           <Image
             className='logo-size'
