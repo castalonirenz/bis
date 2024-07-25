@@ -20,7 +20,23 @@ export default function Home() {
           May image dito
         </div>
 
-        <div className="col-lg-5 p-5 d-flex flex-column align-items-center justify-content-center" style={{ backgroundColor: "green" }}>
+        <div className="col-lg-5 p-5 d-flex flex-column align-items-center justify-content-center bg-1">
+
+          <div>
+          <Image
+            className='logo-size'
+            src={require('../assets/CentralLogo.png')}
+          />
+            <Image
+            className='logo-size'
+            src={require('../assets/TaguigLogo.png')}
+          />
+            <Image
+            className='logo-size'
+            src={require('../assets/SkLogo.png')}
+          />
+          </div> 
+          
           <h3 className="f-white fw-bold">
             BARANGAY CENTRAL BICUTAN
           </h3>

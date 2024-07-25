@@ -141,7 +141,7 @@ export default function Official() {
                             return(
   
                               // Put dynamic class
-                                <div className='d-flex col-lg-12 justify-content-around p-2 row-item-container'>
+                                <div className='d-flex col-lg-12 justify-content-around  row-item-container'>
                                   <RowItem>
                                     <span className="f-white">
                                     John Doe
@@ -244,7 +244,7 @@ export default function Official() {
                             return(
   
                               // Put dynamic class
-                                <div className='d-flex col-lg-12 justify-content-around p-2 row-item-container'>
+                                <div className='d-flex col-lg-12 justify-content-around row-item-container'>
                                   <RowItem>
                                     <span className="f-white">
                                     John Doe

@@ -131,7 +131,7 @@ a {
 }
 
 .row-item-container:nth-child(even){
-  background-color: darkgreen;
+  background-color: #057350;
 }
 
 
@@ -159,6 +159,13 @@ a {
   background-image: url('../assets//Sidebar_Base.png');
 }
 
+.bg-1{
+  background-image: url('../assets//Sidebar_Base.png');
+    background-size: cover;
+    background-position: center;
+  /* background-repeat:inherit; */
+}
+
 .logo-bg{
   background-image: url('../assets//TitleforSideBar.png');
   background-size: contain;
@@ -171,6 +178,15 @@ a {
   overflow: scroll;
 }
 
+.table-mh::-webkit-scrollbar{
+  display: none;
+}
+
 .pointer{
   cursor: pointer;
+}
+
+.logo-size{
+  height: 100px;
+  width: 100px;
 }
