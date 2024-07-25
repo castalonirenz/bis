@@ -11,10 +11,17 @@ export default function Official() {
   const [sample, setSample] = useState([
     1,2,3,4,5,6,7,8,9,9,9,9,9,9,9,9,9,9,9,9,9
   ])
-  const login = () => {
-    router.push('/Admin/Official', { scroll: false })
+
+    // 0 - BO   MR -1    SCHEDULES - 2
+  const [tab, seTab] = useState(0)
+
+  
+
+  const changeTab = (v) => {
+    seTab(v)
   }
 
+  
 
   return (
     <main className={`container-fluid`}>
@@ -34,21 +41,21 @@ export default function Official() {
             <div className="flex-column mt-5">
 
 
-              <div className="p-4 w-100 rounded active-nav pointer">
+              <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
                 <span className="f-white">
                   Barangay Officials
                 </span>
               </div>
 
 
-              <div className="p-4 w-100 rounded mt-4 pointer">
+              <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded ${tab == 1 ? 'active-nav' : ''} pointer`}>
                 <span className="f-white">
                   Manage Residents
                 </span>
               </div>
 
 
-              <div className="p-4 w-100 rounded mt-4 pointer">
+              <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
                 <span className="f-white">
                   Schedules
                 </span>
@@ -76,103 +83,214 @@ export default function Official() {
               </span>
             </div>
 
-            {/*  */}
-            <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
-
-            <div className="border-bottom p-2 pb-4 mt-3">
-                <h2 className="f-white">Current Barangay Officials</h2>
-              </div>
-
-              <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
-
-                <div className="d-flex align-items-center">
-                  <span className="f-white">Search:</span>
-                  <input type="email" class="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
-                </div>
-
-                <div >
-                  <Button>
-                    <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
-                    <span className="fw-bold">Add official</span>
-                  </Button>
-                </div>
-              </div>
-
-            
+            {/* BO */}
+              {tab == 0 &&
+              
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
               <div className="border-bottom p-2 pb-4 mt-3">
-
-                {/* Table header */}
-                <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{  }}>
-                  <HeaderItem>
-                    NAME
-                  </HeaderItem>
-                  <HeaderItem>
-                    CHAIRMANSHIP
-                  </HeaderItem>
-                  <HeaderItem>
-                    POSITION
-                  </HeaderItem>
-                  <HeaderItem>
-                    STATUS
-                  </HeaderItem>
-                  <HeaderItem>
-                    ACTION
-                  </HeaderItem>
+                  <h2 className="f-white">Current Barangay Officials</h2>
                 </div>
-
-                
-
-                {/* Table body */}
-
-                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
   
-                      {
-                        sample.map((i, k) => {
-                          return(
-
-                            // Put dynamic class
-                              <div className='d-flex col-lg-12 justify-content-around p-2 row-item-container'>
-                                <RowItem>
-                                  <span className="f-white">
-                                  John Doe
-                                  </span>
-                                </RowItem>
-                                <RowItem>
-                                <span className="f-white">
-                                  John Doe
-                                  </span>
-                                </RowItem>
-                                <RowItem>
-                                <span className="f-white">
-                                  John Doe
-                                  </span>
-                                </RowItem>
-                                <RowItem>
-                                <span className="f-white">
-                                  John Doe
-                                  </span>
-                                </RowItem>
-                                <RowItem>
-                                <span className="f-white">
-                                  John Doe
-                                  </span>
-                                </RowItem>
-                                </div>
-                         
-                          )
-                        })
-                      }
-
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+  
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input type="email" class="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
                   </div>
-
-                {/* Table body */}
+  
+                  <div >
+                    <Button>
+                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold">Add official</span>
+                    </Button>
+                  </div>
+                </div>
+  
+              
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+  
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{  }}>
+                    <HeaderItem>
+                      NAME
+                    </HeaderItem>
+                    <HeaderItem>
+                      CHAIRMANSHIP
+                    </HeaderItem>
+                    <HeaderItem>
+                      POSITION
+                    </HeaderItem>
+                    <HeaderItem>
+                      STATUS
+                    </HeaderItem>
+                    <HeaderItem>
+                      ACTION
+                    </HeaderItem>
+                  </div>
+  
+                  
+  
+                  {/* Table body */}
+  
+                    <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+    
+                        {
+                          sample.map((i, k) => {
+                            return(
+  
+                              // Put dynamic class
+                                <div className='d-flex col-lg-12 justify-content-around p-2 row-item-container'>
+                                  <RowItem>
+                                    <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  </div>
+                           
+                            )
+                          })
+                        }
+  
+                    </div>
+  
+                  {/* Table body */}
+                </div>
+  
               </div>
+              }
+            {/* BO */}
 
-            </div>
-            {/*  */}
+            {/* MANAGE RESIDENT */}
 
+            {
+              tab == 1 &&
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
+              <div className="border-bottom p-2 pb-4 mt-3">
+                  <h2 className="f-white">Resident Records</h2>
+                </div>
+  
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+  
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input type="email" class="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
+                  </div>
+  
+                  <div >
+                    <Button>
+                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold">Official</span>
+                    </Button>
+                  </div>
+                </div>
+  
+              
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+  
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{  }}>
+                    <HeaderItem>
+                      Fullname
+                    </HeaderItem>
+                    <HeaderItem>
+                      Age
+                    </HeaderItem>
+                    <HeaderItem>
+                      Civil Status
+                    </HeaderItem>
+                    <HeaderItem>
+                      Gender
+                    </HeaderItem>
+                    <HeaderItem>
+                      Voter Status
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action
+                    </HeaderItem>
+                  </div>
+  
+                  
+  
+                  {/* Table body */}
+  
+                    <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+    
+                        {
+                          sample.map((i, k) => {
+                            return(
+  
+                              // Put dynamic class
+                                <div className='d-flex col-lg-12 justify-content-around p-2 row-item-container'>
+                                  <RowItem>
+                                    <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  <RowItem>
+                                  <span className="f-white">
+                                    John Doe
+                                    </span>
+                                  </RowItem>
+                                  
+                                  </div>
+                           
+                            )
+                          })
+                        }
+  
+                    </div>
+  
+                  {/* Table body */}
+                </div>
+  
+              </div>
+            }
+
+            {/* MANAGE RESIDENT */}
 
 
 
