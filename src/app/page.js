@@ -40,15 +40,15 @@ export default function Home() {
           <div>
           <Image
             className='logo-size'
-            src={require('../assets/centrallogo.png')}
+            src={require('../assets/central.png')}
           />
             <Image
             className='logo-size'
-            src={require('../assets/taguiglogo.png')}
+            src={require('../assets/taguig.png')}
           />
             <Image
             className='logo-size'
-            src={require('../assets/sklogo.png')}
+            src={require('../assets/sk.png')}
           />
           </div> 
           
