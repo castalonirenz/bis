@@ -133,3 +133,44 @@ a {
 .row-item-container:nth-child(even){
   background-color: darkgreen;
 }
+
+
+.f-yellow{
+  color: #FEDB34;
+}
+.bg-yellow{
+  background-color: #FEDB34;
+}
+
+.f-green{
+  color: #058c61;
+}
+
+.bg-green{
+  background-color: #058c61;
+}
+
+/* Colours */
+
+
+/* bg images */
+
+.side-bg{
+  background-image: url('../assets//Sidebar_Base.png');
+}
+
+.logo-bg{
+  background-image: url('../assets//TitleforSideBar.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.table-mh{
+  max-height: 720px;
+  overflow: scroll;
+}
+
+.pointer{
+  cursor: pointer;
+}

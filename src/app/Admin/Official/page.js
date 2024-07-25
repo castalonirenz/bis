@@ -9,7 +9,7 @@ import { useState } from "react";
 export default function Official() {
 
   const [sample, setSample] = useState([
-    1,2,3,4,5,6
+    1,2,3,4,5,6,7,8,9,9,9,9,9,9,9,9,9,9,9,9,9
   ])
   const login = () => {
     router.push('/Admin/Official', { scroll: false })
@@ -21,44 +21,34 @@ export default function Official() {
       <Auth>
         <div className="row vh-100">
 
-          <div className="col-lg-4 p-5 d-flex flex-column" style={{ backgroundColor: "green" }}>
+          <div className="col-lg-4 p-5 d-flex flex-column bg-green side-bg">
 
-            <div className="d-flex flex-column align-items-center">
-              <h4 className="f-white">
-                BARANGAY CENTRAL BICUTAN
-              </h4>
-              <span className="f-white">DOCUMENT REQUEST SYSTEM</span>
+            <div className="d-flex flex-column align-items-center logo-bg col-lg-12" style={{height: "100px"}}>
+            
             </div>
 
-            <div className="d-flex align-items-center justify-content-center p-1 mt-2 align-self-center" style={{ backgroundColor: "white", width: "60%" }}>
-              <span>Transformation,  <span>Lively,</span><span> and </span>  <span> Caring City</span>
-              </span>
-
-
-
-            </div>
-
+        
 
             {/* Navigation */}
 
             <div className="flex-column mt-5">
 
 
-              <div className="p-4 w-100 rounded active-nav">
+              <div className="p-4 w-100 rounded active-nav pointer">
                 <span className="f-white">
                   Barangay Officials
                 </span>
               </div>
 
 
-              <div className="p-4 w-100 rounded mt-4">
+              <div className="p-4 w-100 rounded mt-4 pointer">
                 <span className="f-white">
                   Manage Residents
                 </span>
               </div>
 
 
-              <div className="p-4 w-100 rounded mt-4">
+              <div className="p-4 w-100 rounded mt-4 pointer">
                 <span className="f-white">
                   Schedules
                 </span>
@@ -76,7 +66,7 @@ export default function Official() {
 
             </div>
 
-            <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded" style={{ backgroundColor: "green" }}>
+            <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green">
               <h1 className="f-white">
                 BARANGAY CENTRAL BICUTAN
               </h1>
@@ -87,7 +77,7 @@ export default function Official() {
             </div>
 
             {/*  */}
-            <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded" style={{ backgroundColor: "green" }} >
+            <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
             <div className="border-bottom p-2 pb-4 mt-3">
                 <h2 className="f-white">Current Barangay Officials</h2>
@@ -135,7 +125,7 @@ export default function Official() {
 
                 {/* Table body */}
 
-                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between">
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
   
                       {
                         sample.map((i, k) => {
