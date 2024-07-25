@@ -4,20 +4,34 @@ import { useRouter } from 'next/navigation'
 import Image from "next/image";
 import styles from "./page.module.css";
 
+import { SignOn } from '@/redux/reducer/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+
 
 export default function Home() {
-  const router = useRouter()
-
+  const dispatch = useDispatch();
+  const a = useSelector(state => state.user)
   const login = () => {
-    router.push('/Admin/Official', { scroll: false })
+    // router.push('/Admin/Official', { scroll: false })
+      var User = {
+        name:'john',
+        lname: 'doe'
+      }
+
+      dispatch(SignOn(User))
+   
+    
   }
+
+  console.log(a, "--> CHECK")
 
   return (
     <main className={`container-fluid ${styles.fullHeight}`}>
       <div className="row vh-100">
 
-        <div className="col-lg-7 d-flex align-items-center justify-content-center" style={{ backgroundColor: "blue" }}>
-          May image dito
+        <div className="col-lg-7 d-flex align-items-center justify-content-center bg-2">
+          
         </div>
 
         <div className="col-lg-5 p-5 d-flex flex-column align-items-center justify-content-center bg-1">
