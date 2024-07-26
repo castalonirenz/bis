@@ -3,11 +3,14 @@ import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import Auth from "@/security/Auth";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 
 export default function Official() {
-
+  const dispatch = useDispatch();
+  const officials = useSelector(state => state.officials)
+  const token = useSelector(state => state.user)
   const [sample, setSample] = useState([
     1,2,3,4,5,6,7,8,9,9,9,9,9,9,9,9,9,9,9,9,9
   ])
@@ -16,6 +19,17 @@ export default function Official() {
   const [tab, seTab] = useState(0)
 
   
+  useEffect(() => {
+    console.log(officials, token)
+    // try {
+    //   const result = await dispatch(loadOfficials('bearer eto')).unwrap();
+    //   console.log('Login successful:', result);
+    //   // Handle success, e.g., navigate to another page
+    // } catch (error) {
+    //   console.error('Login failed:', error);
+    //   // Handle error, e.g., show an error message
+    // }
+  }, [])
 
   const changeTab = (v) => {
     seTab(v)

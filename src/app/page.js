@@ -51,6 +51,9 @@ export default function Home() {
     if(userState.status == "failed"){
       alert("Invalid credentials, please try again.")
     }
+    else if(userState.status == "succeeded"){
+      router.push('/Admin/Official', { scroll: false })
+    }
    
   }, [userState.status])
   
