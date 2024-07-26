@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import Image from "next/image";
 import styles from "./page.module.css";
 
-import { SignOn } from '@/redux/reducer/user';
+import { SignOn, loginUser } from '@/redux/reducer/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 
@@ -19,7 +19,8 @@ export default function Home() {
         lname: 'doe'
       }
 
-      dispatch(SignOn(User))
+      dispatch(loginUser())
+      // dispatch(SignOn(User))
    
     
   }
