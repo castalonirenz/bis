@@ -16,23 +16,25 @@ export default function Official() {
   const officials = useSelector(state => state)
   const token = useSelector(state => state.user)
   const [sample, setSample] = useState([
-    1,2,3,4,5,6,7,8,9,9,9,9,9,9,9,9,9,9,9,9,9
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
-  
 
-    // 0 - BO   MR -1    SCHEDULES - 2
+  const [selectedItem, setSelectedItem] = useState(null)
+
+
+  // 0 - BO   MR -1    SCHEDULES - 2
   const [tab, seTab] = useState(0)
 
-  
+
   useEffect(() => {
     const fetchData = async () => {
-      
+
       try {
         const result = await dispatch(loadOfficials(token.token)).unwrap();
-        
+
         // Handle success, e.g., navigate to another page
       } catch (error) {
-        
+
         // Handle error, e.g., show an error message
       }
     };
@@ -41,16 +43,16 @@ export default function Official() {
   }, []);
   console.log(officials.officials.list, "--> CHECK ME")
   useEffect(() => {
-    
+
   }, [])
- 
-  
+
+
 
   const changeTab = (v) => {
     seTab(v)
   }
 
-  
+
 
   return (
     <main className={`container-fluid`}>
@@ -59,11 +61,11 @@ export default function Official() {
 
           <div className="col-lg-4 p-5 d-flex flex-column bg-green side-bg">
 
-            <div className="d-flex flex-column align-items-center logo-bg col-lg-12" style={{height: "100px"}}>
-            
+            <div className="d-flex flex-column align-items-center logo-bg col-lg-12" style={{ height: "100px" }}>
+
             </div>
 
-        
+
 
             {/* Navigation */}
 
@@ -99,17 +101,17 @@ export default function Official() {
 
           <div className="col-lg-8 d-flex flex-column align-items-center justify-content-center" style={{}}>
             <div>
-              <button onClick={async() => {
+              <button onClick={async () => {
 
-            try {
-              const result = await dispatch(LogOut());
-              router.replace('/', { scroll: false })
-              // Handle success, e.g., navigate to another page
-            } catch (error) {
-              
-              // Handle error, e.g., show an error message
-            }
-        
+                try {
+                  const result = await dispatch(LogOut());
+                  router.replace('/', { scroll: false })
+                  // Handle success, e.g., navigate to another page
+                } catch (error) {
+
+                  // Handle error, e.g., show an error message
+                }
+
               }}>
                 LOGOUT
               </button>
@@ -126,21 +128,21 @@ export default function Official() {
             </div>
 
             {/* BO */}
-              {tab == 0 &&
-              
+            {tab == 0 &&
+
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-              <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white">Current Barangay Officials</h2>
                 </div>
-  
+
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
-  
+
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
                   </div>
-  
+
                   <div >
                     <Button>
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
@@ -148,13 +150,13 @@ export default function Official() {
                     </Button>
                   </div>
                 </div>
-  
-              
+
+
                 {/*  */}
                 <div className="border-bottom p-2 pb-4 mt-3">
-  
+
                   {/* Table header */}
-                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{  }}>
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
                     <HeaderItem>
                       NAME
                     </HeaderItem>
@@ -171,57 +173,75 @@ export default function Official() {
                       ACTION
                     </HeaderItem>
                   </div>
-  
-                  
-  
+
+
+
                   {/* Table body */}
-  
-                    <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
-    
-                        {
-                          officials.officials.list.map((i, k) => {
-                            return(
-  
-                              // Put dynamic className
-                                <div className='d-flex col-lg-12 justify-content-around  row-item-container'>
-                                  <RowItem>
-                                    <span className="f-white">
-                                    {i.full_name}
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                  {i.chairmanship}
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                  {i.position}
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                  {i.status}
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                   ACTION
-                                    </span>
-                                  </RowItem>
-                                  </div>
-                           
-                            )
-                          })
-                        }
-  
-                    </div>
-  
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      officials.officials.list.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around  row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.full_name}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.chairmanship}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.position}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.status}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span id={k + i.full_name + "action"}
+                                onClick={() => {
+                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
+                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
+
+                                }}
+                                className="f-white bg-yellow p-2 rounded">
+                                ACTION
+                              </span>
+                              <div id={k + i.full_name + "button"} className="d-flex d-none">
+
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                  onClick={() => {
+                                    setSelectedItem(i)
+                                  }}
+                                  type="button" class="btn btn-primary">Edit</button>
+
+                                <button type="button" class="btn btn-danger ms-3">Delete</button>
+
+                              </div>
+                            </RowItem>
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
                   {/* Table body */}
                 </div>
-  
+
               </div>
-              }
+            }
             {/* BO */}
 
             {/* MANAGE RESIDENT */}
@@ -230,17 +250,17 @@ export default function Official() {
               tab == 1 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-              <div className="border-bottom p-2 pb-4 mt-3">
+                <div className="border-bottom p-2 pb-4 mt-3">
                   <h2 className="f-white">Resident Records</h2>
                 </div>
-  
+
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
-  
+
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
                   </div>
-  
+
                   <div >
                     <Button>
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
@@ -248,13 +268,13 @@ export default function Official() {
                     </Button>
                   </div>
                 </div>
-  
-              
+
+
                 {/*  */}
                 <div className="border-bottom p-2 pb-4 mt-3">
-  
+
                   {/* Table header */}
-                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{  }}>
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
                     <HeaderItem>
                       Fullname
                     </HeaderItem>
@@ -274,61 +294,61 @@ export default function Official() {
                       Action
                     </HeaderItem>
                   </div>
-  
-                  
-  
+
+
+
                   {/* Table body */}
-  
-                    <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
-    
-                        {
-                          sample.map((i, k) => {
-                            return(
-  
-                              // Put dynamic className
-                                <div className='d-flex col-lg-12 justify-content-around row-item-container'>
-                                  <RowItem>
-                                    <span className="f-white">
-                                    John Doe
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                    John Doe
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                    John Doe
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                    John Doe
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                    John Doe
-                                    </span>
-                                  </RowItem>
-                                  <RowItem>
-                                  <span className="f-white">
-                                    John Doe
-                                    </span>
-                                  </RowItem>
-                                  
-                                  </div>
-                           
-                            )
-                          })
-                        }
-  
-                    </div>
-  
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      sample.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
                   {/* Table body */}
                 </div>
-  
+
               </div>
             }
 
@@ -338,7 +358,82 @@ export default function Official() {
 
           </div>
 
-
+          {/* Modal */
+          console.log(selectedItem, "--> CHECK")
+          }
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Edit</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label  class="form-label">Name</label>
+                    <input  
+                    value={selectedItem != null && selectedItem.full_name}
+                    onChange={(val) => {
+                      if(selectedItem != null){
+                        setSelectedItem({
+                          ...selectedItem,
+                          full_name: val.target.value
+                        })
+                      }
+                    }}
+                    class="form-control"  />
+                  </div>
+                  <div class="mb-3">
+                    <label  class="form-label">Chairmanship</label>
+                    <input 
+                     value={selectedItem != null && selectedItem.chairmanship}
+                     onChange={(val) => {
+                      if(selectedItem != null){
+                        setSelectedItem({
+                          ...selectedItem,
+                          chairmanship: val.target.value
+                        })
+                      }
+                    }}
+                    class="form-control"  />
+                  </div>
+                  <div class="mb-3">
+                    <label  class="form-label">Position</label>
+                    <input 
+                     value={selectedItem != null && selectedItem.position}
+                     onChange={(val) => {
+                      if(selectedItem != null){
+                        setSelectedItem({
+                          ...selectedItem,
+                          position: val.target.value
+                        })
+                      }
+                    }}
+                    class="form-control"  />
+                  </div>
+                  <div class="mb-3">
+                    <label  class="form-label">Status</label>
+                    <input  
+                     value={selectedItem != null && selectedItem.status}
+                     onChange={(val) => {
+                      if(selectedItem != null){
+                        setSelectedItem({
+                          ...selectedItem,
+                          status: val.target.value
+                        })
+                      }
+                    }}
+                    class="form-control"  />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary bg-green">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Modal */}
         </div>
       </Auth>
     </main>
