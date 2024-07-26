@@ -1,35 +1,50 @@
 'use client'
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
+import { loadOfficials } from "@/redux/reducer/officials";
+import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 
 export default function Official() {
   const dispatch = useDispatch();
-  const officials = useSelector(state => state.officials)
+  const router = useRouter()
+  const officials = useSelector(state => state)
   const token = useSelector(state => state.user)
   const [sample, setSample] = useState([
     1,2,3,4,5,6,7,8,9,9,9,9,9,9,9,9,9,9,9,9,9
   ])
+  
 
     // 0 - BO   MR -1    SCHEDULES - 2
   const [tab, seTab] = useState(0)
 
   
   useEffect(() => {
-    console.log(officials, token)
-    // try {
-    //   const result = await dispatch(loadOfficials('bearer eto')).unwrap();
-    //   console.log('Login successful:', result);
-    //   // Handle success, e.g., navigate to another page
-    // } catch (error) {
-    //   console.error('Login failed:', error);
-    //   // Handle error, e.g., show an error message
-    // }
+    const fetchData = async () => {
+      
+      try {
+        const result = await dispatch(loadOfficials(token.token)).unwrap();
+        
+        // Handle success, e.g., navigate to another page
+      } catch (error) {
+        
+        // Handle error, e.g., show an error message
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log(officials.officials.list, "--> CHECK ME")
+  useEffect(() => {
+    
   }, [])
+ 
+  
 
   const changeTab = (v) => {
     seTab(v)
@@ -84,7 +99,20 @@ export default function Official() {
 
           <div className="col-lg-8 d-flex flex-column align-items-center justify-content-center" style={{}}>
             <div>
+              <button onClick={async() => {
 
+            try {
+              const result = await dispatch(LogOut());
+              router.replace('/', { scroll: false })
+              // Handle success, e.g., navigate to another page
+            } catch (error) {
+              
+              // Handle error, e.g., show an error message
+            }
+        
+              }}>
+                LOGOUT
+              </button>
             </div>
 
             <div className="d-flex flex-column align-items-center justify-content-center w-100 p-5 rounded bg-green">
@@ -151,34 +179,34 @@ export default function Official() {
                     <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
     
                         {
-                          sample.map((i, k) => {
+                          officials.officials.list.map((i, k) => {
                             return(
   
                               // Put dynamic className
                                 <div className='d-flex col-lg-12 justify-content-around  row-item-container'>
                                   <RowItem>
                                     <span className="f-white">
-                                    John Doe
+                                    {i.full_name}
                                     </span>
                                   </RowItem>
                                   <RowItem>
                                   <span className="f-white">
-                                    John Doe
+                                  {i.chairmanship}
                                     </span>
                                   </RowItem>
                                   <RowItem>
                                   <span className="f-white">
-                                    John Doe
+                                  {i.position}
                                     </span>
                                   </RowItem>
                                   <RowItem>
                                   <span className="f-white">
-                                    John Doe
+                                  {i.status}
                                     </span>
                                   </RowItem>
                                   <RowItem>
                                   <span className="f-white">
-                                    John Doe
+                                   ACTION
                                     </span>
                                   </RowItem>
                                   </div>

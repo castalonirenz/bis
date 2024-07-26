@@ -10,8 +10,8 @@ const initialState = {
 };
 
 // Create axios instance
-const apiClient = axios.create({
-  baseURL: 'http://3.0.89.216/api',
+export const apiClient = axios.create({
+  baseURL: 'http://18.141.22.83/api',
 });
 
 // Add a response interceptor
@@ -28,7 +28,7 @@ apiClient.interceptors.response.use(
 
 // Define async thunks
 export const loginUser = createAsyncThunk('user/loginUser', async (params) => {
-  const res = await apiClient.post('/manualLogin', {
+  const res = await apiClient.post('/adminLogin', {
     email: params.email,
     pass: params.pass,
   });
@@ -54,6 +54,13 @@ const userSlice = createSlice({
       state.user = action.payload;
       state.signedIn = true;  // Use a boolean value here
     },
+    LogOut: (state, action) => {
+      state.user = ''
+      state.status = 'logout'
+      state.token = ''
+      state.signedIn = false
+
+    }
   },
   extraReducers: builder => {
     builder
@@ -74,5 +81,5 @@ const userSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { SignOn } = userSlice.actions;
+export const { SignOn, LogOut } = userSlice.actions;
 export default userSlice.reducer;

@@ -28,13 +28,13 @@ export default function Home() {
       
       try {
         const result = await dispatch(loginUser(User)).unwrap();
-        console.log('Login successful:', result);
+        
       
           router.push('/Admin/Official', { scroll: false })
       
         // Handle success, e.g., navigate to another page
       } catch (error) {
-        console.error('Login failed:', error);
+        
         // Handle error, e.g., show an error message
       }
 
@@ -47,12 +47,12 @@ export default function Home() {
 
   useEffect(() => {
   
-    console.log(userState.status, "--> ano ang")
+    
     if(userState.status == "failed"){
       alert("Invalid credentials, please try again.")
     }
     else if(userState.status == "succeeded"){
-      // router.push('/Admin/Official', { scroll: false })
+     router.push('/Admin/Official', { scroll: false })
     }
    
   }, [userState.status])
