@@ -52,7 +52,7 @@ export default function Home() {
       alert("Invalid credentials, please try again.")
     }
     else if(userState.status == "succeeded"){
-      router.push('/Admin/Official', { scroll: false })
+      // router.push('/Admin/Official', { scroll: false })
     }
    
   }, [userState.status])
