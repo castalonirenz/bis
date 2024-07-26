@@ -1,65 +1,78 @@
-import { createSlice,createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-
+// Initial state
 const initialState = {
   user: null,
   signedIn: false,
-  status: false
-}
+  status: 'idle',  // Start with 'idle' instead of 'false'
+  token: '',
+};
 
-export const loginUser = createAsyncThunk('todos/fetchTodos', async () => {
-  // Just make the async request here, and return the response.
-  // This will automatically dispatch a `pending` action first,
-  // and then `fulfilled` or `rejected` actions based on the promise.
-  // as needed based on the
-  const res = await axios.post('https://3.0.89.216/api/manualLogin',{
-    email: 'keanu@gmail.com',
-    pass:'secret123'
-  })
-  return res.data
-})
+// Create axios instance
+const apiClient = axios.create({
+  baseURL: 'http://3.0.89.216/api',
+});
 
+// Add a response interceptor
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      console.log('Unauthorized - 401');
+      // Handle unauthorized access, e.g., redirect to login
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Define async thunks
+export const loginUser = createAsyncThunk('user/loginUser', async (params) => {
+  const res = await apiClient.post('/manualLogin', {
+    email: params.email,
+    pass: params.pass,
+  });
+  return res.data;
+});
+
+export const validateUser = createAsyncThunk('user/validateUser', async () => {
+  const res = await apiClient.get('/getUserDetails', {
+    headers: {
+      'Authorization': 'Bearer your-token-here', // Replace with your actual token
+      'Content-Type': 'application/json',
+    },
+  });
+  return res.data;
+});
+
+// Create slice
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    // Give case reducers meaningful past-tense "event"-style names
-    SignOn:(state, action) => {
-    
-      console.log(action.payload, "--> RECEIVED")
-      // "Mutating" update syntax thanks to Immer, and no `return` needed
-      state.user = action.payload
-      state.signedIn = ''
-    }
+    SignOn: (state, action) => {
+      state.user = action.payload;
+      state.signedIn = true;  // Use a boolean value here
+    },
   },
   extraReducers: builder => {
-    // Use `extraReducers` to handle actions that were generated
-    // _outside_ of the slice, such as thunks or in other slices
     builder
-      .addCase(loginUser.pending, (state, action) => {
-        console.log('pending')
-        state.status = 'loading'
+      .addCase(loginUser.pending, (state) => {
+        state.status = 'loading';
       })
-      // Pass the generated action creators to `.addCase()`
       .addCase(loginUser.fulfilled, (state, action) => {
-        // Same "mutating" update syntax thanks to Immer
-        console.log('fulfilled', action.payload)
-        state.status = 'succeeded'
-        state.user = action.payload
+        state.status = 'succeeded';
+        state.token = action.payload.access_token;
+        state.signedIn = true;  // Update signedIn status
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        console.log('failed')
-        state.status = 'failed'
-        state.user = []
-        state.error = action.error
-      })
-  }
-})
+      .addCase(loginUser.rejected, (state) => {
+        console.log('pumasok ka sa fail')
+        state.status = 'failed';
+        state.signedIn = false;  // Update signedIn status
+      });
+  },
+});
 
-// `createSlice` automatically generated action creators with these names.
-// export them as named exports from this "slice" file
-export const { SignOn } = userSlice.actions
-
-// Export the slice reducer as the default export
-export default userSlice.reducer
+// Export actions and reducer
+export const { SignOn } = userSlice.actions;
+export default userSlice.reducer;

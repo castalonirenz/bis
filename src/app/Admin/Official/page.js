@@ -96,7 +96,7 @@ export default function Official() {
   
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" class="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
+                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
                   </div>
   
                   <div >
@@ -140,7 +140,7 @@ export default function Official() {
                           sample.map((i, k) => {
                             return(
   
-                              // Put dynamic class
+                              // Put dynamic className
                                 <div className='d-flex col-lg-12 justify-content-around  row-item-container'>
                                   <RowItem>
                                     <span className="f-white">
@@ -196,7 +196,7 @@ export default function Official() {
   
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" class="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
+                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
                   </div>
   
                   <div >
@@ -243,7 +243,7 @@ export default function Official() {
                           sample.map((i, k) => {
                             return(
   
-                              // Put dynamic class
+                              // Put dynamic className
                                 <div className='d-flex col-lg-12 justify-content-around row-item-container'>
                                   <RowItem>
                                     <span className="f-white">

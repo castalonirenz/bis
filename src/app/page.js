@@ -6,26 +6,54 @@ import styles from "./page.module.css";
 
 import { SignOn, loginUser } from '@/redux/reducer/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 export default function Home() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [pass, setPass] = useState('')
   const dispatch = useDispatch();
-  const a = useSelector(state => state.user)
-  const login = () => {
-    // router.push('/Admin/Official', { scroll: false })
+  const userState = useSelector(state => state.user)
+  const login = async() => {
+    
       var User = {
-        name:'john',
-        lname: 'doe'
+        email, pass
       }
 
-      dispatch(loginUser())
+      // keanu@gmail.com
+      // secret123
+     
+      // dispatch(loginUser(User)).unwrap();
+      
+      try {
+        const result = await dispatch(loginUser(User)).unwrap();
+        console.log('Login successful:', result);
+      
+          router.push('/Admin/Official', { scroll: false })
+      
+        // Handle success, e.g., navigate to another page
+      } catch (error) {
+        console.error('Login failed:', error);
+        // Handle error, e.g., show an error message
+      }
+
+
+
       // dispatch(SignOn(User))
    
     
   }
 
-  console.log(a, "--> CHECK")
+  useEffect(() => {
+  
+    console.log(userState.status, "--> ano ang")
+    if(userState.status == "failed"){
+      alert("Invalid credentials, please try again.")
+    }
+   
+  }, [userState.status])
+  
 
   return (
     <main className={`container-fluid ${styles.fullHeight}`}>
@@ -64,17 +92,27 @@ export default function Home() {
             Sign in to start your session.
           </h5>
 
-          <div class="mb-3 mt-5 w-100">
-            <input type="email" class="form-control rounded-pill" id="exampleFormControlInput1" placeholder="Username" />
+          <div className="mb-3 mt-5 w-100">
+            <input 
+              value={email}
+              onChange={(v) => {
+                setEmail(v.target.value)
+              }}
+              type="email" className="form-control rounded-pill" id="exampleFormControlInput1" placeholder="Username" />
           </div>
 
-          <div class="mb-3 w-100">
-            <input type="email" class="form-control rounded-pill" id="exampleFormControlInput1" placeholder="Password" />
+          <div className="mb-3 w-100">
+            <input 
+                value={pass}
+                onChange={(v) => {
+                  setPass(v.target.value)
+                }}
+              type="email" className="form-control rounded-pill" id="exampleFormControlInput1" placeholder="Password" />
           </div>
 
       
           <div className="d-flex flex-column align-items-center" style={{width:"80%"}}>
-          <button onClick={() => login()} type="button" class="btn fw-bold f-white w-100" style={{backgroundColor: "yellow"}}>SIGN IN</button>
+          <button onClick={() => login()} type="button" className="btn fw-bold f-white w-100" style={{backgroundColor: "yellow"}}>SIGN IN</button>
             <span className="f-white align-self-end">
               Forgot password?
             </span>
