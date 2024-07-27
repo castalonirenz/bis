@@ -39,12 +39,12 @@ export const loadOfficials = createAsyncThunk('user/getofficial', async (bearer)
 });
 
 export const addOfficials = createAsyncThunk('user/addofficial', async (data) => {
-      console.log('received: ', data)
-  const res = await apiClient.post('/changeBarangayOfficialDetails', {
+      
+  const res = await apiClient.post('/assignBarangayOfficial', {
     chairmanship: data.selectedSearchItem.chairmanship,
     user_id: data.selectedSearchItem.id,
     position: data.selectedSearchItem.position,
-    status: data.selectedSearchItem.status
+    // status: data.selectedSearchItem.status
   }, {
     headers:{
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -85,6 +85,7 @@ const officialsSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(addOfficials.fulfilled, (state, action) => {
+
         
         state.status = 'succeeded';
         // state.list = action.payload;

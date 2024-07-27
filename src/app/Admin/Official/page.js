@@ -30,7 +30,7 @@ export default function Official() {
   const [searchVal, setSearchVal] = useState('')
   const [searchOfficial, setSearchOfficial] = useState([])
   const [selectedSearchItem, setSelectedSearchItem] = useState('')
-
+  const [count, setCount] = useState(0)
   useEffect(() => {
     
     if(tab == 0){
@@ -63,7 +63,7 @@ export default function Official() {
   
       fetchData();
     }
-  }, [tab]);
+  }, [tab, count]);
 
   
   const searchAddOfficial = (v) => {
@@ -94,16 +94,26 @@ export default function Official() {
   }
 
 
-  const addOfficial = () => {
+  const addOfficial = async() => {
       
       console.log('before: ', selectedSearchItem, token.token)
       let merge = {
         selectedSearchItem,
         token: token.token
       }
+     
       dispatch(addOfficials(merge))
+      setTimeout(() => {
+        setCount(count + 1)
 
-      // setSelectedSearchItem('')
+        document.getElementById('selctednameadd').value = ''
+        setSelectedSearchItem({
+          chairmanship: '',
+          position: '',
+          status:'',
+        })
+      }, 3000)
+   
 
   }
   
@@ -580,7 +590,7 @@ export default function Official() {
                       if(selectedSearchItem != null){
                         setSelectedSearchItem({
                           ...selectedSearchItem,
-                          chairmanship: val.target.value
+                          status: val.target.value
                         })
                       }
                     }}
@@ -589,7 +599,7 @@ export default function Official() {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes</button>
+                  <button type="button" data-bs-dismiss="modal" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
             </div>
