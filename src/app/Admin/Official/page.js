@@ -1,7 +1,7 @@
 'use client'
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
-import { addOfficials, loadOfficials } from "@/redux/reducer/officials";
+import { addOfficials, deleteOffialsApi, loadOfficials } from "@/redux/reducer/officials";
 import { loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
@@ -15,7 +15,7 @@ export default function Official() {
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
-  const alluser =useSelector(state => state.alluser)
+  const alluser = useSelector(state => state.alluser)
   const token = useSelector(state => state.user)
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
@@ -32,91 +32,105 @@ export default function Official() {
   const [selectedSearchItem, setSelectedSearchItem] = useState('')
   const [count, setCount] = useState(0)
   useEffect(() => {
-    
-    if(tab == 0){
+
+    if (tab == 0) {
       const fetchData = async () => {
 
         try {
           const result = await dispatch(loadOfficials(token.token)).unwrap();
-  
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
-  
+
           // Handle error, e.g., show an error message
         }
       };
-  
+
       fetchData();
     }
-     if(tab == 1 || tab == 0){
+    if (tab == 1 || tab == 0) {
       const fetchData = async () => {
 
         try {
           const result = await dispatch(loadAllUsers(token.token)).unwrap();
-  
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
-  
+
           // Handle error, e.g., show an error message
         }
       };
-  
+
       fetchData();
     }
   }, [tab, count]);
 
-  
+
   const searchAddOfficial = (v) => {
 
-    
+
     setSearchVal(v)
-      //v search val
-      // officials list
+    //v search val
+    // officials list
     let tmpArr = []
-      alluser.list.map((i, k) => {
-        
-        let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
-        
-  
-        // Create a regular expression dynamically with case-insensitive flag
-        const regex = new RegExp(v, 'i');
-        
-        // Perform the search
-        const found = regex.test(fullname);
-     
-        if(found){
-          tmpArr.push(i)
-        }
-        
-      })
-      
-      setSearchOfficial(tmpArr)
-  }
+    alluser.list.map((i, k) => {
+
+      let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
 
 
-  const addOfficial = async() => {
-      
-      console.log('before: ', selectedSearchItem, token.token)
-      let merge = {
-        selectedSearchItem,
-        token: token.token
+      // Create a regular expression dynamically with case-insensitive flag
+      const regex = new RegExp(v, 'i');
+
+      // Perform the search
+      const found = regex.test(fullname);
+
+      if (found) {
+        tmpArr.push(i)
       }
-     
-      dispatch(addOfficials(merge))
-      setTimeout(() => {
-        setCount(count + 1)
 
-        document.getElementById('selctednameadd').value = ''
-        setSelectedSearchItem({
-          chairmanship: '',
-          position: '',
-          status:'',
-        })
-      }, 3000)
-   
+    })
+
+    setSearchOfficial(tmpArr)
+  }
+
+  const deleteOffials = () => {
+    let merge = {
+      selectedItem,
+      token: token.token
+    }
+
+    
+
+    dispatch(deleteOffialsApi(merge))
+    setTimeout(() => {
+      setCount(count + 1)
+      setSelectedItem('')
+    }, 3000)
+  }
+
+  const addOfficial = async () => {
+
+
+    let merge = {
+      selectedSearchItem,
+      token: token.token
+    }
+
+    dispatch(addOfficials(merge))
+    setTimeout(() => {
+      setCount(count + 1)
+
+      document.getElementById('selctednameadd').value = ''
+      setSelectedSearchItem({
+        chairmanship: '',
+        position: '',
+        status: '',
+      })
+    }, 3000)
+
 
   }
-  
+
   useEffect(() => {
 
   }, [])
@@ -221,7 +235,7 @@ export default function Official() {
                   <div >
                     <button
                       className="primary bg-yellow p-2 border-none"
-                     data-bs-toggle="modal" data-bs-target="#addOfficialModal"
+                      data-bs-toggle="modal" data-bs-target="#addOfficialModal"
                     >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold">Add official</span>
@@ -289,7 +303,7 @@ export default function Official() {
                                 onClick={() => {
                                   document.getElementById(k + i.full_name + "button").classList.remove('d-none')
                                   document.getElementById(k + i.full_name + "action").classList.add('d-none')
-
+                                  
                                 }}
                                 className="f-white bg-yellow p-2 rounded">
                                 ACTION
@@ -300,10 +314,20 @@ export default function Official() {
                                   data-bs-toggle="modal" data-bs-target="#exampleModal"
                                   onClick={() => {
                                     setSelectedItem(i)
+                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
+                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
-                                <button type="button" class="btn btn-danger ms-3">Delete</button>
+                                <button 
+                                data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
+                                 
+                                  onClick={() => {
+                                    setSelectedItem(i)
+                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
+                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                  }}
+                                type="button" class="btn btn-danger ms-3">Delete</button>
 
                               </div>
                             </RowItem>
@@ -437,7 +461,7 @@ export default function Official() {
           </div>
 
           {/* Modal */
-          
+
           }
           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -448,60 +472,60 @@ export default function Official() {
                 </div>
                 <div class="modal-body">
                   <div class="mb-3">
-                    <label  class="form-label">Name</label>
-                    <input  
-                    value={selectedItem != null && selectedItem.full_name}
-                    onChange={(val) => {
-                      if(selectedItem != null){
-                        setSelectedItem({
-                          ...selectedItem,
-                          full_name: val.target.value
-                        })
-                      }
-                    }}
-                    class="form-control"  />
+                    <label class="form-label">Name</label>
+                    <input
+                      value={selectedItem != null && selectedItem.full_name}
+                      onChange={(val) => {
+                        if (selectedItem != null) {
+                          setSelectedItem({
+                            ...selectedItem,
+                            full_name: val.target.value
+                          })
+                        }
+                      }}
+                      class="form-control" />
                   </div>
                   <div class="mb-3">
-                    <label  class="form-label">Chairmanship</label>
-                    <input 
-                     value={selectedItem != null && selectedItem.chairmanship}
-                     onChange={(val) => {
-                      if(selectedItem != null){
-                        setSelectedItem({
-                          ...selectedItem,
-                          chairmanship: val.target.value
-                        })
-                      }
-                    }}
-                    class="form-control"  />
+                    <label class="form-label">Chairmanship</label>
+                    <input
+                      value={selectedItem != null && selectedItem.chairmanship}
+                      onChange={(val) => {
+                        if (selectedItem != null) {
+                          setSelectedItem({
+                            ...selectedItem,
+                            chairmanship: val.target.value
+                          })
+                        }
+                      }}
+                      class="form-control" />
                   </div>
                   <div class="mb-3">
-                    <label  class="form-label">Position</label>
-                    <input 
-                     value={selectedItem != null && selectedItem.position}
-                     onChange={(val) => {
-                      if(selectedItem != null){
-                        setSelectedItem({
-                          ...selectedItem,
-                          position: val.target.value
-                        })
-                      }
-                    }}
-                    class="form-control"  />
+                    <label class="form-label">Position</label>
+                    <input
+                      value={selectedItem != null && selectedItem.position}
+                      onChange={(val) => {
+                        if (selectedItem != null) {
+                          setSelectedItem({
+                            ...selectedItem,
+                            position: val.target.value
+                          })
+                        }
+                      }}
+                      class="form-control" />
                   </div>
                   <div class="mb-3">
-                    <label  class="form-label">Status</label>
-                    <input  
-                     value={selectedItem != null && selectedItem.status}
-                     onChange={(val) => {
-                      if(selectedItem != null){
-                        setSelectedItem({
-                          ...selectedItem,
-                          status: val.target.value
-                        })
-                      }
-                    }}
-                    class="form-control"  />
+                    <label class="form-label">Status</label>
+                    <input
+                      value={selectedItem != null && selectedItem.status}
+                      onChange={(val) => {
+                        if (selectedItem != null) {
+                          setSelectedItem({
+                            ...selectedItem,
+                            status: val.target.value
+                          })
+                        }
+                      }}
+                      class="form-control" />
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -522,79 +546,79 @@ export default function Official() {
                 </div>
                 <div class="modal-body">
                   <div class="mb-3">
-                    <label  class="form-label">Search name</label>
-                    <input  
+                    <label class="form-label">Search name</label>
+                    <input
                       id='selctednameadd'
-                    // value={selectedItem != null && selectedItem.full_name}
-                    onChange={(val) => {
-                      
-                      searchAddOfficial(val.target.value)
-                    }}
-                    class="form-control"  />
+                      // value={selectedItem != null && selectedItem.full_name}
+                      onChange={(val) => {
+
+                        searchAddOfficial(val.target.value)
+                      }}
+                      class="form-control" />
                     {
                       searchVal != "" &&
-                      <div className="box position-absolute col-lg-12" style={{maxHeight: "300px", overflow:"scroll"}}>
-                      {
-                       searchOfficial.map((i, k) => {
-                          return(
-                            <div
+                      <div className="box position-absolute col-lg-12" style={{ maxHeight: "300px", overflow: "scroll" }}>
+                        {
+                          searchOfficial.map((i, k) => {
+                            return (
+                              <div
                                 onClick={() => {
                                   document.getElementById('selctednameadd').value = i.first_name + " " + i.middle_name + " " + i.last_name
                                   setSearchVal('')
                                   setSelectedSearchItem(i)
-                                }} 
-                               className="search-item pointer">
-                              <span>
-                                {i.first_name + " " + i.middle_name + " " + i.last_name}
-                              </span>
-                            </div>
-                          )
-                        })
-                      }
-                    </div>
+                                }}
+                                className="search-item pointer">
+                                <span>
+                                  {i.first_name + " " + i.middle_name + " " + i.last_name}
+                                </span>
+                              </div>
+                            )
+                          })
+                        }
+                      </div>
                     }
                   </div>
                   <div class="mb-3">
-                    <label  class="form-label">Chairmanship</label>
-                    <input 
-                     value={selectedSearchItem != null && selectedSearchItem.chairmanship}
-                     onChange={(val) => {
-                      if(selectedSearchItem != null){
-                        setSelectedSearchItem({
-                          ...selectedSearchItem,
-                          chairmanship: val.target.value
-                        })
-                      }
-                    }}
-                    class="form-control"  />
+                    <label class="form-label">Chairmanship</label>
+                    <input
+                      value={selectedSearchItem != null && selectedSearchItem.chairmanship}
+                      onChange={(val) => {
+                        if (selectedSearchItem != null) {
+                          setSelectedSearchItem({
+                            ...selectedSearchItem,
+                            chairmanship: val.target.value
+                          })
+                        }
+                      }}
+                      class="form-control" />
                   </div>
                   <div class="mb-3">
-                    <label  class="form-label">Position</label>
-                    <input 
-                     value={selectedSearchItem != null && selectedSearchItem.position}
-                     onChange={(val) => {
-                      if(selectedSearchItem != null){
-                        setSelectedSearchItem({
-                          ...selectedSearchItem,
-                          position: val.target.value
-                        })
-                      }
-                    }}
-                    class="form-control"  />
+                    <label class="form-label">Position</label>
+                    <input
+                      value={selectedSearchItem != null && selectedSearchItem.position}
+                      onChange={(val) => {
+                        if (selectedSearchItem != null) {
+                          setSelectedSearchItem({
+                            ...selectedSearchItem,
+                            position: val.target.value
+                          })
+                        }
+                      }}
+                      class="form-control" />
                   </div>
                   <div class="mb-3">
-                    <label  class="form-label">Status</label>
-                    <input  
-                     value={selectedSearchItem != null && selectedSearchItem.status}
-                     onChange={(val) => {
-                      if(selectedSearchItem != null){
-                        setSelectedSearchItem({
-                          ...selectedSearchItem,
-                          status: val.target.value
-                        })
-                      }
-                    }}
-                    class="form-control"  />
+                    <label class="form-label">Status</label>
+                    <input
+                      value={selectedSearchItem != null && selectedSearchItem.status}
+                      onChange={(val) => {
+                        if (selectedSearchItem != null) {
+                          setSelectedSearchItem({
+                            ...selectedSearchItem,
+                            status: val.target.value
+                          })
+                        }
+                      }}
+                      class="form-control" />
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -606,6 +630,27 @@ export default function Official() {
           </div>
 
           {/* Add official */}
+
+
+          {/* Confirm delete modal */}
+
+          <div id="deleteConfirmModal" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Delete</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to delete this user "<span className="fw-bold">{selectedItem.full_name}</span>"?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button data-bs-dismiss="modal" onClick={() => deleteOffials()} type="button" class="btn btn-primary bg-green">Yes</button>
+                </div>
+              </div>
+            </div>
+          </div>
           {/* Modal */}
         </div>
       </Auth>
