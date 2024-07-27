@@ -196,3 +196,14 @@ a {
   height: 100px;
   width: 100px;
 }
+
+.box {
+ 
+  background-color: #f4f4f4;
+  box-shadow: 5px 5px 10px rgba(0.5, 0, 0, 0.5);
+}
+
+.search-item{
+  padding: 10px;
+  cursor: pointer;
+}

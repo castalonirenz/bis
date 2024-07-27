@@ -2,6 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { loadOfficials } from "@/redux/reducer/officials";
+import { loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -14,6 +15,7 @@ export default function Official() {
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
+  const alluser =useSelector(state => state.alluser)
   const token = useSelector(state => state.user)
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
@@ -25,23 +27,73 @@ export default function Official() {
   // 0 - BO   MR -1    SCHEDULES - 2
   const [tab, seTab] = useState(0)
 
+  const [searchVal, setSearchVal] = useState('')
+  const [searchOfficial, setSearchOfficial] = useState([])
+  const [selectedSearchItem, setSelectedSearchItem] = useState('')
 
   useEffect(() => {
-    const fetchData = async () => {
+    
+    if(tab == 0){
+      const fetchData = async () => {
 
-      try {
-        const result = await dispatch(loadOfficials(token.token)).unwrap();
+        try {
+          const result = await dispatch(loadOfficials(token.token)).unwrap();
+  
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+  
+          // Handle error, e.g., show an error message
+        }
+      };
+  
+      fetchData();
+    }
+     if(tab == 1 || tab == 0){
+      const fetchData = async () => {
 
-        // Handle success, e.g., navigate to another page
-      } catch (error) {
+        try {
+          const result = await dispatch(loadAllUsers(token.token)).unwrap();
+  
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+  
+          // Handle error, e.g., show an error message
+        }
+      };
+  
+      fetchData();
+    }
+  }, [tab]);
 
-        // Handle error, e.g., show an error message
-      }
-    };
+  
+  const searchAddOfficial = (v) => {
 
-    fetchData();
-  }, []);
-  console.log(officials.officials.list, "--> CHECK ME")
+    
+    setSearchVal(v)
+      //v search val
+      // officials list
+    let tmpArr = []
+      alluser.list.map((i, k) => {
+        
+        let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
+        
+  
+        // Create a regular expression dynamically with case-insensitive flag
+        const regex = new RegExp(v, 'i');
+        
+        // Perform the search
+        const found = regex.test(fullname);
+     
+        if(found){
+          tmpArr.push(i)
+        }
+        
+      })
+      
+      setSearchOfficial(tmpArr)
+  }
+
+  
   useEffect(() => {
 
   }, [])
@@ -144,10 +196,13 @@ export default function Official() {
                   </div>
 
                   <div >
-                    <Button>
+                    <button
+                      className="primary bg-yellow p-2 border-none"
+                     data-bs-toggle="modal" data-bs-target="#addOfficialModal"
+                    >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold">Add official</span>
-                    </Button>
+                    </button>
                   </div>
                 </div>
 
@@ -359,7 +414,7 @@ export default function Official() {
           </div>
 
           {/* Modal */
-          console.log(selectedItem, "--> CHECK")
+          
           }
           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -433,6 +488,101 @@ export default function Official() {
               </div>
             </div>
           </div>
+
+          {/* Add official */}
+          <div class="modal fade" id="addOfficialModal" tabindex="-1" aria-labelledby="addOfficialModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="addOfficialModalLabel">Edit</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label  class="form-label">Search name</label>
+                    <input  
+                      id='selctednameadd'
+                    // value={selectedItem != null && selectedItem.full_name}
+                    onChange={(val) => {
+                      
+                      searchAddOfficial(val.target.value)
+                    }}
+                    class="form-control"  />
+                    {
+                      searchVal != "" &&
+                      <div className="box position-absolute col-lg-12" style={{maxHeight: "300px", overflow:"scroll"}}>
+                      {
+                       searchOfficial.map((i, k) => {
+                          return(
+                            <div
+                                onClick={() => {
+                                  document.getElementById('selctednameadd').value = i.first_name + " " + i.middle_name + " " + i.last_name
+                                  setSearchVal('')
+                                  setSelectedSearchItem(i)
+                                }} 
+                               className="search-item pointer">
+                              <span>
+                                {i.first_name + " " + i.middle_name + " " + i.last_name}
+                              </span>
+                            </div>
+                          )
+                        })
+                      }
+                    </div>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label  class="form-label">Chairmanship</label>
+                    <input 
+                     value={selectedItem != null && selectedItem.chairmanship}
+                     onChange={(val) => {
+                      if(selectedItem != null){
+                        setSelectedItem({
+                          ...selectedItem,
+                          chairmanship: val.target.value
+                        })
+                      }
+                    }}
+                    class="form-control"  />
+                  </div>
+                  <div class="mb-3">
+                    <label  class="form-label">Position</label>
+                    <input 
+                     value={selectedItem != null && selectedItem.position}
+                     onChange={(val) => {
+                      if(selectedItem != null){
+                        setSelectedItem({
+                          ...selectedItem,
+                          position: val.target.value
+                        })
+                      }
+                    }}
+                    class="form-control"  />
+                  </div>
+                  <div class="mb-3">
+                    <label  class="form-label">Status</label>
+                    <input  
+                     value={selectedItem != null && selectedItem.status}
+                     onChange={(val) => {
+                      if(selectedItem != null){
+                        setSelectedItem({
+                          ...selectedItem,
+                          status: val.target.value
+                        })
+                      }
+                    }}
+                    class="form-control"  />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary bg-green">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Add official */}
           {/* Modal */}
         </div>
       </Auth>

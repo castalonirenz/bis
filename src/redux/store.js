@@ -2,6 +2,7 @@
 import { combineReducers, configureStore  } from "@reduxjs/toolkit";
 import user from "./reducer/user";
 import officials from "./reducer/officials";
+import alluser from "./reducer/resident";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // Default local storage
 
@@ -14,7 +15,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: user,
-  officials: officials
+  officials: officials,
+  alluser: alluser
   //add all your reducers here
 },);
 
