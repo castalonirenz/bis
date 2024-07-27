@@ -38,6 +38,22 @@ export const loadOfficials = createAsyncThunk('user/getofficial', async (bearer)
   return res.data;
 });
 
+export const addOfficials = createAsyncThunk('user/addofficial', async (data) => {
+      console.log('received: ', data)
+  const res = await apiClient.post('/changeBarangayOfficialDetails', {
+    chairmanship: data.selectedSearchItem.chairmanship,
+    user_id: data.selectedSearchItem.id,
+    position: data.selectedSearchItem.position,
+    status: data.selectedSearchItem.status
+  }, {
+    headers:{
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+  }
+  });
+  return res.data;
+});
+
 
 // Create slice
 const officialsSlice = createSlice({
@@ -60,6 +76,20 @@ const officialsSlice = createSlice({
         state.list = action.payload;
       })
       .addCase(loadOfficials.rejected, (state) => {
+        
+        state.status = 'failed';
+      });
+
+      builder
+      .addCase(addOfficials.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addOfficials.fulfilled, (state, action) => {
+        
+        state.status = 'succeeded';
+        // state.list = action.payload;
+      })
+      .addCase(addOfficials.rejected, (state) => {
         
         state.status = 'failed';
       });

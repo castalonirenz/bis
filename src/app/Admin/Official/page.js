@@ -1,7 +1,7 @@
 'use client'
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
-import { loadOfficials } from "@/redux/reducer/officials";
+import { addOfficials, loadOfficials } from "@/redux/reducer/officials";
 import { loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
@@ -93,6 +93,19 @@ export default function Official() {
       setSearchOfficial(tmpArr)
   }
 
+
+  const addOfficial = () => {
+      
+      console.log('before: ', selectedSearchItem, token.token)
+      let merge = {
+        selectedSearchItem,
+        token: token.token
+      }
+      dispatch(addOfficials(merge))
+
+      // setSelectedSearchItem('')
+
+  }
   
   useEffect(() => {
 
@@ -534,11 +547,11 @@ export default function Official() {
                   <div class="mb-3">
                     <label  class="form-label">Chairmanship</label>
                     <input 
-                     value={selectedItem != null && selectedItem.chairmanship}
+                     value={selectedSearchItem != null && selectedSearchItem.chairmanship}
                      onChange={(val) => {
-                      if(selectedItem != null){
-                        setSelectedItem({
-                          ...selectedItem,
+                      if(selectedSearchItem != null){
+                        setSelectedSearchItem({
+                          ...selectedSearchItem,
                           chairmanship: val.target.value
                         })
                       }
@@ -548,11 +561,11 @@ export default function Official() {
                   <div class="mb-3">
                     <label  class="form-label">Position</label>
                     <input 
-                     value={selectedItem != null && selectedItem.position}
+                     value={selectedSearchItem != null && selectedSearchItem.position}
                      onChange={(val) => {
-                      if(selectedItem != null){
-                        setSelectedItem({
-                          ...selectedItem,
+                      if(selectedSearchItem != null){
+                        setSelectedSearchItem({
+                          ...selectedSearchItem,
                           position: val.target.value
                         })
                       }
@@ -562,12 +575,12 @@ export default function Official() {
                   <div class="mb-3">
                     <label  class="form-label">Status</label>
                     <input  
-                     value={selectedItem != null && selectedItem.status}
+                     value={selectedSearchItem != null && selectedSearchItem.status}
                      onChange={(val) => {
-                      if(selectedItem != null){
-                        setSelectedItem({
-                          ...selectedItem,
-                          status: val.target.value
+                      if(selectedSearchItem != null){
+                        setSelectedSearchItem({
+                          ...selectedSearchItem,
+                          chairmanship: val.target.value
                         })
                       }
                     }}
@@ -576,7 +589,7 @@ export default function Official() {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary bg-green">Save changes</button>
+                  <button type="button" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
             </div>
