@@ -1,7 +1,7 @@
 'use client'
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
-import { addOfficials, deleteOffialsApi, loadOfficials } from "@/redux/reducer/officials";
+import { addOfficials, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
 import { loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
@@ -106,6 +106,32 @@ export default function Official() {
       setCount(count + 1)
       setSelectedItem('')
     }, 3000)
+  }
+
+
+  const updateOfficial = async () => {
+
+
+    let merge = {
+      selectedItem,
+      token: token.token
+    }
+
+
+    console.log('before: ', merge)
+    dispatch(updateOfficials(merge))
+    setTimeout(() => {
+      setCount(count + 1)
+
+      document.getElementById('selctednameadd').value = ''
+      setSelectedItem({
+        chairmanship: '',
+        position: '',
+        status: '',
+      })
+    }, 3000)
+
+
   }
 
   const addOfficial = async () => {
@@ -530,7 +556,7 @@ export default function Official() {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary bg-green">Save changes</button>
+                  <button onClick={() => updateOfficial()} type="button" class="btn btn-primary bg-green" data-bs-dismiss="modal">Save changes</button>
                 </div>
               </div>
             </div>
@@ -642,7 +668,7 @@ export default function Official() {
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <p>Are you sure you want to delete this user "<span className="fw-bold">{selectedItem.full_name}</span>"?</p>
+                  <p>Are you sure you want to delete this user "<span className="fw-bold">{selectedItem != null && selectedItem.full_name}</span>"?</p>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

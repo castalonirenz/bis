@@ -54,6 +54,23 @@ export const addOfficials = createAsyncThunk('user/addofficial', async (data) =>
   return res.data;
 });
 
+
+export const updateOfficials = createAsyncThunk('user/updateofficial', async (data) => {
+      
+  const res = await apiClient.post('/changeBarangayOfficialDetails', {
+    chairmanship: data.selectedItem.chairmanship,
+    user_id: data.selectedItem.user_id,
+    position: data.selectedItem.position,
+    status: data.selectedItem.status
+  }, {
+    headers:{
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+  }
+  });
+  return res.data;
+});
+
 export const deleteOffialsApi = createAsyncThunk('user/deleteofficial', async (data) => {
       
     
@@ -120,6 +137,22 @@ const officialsSlice = createSlice({
         // state.list = action.payload;
       })
       .addCase(deleteOffialsApi.rejected, (state) => {
+        
+        state.status = 'failed';
+      });
+
+      builder
+      .addCase(updateOfficials.pending, (state) => {
+        
+        state.status = 'loading';
+      })
+      .addCase(updateOfficials.fulfilled, (state, action) => {
+
+        
+        state.status = 'succeeded';
+        // state.list = action.payload;
+      })
+      .addCase(updateOfficials.rejected, (state) => {
         
         state.status = 'failed';
       });
