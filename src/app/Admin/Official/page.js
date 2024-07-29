@@ -10,6 +10,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Official() {
   const dispatch = useDispatch();
@@ -24,13 +27,31 @@ export default function Official() {
   const [selectedItem, setSelectedItem] = useState(null)
 
 
-  // 0 - BO   MR -1    SCHEDULES - 2
+  // 0 - BO   MR -1    SCHEDULES - 2 BR - 3
   const [tab, seTab] = useState(0)
 
   const [searchVal, setSearchVal] = useState('')
   const [searchOfficial, setSearchOfficial] = useState([])
   const [selectedSearchItem, setSelectedSearchItem] = useState('')
   const [count, setCount] = useState(0)
+
+
+
+  // Resident
+  const [startDate, setStartDate] = useState(new Date());
+    const [resident, setResident] = useState({
+      first_name: '',
+      middle_name: '',
+      last_name: '',
+      email: '',
+      pass: '',
+      birthday: '',
+      cell_number: '',
+      civil_status_id: ''
+    })
+
+  // Resident
+
   useEffect(() => {
 
     if (tab == 0) {
@@ -157,6 +178,12 @@ export default function Official() {
 
   }
 
+
+  const addResident = async () => {
+
+    console.log("check data:", resident)
+  }
+
   useEffect(() => {
 
   }, [])
@@ -204,6 +231,19 @@ export default function Official() {
               <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
                 <span className="f-white">
                   Schedules
+                </span>
+              </div>
+
+
+              <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
+                <span className="f-white">
+                  Blotter
+                </span>
+              </div>
+
+              <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded ${tab == 3 ? 'active-nav' : ''} pointer`}>
+                <span className="f-white">
+                  Services
                 </span>
               </div>
 
@@ -258,15 +298,17 @@ export default function Official() {
                     <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
                   </div>
 
-                  <div >
+                  {
+                    <div >
                     <button
-                      className="primary bg-yellow p-2 border-none"
+                      className="primary bg-yellow p-2 rounded" style={{border: "0px"}}
                       data-bs-toggle="modal" data-bs-target="#addOfficialModal"
                     >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold">Add official</span>
                     </button>
                   </div>
+                  }
                 </div>
 
 
@@ -390,10 +432,13 @@ export default function Official() {
                   </div>
 
                   <div >
-                    <Button>
+                    <button
+                     data-bs-toggle="modal" data-bs-target="#addResidentModal"
+                      className="primary bg-yellow p-2 rounded" style={{border: "0px"}}
+                      >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
-                      <span className="fw-bold">Official</span>
-                    </Button>
+                      <span className="fw-bold">Add Resident</span>
+                    </button>
                   </div>
                 </div>
 
@@ -484,6 +529,99 @@ export default function Official() {
 
 
 
+            {/* Barangay services */}
+
+            {
+              tab == 3 &&
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+
+                <div className="border-bottom p-2 pb-4 mt-3">
+                  <h2 className="f-white">Barangay Services</h2>
+                </div>
+
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1"/>
+                  </div>
+
+                  <div >
+                    <Button>
+                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold">Services</span>
+                    </Button>
+                  </div>
+                </div>
+
+
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                    <HeaderItem>
+                      No.
+                    </HeaderItem>
+                    <HeaderItem>
+                      Service
+                    </HeaderItem>
+                    <HeaderItem>
+                      Description
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action
+                    </HeaderItem>
+                  </div>
+
+
+
+                  {/* Table body */}
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      sample.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                John Doe
+                              </span>
+                            </RowItem>
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
+                  {/* Table body */}
+                </div>
+
+              </div>
+            }
+
+            {/* Barangay services */}
+
           </div>
 
           {/* Modal */
@@ -562,12 +700,14 @@ export default function Official() {
             </div>
           </div>
 
+
+
           {/* Add official */}
           <div class="modal fade" id="addOfficialModal" tabindex="-1" aria-labelledby="addOfficialModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="addOfficialModalLabel">Edit</h1>
+                  <h1 class="modal-title fs-5" id="addOfficialModalLabel">Add</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -656,6 +796,140 @@ export default function Official() {
           </div>
 
           {/* Add official */}
+
+
+          {/* Add Resident */}
+
+          <div class="modal fade" id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="addOfficialModalLabel">Add Resident</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">First name</label>
+                    <input
+                      value={resident.first_name}
+                      onChange={(val) => {
+                        
+                        setResident({
+                          ...resident, ...{
+                            first_name: val.target.value
+                          }
+                        })
+                      
+                      }}
+                      class="form-control" />
+                  
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Middle name</label>
+                    <input
+                      value={resident.middle_name}
+                      onChange={(val) => {
+                        
+                        setResident({
+                          ...resident, ...{
+                            middle_name: val.target.value
+                          }
+                        })
+                      
+                      }}
+                      class="form-control" />
+                  
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Last name</label>
+                    <input
+                      value={resident.last_name}
+                      onChange={(val) => {
+                        
+                        setResident({
+                          ...resident, ...{
+                            last_name: val.target.value
+                          }
+                        })
+                      
+                      }}
+                      class="form-control" />
+                  
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input
+                      value={resident.email}
+                      onChange={(val) => {
+                        
+                        setResident({
+                          ...resident, ...{
+                            email: val.target.value
+                          }
+                        })
+                      
+                      }}
+                      class="form-control" />
+                  
+                  </div>
+
+                  <div class="mb-3 d-flex flex-column">
+                    <label class="form-label">Birthday</label>
+                    <DatePicker 
+                      className="w-100 form-control"
+                      onKeyDown={(e) => {
+                        e.preventDefault();
+                     }}
+                      selected={startDate} onChange={(date) => setStartDate(date)} />
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Phone number</label>
+                    <input
+                      value={resident.cell_number}
+                      onChange={(val) => {
+                        
+                        setResident({
+                          ...resident, ...{
+                            cell_number: val.target.value
+                          }
+                        })
+                      
+                      }}
+                      class="form-control" />
+                  
+                  </div>
+                      
+                  <div class="mb-3">
+                    <label class="form-label">Civil status</label>
+                    <input
+                      value={resident.civil_status_id}
+                      onChange={(val) => {
+                        
+                        setResident({
+                          ...resident, ...{
+                            civil_status_id: val.target.value
+                          }
+                        })
+                      
+                      }}
+                      class="form-control" />
+                  
+                  </div>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" data-bs-dismiss="modal" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Add Resident */}
 
 
           {/* Confirm delete modal */}
