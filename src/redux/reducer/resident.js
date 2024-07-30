@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { apiClient } from './user';
+import moment from 'moment';
 
 // Initial state
 const initialState = {
@@ -27,16 +28,33 @@ apiClient.interceptors.response.use(
 );
 
 // Define async thunks
-export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (bearer) => {
-    
-  const res = await apiClient.get('/viewAllUsers', {
+export const addResidentApi = createAsyncThunk('user/noVerificationRegistration', async (data) => {
+    let params = data
+    console.log(params, "--> PASOK?")
+  const res = await apiClient.post('/noVerificationRegistration', {
+        ...params.resident, ...{
+        birthday: moment(params.birthday).format("YYYY-MM-DD")
+        }
+  },{
     headers:{
-        'Authorization': `Bearer ${bearer}`, // Replace with your actual token
+        'Authorization': `Bearer ${data.token}`, // Replace with your actual token
         'Content-Type': 'application/json',
     }
   });
   return res.data;
 });
+
+
+export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (bearer) => {
+    
+    const res = await apiClient.get('/viewAllUsers', {
+      headers:{
+          'Authorization': `Bearer ${bearer}`, // Replace with your actual token
+          'Content-Type': 'application/json',
+      }
+    });
+    return res.data;
+  });
 
 
 // Create slice
@@ -55,11 +73,23 @@ const usersSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(loadAllUsers.fulfilled, (state, action) => {
-        console.log(action, "--> RECEIVE REDUCER")
         state.status = 'succeeded';
         state.list = action.payload;
       })
       .addCase(loadAllUsers.rejected, (state) => {
+        
+        state.status = 'failed';
+      });
+
+      builder
+      .addCase(addResidentApi.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addResidentApi.fulfilled, (state, action) => {
+        console.log(action, "--> RECEIVE REDUCER")
+        state.status = 'succeeded';
+      })
+      .addCase(addResidentApi.rejected, (state) => {
         
         state.status = 'failed';
       });

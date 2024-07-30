@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { loadAllUsers } from "@/redux/reducer/resident";
+import { addResidentApi, loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -38,18 +38,19 @@ export default function Official() {
 
 
   // Resident
-  const [startDate, setStartDate] = useState(new Date());
-    const [resident, setResident] = useState({
-      first_name: '',
-      middle_name: '',
-      last_name: '',
-      email: '',
-      pass: '',
-      birthday: '',
-      cell_number: '',
-      civil_status_id: ''
-    })
-
+  const [startDate, setStartDate] = useState();
+  const [resident, setResident] = useState({
+    first_name: '',
+    middle_name: '',
+    last_name: '',
+    email: '',
+    pass: '',
+    birthday: '',
+    cell_number: '',
+    civil_status_id: '',
+    male_female: ''
+  })
+  // male 0 female 1
   // Resident
 
   useEffect(() => {
@@ -120,7 +121,7 @@ export default function Official() {
       token: token.token
     }
 
-    
+
 
     dispatch(deleteOffialsApi(merge))
     setTimeout(() => {
@@ -181,7 +182,51 @@ export default function Official() {
 
   const addResident = async () => {
 
-    console.log("check data:", resident)
+    console.log("check datasss:", resident.male_female === "", resident.male_female)
+
+
+
+    if (resident.first_name == "") {
+      document.getElementById('fnameinput').style.border = '1px solid red'
+    }
+
+    if (resident.last_name == "") {
+      document.getElementById('lnameinput').style.border = '1px solid red'
+    }
+
+
+    if (resident.email == "") {
+      document.getElementById('emailinput').style.border = '1px solid red'
+    }
+
+    if (resident.birthday == "") {
+      document.getElementById('bdayinput').style.border = '1px solid red'
+    }
+
+    if (resident.cell_number == "") {
+      document.getElementById('phoneinput').style.border = '1px solid red'
+    }
+
+    if (resident.male_female === "") {
+      document.getElementById('genderinput').style.border = '1px solid red'
+    }
+
+    if (resident.civil_status_id == "") {
+      document.getElementById('civilinput').style.border = '1px solid red'
+    }
+
+
+
+
+    let merge = {
+      resident,
+      birthday: startDate,
+      token: token.token
+    }
+
+    console.log(merge, "--> CHECK MERGE")
+    // dispatch(addResidentApi(merge))
+
   }
 
   useEffect(() => {
@@ -300,14 +345,14 @@ export default function Official() {
 
                   {
                     <div >
-                    <button
-                      className="primary bg-yellow p-2 rounded" style={{border: "0px"}}
-                      data-bs-toggle="modal" data-bs-target="#addOfficialModal"
-                    >
-                      <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
-                      <span className="fw-bold">Add official</span>
-                    </button>
-                  </div>
+                      <button
+                        className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
+                        data-bs-toggle="modal" data-bs-target="#addOfficialModal"
+                      >
+                        <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
+                        <span className="fw-bold">Add official</span>
+                      </button>
+                    </div>
                   }
                 </div>
 
@@ -371,7 +416,7 @@ export default function Official() {
                                 onClick={() => {
                                   document.getElementById(k + i.full_name + "button").classList.remove('d-none')
                                   document.getElementById(k + i.full_name + "action").classList.add('d-none')
-                                  
+
                                 }}
                                 className="f-white bg-yellow p-2 rounded">
                                 ACTION
@@ -387,15 +432,15 @@ export default function Official() {
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
-                                <button 
-                                data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
-                                 
+                                <button
+                                  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
+
                                   onClick={() => {
                                     setSelectedItem(i)
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
                                     document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
-                                type="button" class="btn btn-danger ms-3">Delete</button>
+                                  type="button" class="btn btn-danger ms-3">Delete</button>
 
                               </div>
                             </RowItem>
@@ -433,9 +478,9 @@ export default function Official() {
 
                   <div >
                     <button
-                     data-bs-toggle="modal" data-bs-target="#addResidentModal"
-                      className="primary bg-yellow p-2 rounded" style={{border: "0px"}}
-                      >
+                      data-bs-toggle="modal" data-bs-target="#addResidentModal"
+                      className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
+                    >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold">Add Resident</span>
                     </button>
@@ -543,7 +588,7 @@ export default function Official() {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1"/>
+                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
                   <div >
@@ -802,7 +847,7 @@ export default function Official() {
 
           <div class="modal fade" id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
+              <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
                 <div class="modal-header">
                   <h1 class="modal-title fs-5" id="addOfficialModalLabel">Add Resident</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -811,18 +856,26 @@ export default function Official() {
                   <div class="mb-3">
                     <label class="form-label">First name</label>
                     <input
+                      id='fnameinput'
                       value={resident.first_name}
                       onChange={(val) => {
-                        
+
+                        if (val.target.value != "") {
+                          document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                        }
+                        else {
+                          document.getElementById('fnameinput').style.border = '1px solid red'
+                        }
+
                         setResident({
                           ...resident, ...{
                             first_name: val.target.value
                           }
                         })
-                      
+
                       }}
                       class="form-control" />
-                  
+
                   </div>
 
                   <div class="mb-3">
@@ -830,100 +883,186 @@ export default function Official() {
                     <input
                       value={resident.middle_name}
                       onChange={(val) => {
-                        
+
                         setResident({
                           ...resident, ...{
                             middle_name: val.target.value
                           }
                         })
-                      
+
                       }}
                       class="form-control" />
-                  
+
                   </div>
 
                   <div class="mb-3">
                     <label class="form-label">Last name</label>
                     <input
+                      id='lnameinput'
                       value={resident.last_name}
                       onChange={(val) => {
-                        
+
+                        if (val.target.value != "") {
+                          document.getElementById('lnameinput').style.border = '1px solid #dee2e6'
+                        }
+                        else {
+                          document.getElementById('lnameinput').style.border = '1px solid red'
+                        }
+
                         setResident({
                           ...resident, ...{
                             last_name: val.target.value
                           }
                         })
-                      
+
                       }}
                       class="form-control" />
-                  
+
                   </div>
 
                   <div class="mb-3">
                     <label class="form-label">Email</label>
                     <input
+                      id='emailinput'
                       value={resident.email}
                       onChange={(val) => {
-                        
+                        if (val.target.value != "") {
+                          document.getElementById('emailinput').style.border = '1px solid #dee2e6'
+                        }
+                        else {
+                          document.getElementById('emailinput').style.border = '1px solid red'
+                        }
                         setResident({
                           ...resident, ...{
                             email: val.target.value
                           }
                         })
-                      
+
                       }}
                       class="form-control" />
-                  
+
                   </div>
 
                   <div class="mb-3 d-flex flex-column">
                     <label class="form-label">Birthday</label>
-                    <DatePicker 
+                    <DatePicker
+                      id='bdayinput'
                       className="w-100 form-control"
                       onKeyDown={(e) => {
                         e.preventDefault();
-                     }}
-                      selected={startDate} onChange={(date) => setStartDate(date)} />
+                      }}
+                      selected={startDate} onChange={(date) => {
+                        if (val.target.value != "") {
+                          document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+                        }
+                        else {
+                          document.getElementById('bdayinput').style.border = '1px solid red'
+                        }
+                        setStartDate(date)
+                      }
+                      } />
                   </div>
 
                   <div class="mb-3">
                     <label class="form-label">Phone number</label>
                     <input
+                      id='phoneinput'
                       value={resident.cell_number}
                       onChange={(val) => {
-                        
+
+                        if (val.target.value != "") {
+                          document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
+                        }
+                        else {
+                          document.getElementById('phoneinput').style.border = '1px solid red'
+                        }
+
                         setResident({
                           ...resident, ...{
                             cell_number: val.target.value
                           }
                         })
-                      
+
                       }}
                       class="form-control" />
-                  
+
                   </div>
-                      
+
+
+
+                  <div id='genderinput' class="mb-3">
+                    <label class="form-label">Gender</label>
+                    <div class="form-check">
+                      <input
+                        onChange={() => {
+
+                         
+                            document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+                          
+                          
+                          setResident({
+                            ...resident, ...{
+                              male_female: 0
+                            }
+                          })
+                        }}
+                        class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        Male
+                      </label>
+                    </div>
+
+                    <div class="form-check">
+                      <input
+                        onChange={() => {
+
+                    
+                            document.getElementById('genderinput').style.border = '0px solid #dee2e6'
+                         
+                          setResident({
+                            ...resident, ...{
+                              male_female: 1
+                            }
+                          })
+                        }}
+                        class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        Female
+                      </label>
+                    </div>
+
+                  </div>
+
+
                   <div class="mb-3">
-                    <label class="form-label">Civil status</label>
-                    <input
-                      value={resident.civil_status_id}
-                      onChange={(val) => {
-                        
+                    <label class="form-label">Civil Status</label>
+
+                    <select
+                      id='civilinput'
+                      onChange={(v) => {
+                         document.getElementById('civilinput').style.border = '0px solid #dee2e6'
                         setResident({
                           ...resident, ...{
-                            civil_status_id: val.target.value
+                            civil_status_id: v.target.value
                           }
                         })
-                      
                       }}
-                      class="form-control" />
-                  
+                      class="form-select" aria-label="Default select example">
+                      <option selected>Civil status</option>
+                      <option value="0">Single</option>
+                      <option value="1">Married</option>
+                      <option value="2">Widowed</option>
+                      <option value="3">Legally Separated</option>
+                    </select>
+
                   </div>
+
+
 
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" data-bs-dismiss="modal" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
+                  <button type="button" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
             </div>
