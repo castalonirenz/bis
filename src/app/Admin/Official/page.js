@@ -303,6 +303,16 @@ export default function Official() {
 
 
     dispatch(addDocumentTypeApi(merge))
+
+    setTimeout(() => {
+      setServices({
+        service: '',
+        description: ''
+      })
+
+      setCount(count + 1)
+
+    }, 3000)
   }
   useEffect(() => {
 
@@ -818,7 +828,7 @@ export default function Official() {
           </div>
 
           {/* Modal */
-
+    console.log(selectedItem)
           }
           <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -870,7 +880,7 @@ export default function Official() {
                       }}
                       class="form-control" />
                   </div>
-                  <div class="mb-3">
+                  {/* <div class="mb-3">
                     <label class="form-label">Status</label>
                     <input
                       value={selectedItem != null && selectedItem.status}
@@ -883,7 +893,7 @@ export default function Official() {
                         }
                       }}
                       class="form-control" />
-                  </div>
+                  </div> */}
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -965,7 +975,7 @@ export default function Official() {
                       }}
                       class="form-control" />
                   </div>
-                  <div class="mb-3">
+                  {/* <div class="mb-3">
                     <label class="form-label">Status</label>
                     <input
                       value={selectedSearchItem != null && selectedSearchItem.status}
@@ -978,7 +988,7 @@ export default function Official() {
                         }
                       }}
                       class="form-control" />
-                  </div>
+                  </div> */}
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -1299,7 +1309,7 @@ export default function Official() {
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                      Are you sure you want to delete this user?
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
