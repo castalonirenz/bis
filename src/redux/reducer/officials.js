@@ -73,7 +73,7 @@ export const updateOfficials = createAsyncThunk('user/updateofficial', async (da
 
 export const deleteOffialsApi = createAsyncThunk('user/deleteofficial', async (data) => {
       
-    
+    console.log('received: ', data)
   const res = await apiClient.post('/deleteBarangayOfficial', {
     user_id: data.selectedItem.user_id
   }, {
