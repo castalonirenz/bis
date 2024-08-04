@@ -33,6 +33,7 @@ export default function Official() {
 
   const [success, setSuccess] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [message,SetMessage] = useState('')
 
   const [isEdit, setIsEdit] = useState(false);
 
@@ -189,7 +190,7 @@ export default function Official() {
     dispatch(deleteOffialsApi(merge))
     setTimeout(() => {
       setCount(count + 1)
-      setSelectedItem('')
+      setSelectedItem(null)
     }, 3000)
   }
 
@@ -209,11 +210,7 @@ export default function Official() {
       setCount(count + 1)
 
       document.getElementById('selctednameadd').value = ''
-      setSelectedItem({
-        chairmanship: '',
-        position: '',
-        status: '',
-      })
+      setSelectedItem(null)
     }, 3000)
 
 
@@ -227,19 +224,48 @@ export default function Official() {
       token: token.token
     }
 
-    dispatch(addOfficials(merge))
-    setTimeout(() => {
-      setCount(count + 1)
+    const fetchData = async () => {
 
-      document.getElementById('selctednameadd').value = ''
-      setSelectedSearchItem({
-        chairmanship: '',
-        position: '',
-        status: '',
-      })
-    }, 3000)
+    
+
+      try {
+        const result = await dispatch(addOfficials(merge)).unwrap();
+
+        // Handle success, e.g., navigate to another page
+        document.getElementById('selctednameadd').value = ''
+        setSelectedSearchItem({
+          chairmanship: '',
+          position: '',
+          status: '',
+        })
+
+        setSelectedSearchItem(null)
+
+        setCount(count + 1)
+        SetMessage('Successfully added a barangay official')
+        setShowSuccess(true)
+        setSuccess(true)
+
+        if(result.success){
+          setShowSuccess(true)
+          setSuccess(true)
+        }
+        else{
+          setShowSuccess(true)
+          setSuccess(false)
+        }
+        
 
 
+      } catch (error) {
+        
+        // Handle error, e.g., show an error message
+      }
+    };
+
+    fetchData();
+
+    
   }
 
 
@@ -314,7 +340,7 @@ export default function Official() {
 
         // Handle success, e.g., navigate to another page
 
-        
+        SetMessage('Successfully added a barangay service')
         setServices({
           service: '',
           description: ''
@@ -1374,7 +1400,7 @@ export default function Official() {
                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                              </div>
                              <div class="modal-body">
-                              {success ? "Successfully added" : "Something went wrong."}
+                              {success ? message : "Something went wrong."}
                              </div>
                              <div class="modal-footer">
                                <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>
