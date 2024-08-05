@@ -980,7 +980,7 @@ export default function Official() {
                   <div >
                     <button
                       data-bs-toggle="modal" data-bs-target="#addBarangayServices"
-                      className="primary bg-yellow p-2 rounded"
+                      className="primary bg-yellow p-2 rounded border-0"
                     >
                       <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i>
                       <span className="fw-bold">Document Type</span>
