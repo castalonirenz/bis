@@ -16,7 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from "react-quill";
-import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi } from "@/redux/reducer/document";
+import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDocumentTypesApi } from "@/redux/reducer/document";
 
 
 
@@ -32,7 +32,7 @@ export default function Official() {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
 
-  console.log(dashboard, "--> AWW")
+  
 
   const [success, setSuccess] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
@@ -93,6 +93,7 @@ export default function Official() {
     service: '',
   })
   const [isCert, setIsCert] = useState(1)
+  const [docId, setDocId] = useState('')
 
   const [serviceDesc, setServiceDesc] = useState('')
 
@@ -430,14 +431,16 @@ export default function Official() {
       data: {
         description: serviceDesc,
         service: sss.service,
-        isCertificate: isCert
+        isCertificate: isCert,
+        doc_id: docId
       },
       token: token.token
     }
 
     setSSS({
       service: '',
-      isCertificate: 1
+      isCertificate: 1,
+      doc_id: ''
     })
 
     setServiceDesc('')
@@ -447,7 +450,15 @@ export default function Official() {
 
 
       try {
-        const result = await dispatch(addDocumentTypeApi(merge)).unwrap();
+        let result =''
+
+        if(isEdit){
+          result = await dispatch(updateDocumentTypesApi(merge)).unwrap();
+        }
+
+        else{
+          await dispatch(addDocumentTypeApi(merge)).unwrap();
+        }
 
         // Handle success, e.g., navigate to another page
 
@@ -1286,7 +1297,8 @@ export default function Official() {
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                                   onClick={() => {
-
+                                    
+                                    setDocId(i.id)
                                     setSSS({
                                       ...sss, ...{
                                         service: i.service,
