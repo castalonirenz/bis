@@ -442,10 +442,12 @@ export default function Official() {
       isCertificate: 1,
       doc_id: ''
     })
+    
 
     setServiceDesc('')
-
+    console.log(isEdit, "--> IS EDIT")
     const fetchData = async () => {
+
 
 
 
@@ -454,30 +456,53 @@ export default function Official() {
 
         if(isEdit){
           result = await dispatch(updateDocumentTypesApi(merge)).unwrap();
+
+          SetMessage('Successfully updated a barangay service')
+
+          setCount(count + 1)
+  
+          setIsEdit(false)
+          setShowSuccess(true)
+          setSuccess(true)
+  
+          if (result.success) {
+            setShowSuccess(true)
+            setSuccess(true)
+          }
+          else {
+            setShowSuccess(true)
+            setSuccess(false)
+          }
+  
         }
 
         else{
-          await dispatch(addDocumentTypeApi(merge)).unwrap();
+         result = await dispatch(addDocumentTypeApi(merge)).unwrap();
+
+
+
+          SetMessage('Successfully added a barangay service')
+
+          setCount(count + 1)
+  
+          setIsEdit(false)
+          setShowSuccess(true)
+          setSuccess(true)
+  
+          if (result.success) {
+            setShowSuccess(true)
+            setSuccess(true)
+          }
+          else {
+            setShowSuccess(true)
+            setSuccess(false)
+          }
+  
         }
 
         // Handle success, e.g., navigate to another page
 
-        SetMessage('Successfully added a barangay service')
-
-        setCount(count + 1)
-
-        setShowSuccess(true)
-        setSuccess(true)
-
-        if (result.success) {
-          setShowSuccess(true)
-          setSuccess(true)
-        }
-        else {
-          setShowSuccess(true)
-          setSuccess(false)
-        }
-
+   
 
 
       } catch (error) {
