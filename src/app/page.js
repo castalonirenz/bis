@@ -29,7 +29,7 @@ export default function Home() {
         const result = await dispatch(loginUser(User)).unwrap();
         
       
-          router.push('/Admin/Official', { scroll: false })
+          router.push('/Admin/Official/Dashboard', { scroll: false })
       
         // Handle success, e.g., navigate to another page
       } catch (error) {
@@ -51,7 +51,7 @@ export default function Home() {
       alert("Invalid credentials, please try again.")
     }
     else if(userState.status == "succeeded"){
-     router.push('/Admin/Official', { scroll: false })
+     router.push('/Admin/Official/Dashboard', { scroll: false })
     }
    
   }, [userState.status])

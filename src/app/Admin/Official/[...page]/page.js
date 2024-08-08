@@ -166,6 +166,11 @@ export default function Official({ params }) {
       seTab(3)
     }
 
+    if(getPage == "Dashboard"){
+      setCurrentPage(getPageNumber)
+      seTab(10)
+    }
+
 
   }, [])
 
@@ -1537,7 +1542,9 @@ export default function Official({ params }) {
 
             {/* Barangay services */}
 
-            <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
+            {
+              tab != 10 &&
+              <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
               <div>
                 
                 Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
@@ -1565,6 +1572,9 @@ export default function Official({ params }) {
               </div>
 
             </div>
+            }
+
+
           </div>
 
           {/* Modal */
