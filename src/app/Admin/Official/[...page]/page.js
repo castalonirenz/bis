@@ -21,7 +21,7 @@ import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDo
 
 
 export default function Official({ params }) {
-  console.log(params.page, "--> CHECK")
+  
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
@@ -35,6 +35,8 @@ export default function Official({ params }) {
 
   //get indx 1 in url
   const [currentPage, setCurrentPage] = useState(params.page[1])
+  const [totalPage, setTotalPage] = useState(0)
+
   const [searchItemList, setSearchItemList] = useState('')
 
 
@@ -115,7 +117,7 @@ export default function Official({ params }) {
     let getPage = params.page[0]
     let getPageNumber = params.page[1]
 
-    console.log(getPage, "--> get ")
+    
 
 
     if (getPage == "Staff") {
@@ -125,6 +127,8 @@ export default function Official({ params }) {
 
 
   }, [])
+
+  
 
   useEffect(() => {
 
@@ -157,7 +161,13 @@ export default function Official({ params }) {
 
         try {
           const result = await dispatch(loadOfficials(data)).unwrap();
+          console.log("check result: ", result)
 
+          setTotalPage(result.total_pages)
+
+          if(currentPage > result.total_pages){
+            alert("Invalid url")
+          }
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -476,7 +486,7 @@ export default function Official({ params }) {
 
 
     setServiceDesc('')
-    console.log(isEdit, "--> IS EDIT")
+    
     const fetchData = async () => {
 
 
@@ -625,11 +635,28 @@ export default function Official({ params }) {
     if(k == 1){
       //next
       
-     router.replace('/Admin/Official/Staff/' + (parseInt(currentPage) + 1))
+      if(currentPage >= totalPage){
+        setCurrentPage(totalPage)
+
+      }
+      else{
+
+        //tab 0
+        router.replace('/Admin/Official/Staff/' + (parseInt(currentPage) + 1))
+      }
+   
     }
     else if(k == 0){
       //previous
-      router.replace('/Admin/Official/Staff/' + (parseInt(currentPage) - 1))
+      if(currentPage >= 2)
+      {
+          //tab 0
+        router.replace('/Admin/Official/Staff/' + (parseInt(currentPage) - 1))
+      }
+      else{
+        setCurrentPage(1)
+      }
+      
       
     }
 
@@ -1054,7 +1081,7 @@ export default function Official({ params }) {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      officials.officials.list.map((i, k) => {
+                      officials.officials.list.data.map((i, k) => {
 
 
                         return (
@@ -1433,7 +1460,8 @@ export default function Official({ params }) {
 
             <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
               <div>
-                Current
+                
+                Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
               </div>
 
               <div className="d-flex align-items-center justify-content-center">
