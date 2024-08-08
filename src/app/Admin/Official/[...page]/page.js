@@ -21,7 +21,7 @@ import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDo
 
 
 export default function Official({ params }) {
-  
+    
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
@@ -40,6 +40,43 @@ export default function Official({ params }) {
   const [searchItemList, setSearchItemList] = useState('')
 
 
+  const handleKeyDown = (event) => {
+
+
+    let slug = ''
+
+
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Optional: Prevents the default action if needed
+      let data = {
+        token: token.token,
+        currentPage,
+        searchItemList
+      }
+  
+      if(tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
+      if(tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
+      const fetchData = async () => {
+
+        try {
+          const result = await slug
+          
+
+          setTotalPage(result.total_pages)
+
+      
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+      };
+
+      fetchData();
+      
+      // You can perform any action here, like submitting a form or calling a function
+    }
+  };
 
 
   const [success, setSuccess] = useState(false)
@@ -124,6 +161,10 @@ export default function Official({ params }) {
       setCurrentPage(getPageNumber)
       seTab(0)
     }
+    if(getPage == "Services"){
+      setCurrentPage(getPageNumber)
+      seTab(3)
+    }
 
 
   }, [])
@@ -131,6 +172,12 @@ export default function Official({ params }) {
   
 
   useEffect(() => {
+
+    let data = {
+      token: token.token,
+      currentPage,
+      searchItemList
+    }
 
     if (tab == 10) {
       const fetchData = async () => {
@@ -150,18 +197,14 @@ export default function Official({ params }) {
 
     if (tab == 0) {
 
-      let data = {
-        token: token.token,
-        currentPage,
-        searchItemList
-      }
+    
 
 
       const fetchData = async () => {
 
         try {
           const result = await dispatch(loadOfficials(data)).unwrap();
-          console.log("check result: ", result)
+          
 
           setTotalPage(result.total_pages)
 
@@ -201,8 +244,14 @@ export default function Official({ params }) {
       const fetchData = async () => {
 
         try {
-          const result = await dispatch(getDocumentTypeApi(token.token)).unwrap();
+          const result = await dispatch(getDocumentTypeApi(data)).unwrap();
+          
+          setTotalPage(result.total_pages)
 
+          if(currentPage > result.total_pages){
+            alert("Invalid url")
+          }
+          
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -624,13 +673,34 @@ export default function Official({ params }) {
   }, [])
 
 
+  const search = () => {
+
+  }
 
   const changeTab = (v) => {
-    seTab(v)
+    
+
+    
+    if(v == 0) {
+      router.replace('/Admin/Official/Staff/1')
+    }
+    if(v == 3){
+      router.replace('/Admin/Official/Services/1')
+    }
+
+      seTab(v)
   }
 
 
   const paginate = (v, k ) => {
+
+    let slug = ''
+    
+
+    if(tab == 0) slug = "Staff"
+    if(tab == 3) slug = "Services"
+
+    
 
     if(k == 1){
       //next
@@ -642,7 +712,7 @@ export default function Official({ params }) {
       else{
 
         //tab 0
-        router.replace('/Admin/Official/Staff/' + (parseInt(currentPage) + 1))
+        router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) + 1))
       }
    
     }
@@ -651,7 +721,7 @@ export default function Official({ params }) {
       if(currentPage >= 2)
       {
           //tab 0
-        router.replace('/Admin/Official/Staff/' + (parseInt(currentPage) - 1))
+        router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) - 1))
       }
       else{
         setCurrentPage(1)
@@ -1035,7 +1105,10 @@ export default function Official({ params }) {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
+                    <input
+                    onKeyDown={handleKeyDown}
+                    onChange={(v) => setSearchItemList(v.target.value)}  
+                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
                   </div>
 
                   {
@@ -1175,7 +1248,10 @@ export default function Official({ params }) {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Username" />
+                    <input 
+                       onKeyDown={handleKeyDown}
+                       onChange={(v) => setSearchItemList(v.target.value)}  
+                      type="email" className="form-control rounded ms-2" placeholder="Title" />
                   </div>
 
                   <div >
@@ -1322,7 +1398,10 @@ export default function Official({ params }) {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                    <input 
+                        onKeyDown={handleKeyDown}
+                        onChange={(v) => setSearchItemList(v.target.value)}  
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
                   <div >
@@ -1363,7 +1442,7 @@ export default function Official({ params }) {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      documentList.list.map((i, k) => {
+                      documentList.list.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
