@@ -1,16 +1,22 @@
 'use client'
 import Button from "@/components/Button";
-import { generateOTPapi, otpLoginApi } from "@/redux/reducer/resident";
+import { createAppointmentApi, generateOTPapi, otpLoginApi } from "@/redux/reducer/resident";
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
-import { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useDropzone } from 'react-dropzone'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import 'react-quill/dist/quill.snow.css';
+import { getDocumentTypeApi } from "@/redux/reducer/document";
+import moment from "moment";
 export default function CreateAppointment() {
+
+    const minDate = new Date();
+  minDate.setFullYear(minDate.getFullYear() - 100); 
 
     const dispatch = useDispatch()
     const router = useRouter()
@@ -25,12 +31,16 @@ export default function CreateAppointment() {
     // afeil@example.net
     // 1992-11-03
     const [files, setFiles] = useState([]);
+    const [selectedFileForViewing, setSelectedFileForViewing] = useState('')
+    const [selectedDate, setSelectedDate] = useState('')
+    const [selectedDoc, setSelectedDoc] = useState(0);
+    const documentList = useSelector(state => state.document.list.data)
 
     const onDrop = useCallback((acceptedFiles) => {
         // Convert files to base64 and update state
         const fileReaders = acceptedFiles.map(file => {
             const reader = new FileReader();
-    
+
             return new Promise((resolve, reject) => {
                 reader.onloadend = () => {
                     resolve({
@@ -42,7 +52,7 @@ export default function CreateAppointment() {
                 reader.readAsDataURL(file);
             });
         });
-    
+
         Promise.all(fileReaders)
             .then(filesWithBase64 => {
                 // Update state with new files
@@ -50,14 +60,46 @@ export default function CreateAppointment() {
             })
             .catch(error => {
                 // Handle error
-                console.error("Error reading files: ", error);
+
             });
     }, []);
 
-      console.log('final', files)
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop,    accept: {
-        'image/*': [] // Accept only image files
-      } })
+
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop, accept: {
+            'image/*': [] // Accept only image files
+        }
+    })
+
+
+    const getDocumentList = async () => {
+        let data = {
+            token: accessToken,
+            currentPage: 1,
+            searchItemList: ''
+        }
+
+
+
+
+        try {
+            const result = await dispatch(getDocumentTypeApi(data)).unwrap();
+
+
+
+
+            // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+            // Handle error, e.g., show an error message
+        }
+
+
+        //   fetchData();
+
+    }
+
 
 
     const submit = () => {
@@ -71,7 +113,7 @@ export default function CreateAppointment() {
             try {
                 const result = await dispatch(generateOTPapi(merge)).unwrap();
 
-                
+
                 // Handle success, e.g., navigate to another page
                 setSuccess(result.success)
             } catch (error) {
@@ -84,23 +126,32 @@ export default function CreateAppointment() {
 
     }
 
+    useEffect(() => {
+
+        if (accessToken != "") {
+            getDocumentList()
+        }
+    }, [accessToken])
+
+
     const submitOTP = () => {
-        
+
         let merge = {
             email,
             otp
         }
 
         const fetchData = async () => {
-            
+
             try {
 
                 const result = await dispatch(otpLoginApi(merge)).unwrap();
 
-                
+
                 // Handle success, e.g., navigate to another page
                 setSuccessOTP(result.success)
                 setAccessToken(result.access_token)
+
             } catch (error) {
 
                 // Handle error, e.g., show an error message
@@ -110,14 +161,38 @@ export default function CreateAppointment() {
         fetchData();
     }
 
-    const handleFileChange = (event) => {
-        const selectedFile = event.target.files[0];
-        
-        if (selectedFile) {
-            setFiles(selectedFile);
-        }
-    };
+   const createAppoint = async () => {
 
+        let base64List = []
+
+        files.map((i, k) => {
+            base64List.push(i.base64)
+        })
+
+            let data = {
+                id: selectedDoc,
+                selectedDate: moment(selectedDate).format('YYYY-MM-DD'),
+                file_upload: base64List,
+                token: accessToken
+            }
+
+    
+
+    try {
+
+        const result = await dispatch(createAppointmentApi(data)).unwrap();
+
+        
+
+        // Handle success, e.g., navigate to another page
+
+
+    } catch (error) {
+
+        // Handle error, e.g., show an error message
+    }
+
+   }
 
     return (
         <main >
@@ -129,7 +204,7 @@ export default function CreateAppointment() {
                         Scheduling Form
                     </h4>
 
-                    {/* {
+                    {
                         !success &&
 
                         <div>
@@ -154,27 +229,59 @@ export default function CreateAppointment() {
                         </div>
                     }
                     {
-                        success && 
+                        success && !successOTP &&
 
                         <div className="d-flex flex-column mt-5">
-                        <span className="">OTP</span>
-                        <input
-                            // onKeyDown={handleKeyDown}
-                            onChange={(v) => setOTP(v.target.value)}
-                            value={otp}
-                            type="email" className="form-control rounded mt-3" placeholder="Enter otp received in your email address" />
-                    </div>
-                    } */}
+                            <span className="">OTP</span>
+                            <input
+                                // onKeyDown={handleKeyDown}
+                                onChange={(v) => setOTP(v.target.value)}
+                                value={otp}
+                                type="email" className="form-control rounded mt-3" placeholder="Enter otp received in your email address" />
+                        </div>
+                    }
 
                     {
-                        !success &&
+                        success && successOTP &&
                         <div>
-                            <DatePicker
-                                showMonthDropdown={true}
-                                showYearDropdown={true}
-                            />
 
-                            <div {...getRootProps()} className="mt-5" style={{borderStyle:"dotted"}}>
+
+                            <div className="d-flex flex-column" >
+                                <label>Select date</label>
+
+                                <Calendar 
+                                    onChange={(v) => {
+                                        
+                                        setSelectedDate(moment(v).format("YYYY-MM-DD"))
+                                     
+                                    }}
+                                />
+                            </div>
+
+
+
+                            <div className="mt-3">
+                            <label>Select service</label>
+
+                                <select
+
+                                    onChange={(v) => {
+                                        setSelectedDoc(v.target.value)
+                                    }}
+                                    class="form-select" aria-label="Default select example">
+
+                                    {documentList.map((i, k) => {
+
+                                        return (
+                                            <option value={i.id} key={k}>{i.service}</option>
+                                        )
+
+                                    })}
+                                </select>
+                            </div>
+
+
+                            <div {...getRootProps()} className="mt-5" style={{ borderStyle: "dotted" }}>
                                 <input {...getInputProps()} />
                                 {
                                     isDragActive ?
@@ -182,30 +289,35 @@ export default function CreateAppointment() {
                                         <p>Drag 'n' drop some files here, or click to select files</p>
                                 }
 
-                               
+
                             </div>
 
                             <div className="mt-3">
-                                    {
-                                        files.length != 0 && files.map((i, k) => {
-                                            return(
-                                                <div>
-                                                        <span>{i.fileName}</span>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                 </div>  
+                                {
+                                    files.length != 0 && files.map((i, k) => {
+                                        return (
+                                            <div>
+                                                <span>{i.fileName}</span>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>
                     }
 
                     <button onClick={() => {
+
+                        
 
                         if (!success && !successOTP) {
                             submit()
                         }
                         else if (success && !successOTP) {
                             submitOTP()
+                        }
+                        else if(success && successOTP){
+                            createAppoint()
                         }
 
                     }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Proceed</button>
