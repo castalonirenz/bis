@@ -16,25 +16,33 @@ import moment from "moment";
 export default function CreateAppointment() {
 
     const minDate = new Date();
-  minDate.setFullYear(minDate.getFullYear() - 100); 
+    minDate.setFullYear(minDate.getFullYear() - 100);
 
     const dispatch = useDispatch()
     const router = useRouter()
 
-    const [birthday, setBirthday] = useState('1992-11-03')
-    const [email, setEmail] = useState('afeil@example.net')
+    // const [birthday, setBirthday] = useState('1992-11-03')
+    // const [email, setEmail] = useState('afeil@example.net')
+
+    const [birthday, setBirthday] = useState('')
+    const [email, setEmail] = useState('')
+
     const [otp, setOTP] = useState('')
     const [success, setSuccess] = useState(false)
     const [successOTP, setSuccessOTP] = useState(false)
 
     const [accessToken, setAccessToken] = useState('')
-    // afeil@example.net
-    // 1992-11-03
     const [files, setFiles] = useState([]);
     const [selectedFileForViewing, setSelectedFileForViewing] = useState('')
     const [selectedDate, setSelectedDate] = useState('')
     const [selectedDoc, setSelectedDoc] = useState(0);
     const documentList = useSelector(state => state.document.list.data)
+
+    const [showSuccess, setShowSuccess] = useState(false)
+    const [message, setMessage] = useState('')
+
+
+
 
     const onDrop = useCallback((acceptedFiles) => {
         // Convert files to base64 and update state
@@ -113,9 +121,19 @@ export default function CreateAppointment() {
             try {
                 const result = await dispatch(generateOTPapi(merge)).unwrap();
 
+                
 
+
+
+                if (result.error) {
+                    setShowSuccess(true)
+                    setMessage(result.error_msg)
+                }
+                else {
+                    setSuccess(result.success)
+                }
                 // Handle success, e.g., navigate to another page
-                setSuccess(result.success)
+
             } catch (error) {
 
                 // Handle error, e.g., show an error message
@@ -161,7 +179,7 @@ export default function CreateAppointment() {
         fetchData();
     }
 
-   const createAppoint = async () => {
+    const createAppoint = async () => {
 
         let base64List = []
 
@@ -169,30 +187,52 @@ export default function CreateAppointment() {
             base64List.push(i.base64)
         })
 
-            let data = {
-                id: selectedDoc,
-                selectedDate: moment(selectedDate).format('YYYY-MM-DD'),
-                file_upload: base64List,
-                token: accessToken
-            }
-
-    
-
-    try {
-
-        const result = await dispatch(createAppointmentApi(data)).unwrap();
-
-        
-
-        // Handle success, e.g., navigate to another page
+        let data = {
+            id: selectedDoc,
+            selectedDate: moment(selectedDate).format('YYYY-MM-DD'),
+            file_upload: base64List,
+            token: accessToken
+        }
 
 
-    } catch (error) {
 
-        // Handle error, e.g., show an error message
+        try {
+
+            const result = await dispatch(createAppointmentApi(data)).unwrap();
+
+
+
+            // Handle success, e.g., navigate to another page
+
+
+        } catch (error) {
+
+            // Handle error, e.g., show an error message
+        }
+
     }
 
-   }
+
+    useEffect(() => {
+        //rotp
+        // 
+        
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+        let momentDate = moment(birthday, 'YYYY-MM-DD', true).isValid();
+
+        
+        if (emailRegex.test(email) && momentDate) {
+            document.getElementById('rotp').disabled = false
+        }
+        else{
+            document.getElementById('rotp').disabled = true
+        }
+
+    }, [email, birthday])
+
 
     return (
         <main >
@@ -249,11 +289,11 @@ export default function CreateAppointment() {
                             <div className="d-flex flex-column" >
                                 <label>Select date</label>
 
-                                <Calendar 
+                                <Calendar
                                     onChange={(v) => {
-                                        
+
                                         setSelectedDate(moment(v).format("YYYY-MM-DD"))
-                                     
+
                                     }}
                                 />
                             </div>
@@ -261,7 +301,7 @@ export default function CreateAppointment() {
 
 
                             <div className="mt-3">
-                            <label>Select service</label>
+                                <label>Select service</label>
 
                                 <select
 
@@ -306,25 +346,59 @@ export default function CreateAppointment() {
                         </div>
                     }
 
-                    <button onClick={() => {
+                    {
+                        !success && !successOTP &&
+                        <button
+                            id='rotp'
+                            disabled={true}
+                            onClick={() => {
+                                submit()
+                            }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Request OTP</button>
 
-                        
 
-                        if (!success && !successOTP) {
-                            submit()
-                        }
-                        else if (success && !successOTP) {
-                            submitOTP()
-                        }
-                        else if(success && successOTP){
+                    }
+
+                    {
+                        success && !successOTP &&
+                        <button
+                            onClick={() => {
+                                submitOTP()
+                            }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Verify OTP</button>
+
+
+                    }
+
+                    {
+                        success && successOTP &&
+                        <button onClick={() => {
                             createAppoint()
-                        }
+                        }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Create appointment</button>
 
-                    }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Proceed</button>
+
+                    }
 
                 </div>
 
+                {
+                    showSuccess &&
+                    <div id="statusModal " class="modal fade show d-block">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    {/* <h5 class="modal-title">Delete</h5> */}
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {message}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </main>
     );
