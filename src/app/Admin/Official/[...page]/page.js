@@ -60,11 +60,14 @@ export default function Official({ params }) {
 
       if (tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
       if (tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
+
+      if(tab == 1) slug = dispatch(loadAllUsers(data)).unwrap();
       const fetchData = async () => {
 
         try {
           const result = await slug
 
+          console.log('result: ', result)
 
           setTotalPage(result.total_pages)
 
@@ -239,6 +242,8 @@ export default function Official({ params }) {
 
         try {
           const result = await dispatch(loadAllUsers(data)).unwrap();
+          
+          setTotalPage(result.total_pages)
 
           // Handle success, e.g., navigate to another page
         } catch (error) {
@@ -1223,7 +1228,7 @@ export default function Official({ params }) {
                     <input
                       onKeyDown={handleKeyDown}
                       onChange={(v) => setSearchItemList(v.target.value)}
-                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Official name" />
                   </div>
 
                   {
