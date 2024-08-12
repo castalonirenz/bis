@@ -33,6 +33,7 @@ export default function CreateAppointment() {
 
     const [accessToken, setAccessToken] = useState('')
     const [files, setFiles] = useState([]);
+    const [showImage, setShowImage] = useState(false)
     const [selectedFileForViewing, setSelectedFileForViewing] = useState('')
     const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'))
     const [selectedDoc, setSelectedDoc] = useState(0);
@@ -341,7 +342,7 @@ export default function CreateAppointment() {
                     }
 
                     {
-                        success && successOTP &&
+                        // success && successOTP &&
                         <div>
 
                             
@@ -400,7 +401,13 @@ export default function CreateAppointment() {
                                 {
                                     files.length != 0 && files.map((i, k) => {
                                         return (
-                                            <div>
+                                            <div 
+                                                onClick={() => {
+                                                    console.log(i, "--> chcek")
+                                                    setSelectedFileForViewing(i)
+                                                    setShowImage(true)
+                                                }}
+                                                >
                                                 <span>{i.fileName}</span>
                                             </div>
                                         )
@@ -462,6 +469,30 @@ export default function CreateAppointment() {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" onClick={() => setShowSuccess(false)}>Close</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+{
+                    showImage &&
+                    <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+                        <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                            <div>
+                                <h4>
+                                    {selectedFileForViewing.fileName}
+                                </h4>
+                            </div>
+                            <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+                                <div style={{height:"700px", width:"100%"}}>
+                                <img 
+                                    style={{position:"relative", height:"700px", width:"100%"}}
+                                    src={selectedFileForViewing.base64} alt="Base64 Image" />
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
 
                                 </div>
                             </div>
