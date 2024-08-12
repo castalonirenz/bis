@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
+import { addResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -21,7 +21,7 @@ import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDo
 
 
 export default function Official({ params }) {
-    
+
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
@@ -53,18 +53,18 @@ export default function Official({ params }) {
         currentPage,
         searchItemList
       }
-  
-      if(tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
-      if(tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
+
+      if (tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
+      if (tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
       const fetchData = async () => {
 
         try {
           const result = await slug
-          
+
 
           setTotalPage(result.total_pages)
 
-      
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -73,7 +73,7 @@ export default function Official({ params }) {
       };
 
       fetchData();
-      
+
       // You can perform any action here, like submitting a form or calling a function
     }
   };
@@ -154,19 +154,19 @@ export default function Official({ params }) {
     let getPage = params.page[0]
     let getPageNumber = params.page[1]
 
-    
+
 
 
     if (getPage == "Staff") {
       setCurrentPage(getPageNumber)
       seTab(0)
     }
-    if(getPage == "Services"){
+    if (getPage == "Services") {
       setCurrentPage(getPageNumber)
       seTab(3)
     }
 
-    if(getPage == "Dashboard"){
+    if (getPage == "Dashboard") {
       setCurrentPage(getPageNumber)
       seTab(10)
     }
@@ -174,7 +174,7 @@ export default function Official({ params }) {
 
   }, [])
 
-  
+
 
   useEffect(() => {
 
@@ -202,18 +202,18 @@ export default function Official({ params }) {
 
     if (tab == 0) {
 
-    
+
 
 
       const fetchData = async () => {
 
         try {
           const result = await dispatch(loadOfficials(data)).unwrap();
-          
+
 
           setTotalPage(result.total_pages)
 
-          if(currentPage > result.total_pages){
+          if (currentPage > result.total_pages) {
             alert("Invalid url")
           }
           // Handle success, e.g., navigate to another page
@@ -250,13 +250,13 @@ export default function Official({ params }) {
 
         try {
           const result = await dispatch(getDocumentTypeApi(data)).unwrap();
-          
+
           setTotalPage(result.total_pages)
 
-          if(currentPage > result.total_pages){
+          if (currentPage > result.total_pages) {
             alert("Invalid url")
           }
-          
+
           // Handle success, e.g., navigate to another page
         } catch (error) {
 
@@ -520,6 +520,28 @@ export default function Official({ params }) {
 
 
   }
+
+  const deleteResident = async () => {
+    // deleteResidentInformationApi
+
+    let merge = {
+      id: resident.id,
+
+      token: token.token
+    }
+
+    console.log('di pumasok??', merge)
+
+    try {
+      const result = await dispatch(deleteResidentInformationApi(merge)).unwrap();
+      console.log("RESULT: ", result)
+    }
+    catch (error) {
+
+    }
+  }
+
+
   const addDocumentType = () => {
 
     let merge = {
@@ -540,7 +562,7 @@ export default function Official({ params }) {
 
 
     setServiceDesc('')
-    
+
     const fetchData = async () => {
 
 
@@ -683,59 +705,59 @@ export default function Official({ params }) {
   }
 
   const changeTab = (v) => {
-    
 
-    
-    if(v == 0) {
+
+
+    if (v == 0) {
       router.replace('/Admin/Official/Staff/1')
     }
-    if(v == 3){
+    if (v == 3) {
       router.replace('/Admin/Official/Services/1')
     }
 
-      seTab(v)
+    seTab(v)
   }
 
 
-  const paginate = (v, k ) => {
+  const paginate = (v, k) => {
 
     let slug = ''
-    
 
-    if(tab == 0) slug = "Staff"
-    if(tab == 3) slug = "Services"
 
-    
+    if (tab == 0) slug = "Staff"
+    if (tab == 3) slug = "Services"
 
-    if(k == 1){
+
+
+    if (k == 1) {
       //next
-      
-      if(currentPage >= totalPage){
+
+      if (currentPage >= totalPage) {
         setCurrentPage(totalPage)
 
       }
-      else{
+      else {
 
         //tab 0
         router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) + 1))
       }
-   
+
     }
-    else if(k == 0){
+    else if (k == 0) {
       //previous
-      if(currentPage >= 2)
-      {
-          //tab 0
+      if (currentPage >= 2) {
+        //tab 0
         router.replace(`/Admin/Official/${slug}/` + (parseInt(currentPage) - 1))
       }
-      else{
+      else {
         setCurrentPage(1)
       }
-      
-      
+
+
     }
 
   }
+
 
 
 
@@ -1111,9 +1133,9 @@ export default function Official({ params }) {
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
                     <input
-                    onKeyDown={handleKeyDown}
-                    onChange={(v) => setSearchItemList(v.target.value)}  
-                    type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" placeholder="Offial name" />
                   </div>
 
                   {
@@ -1158,7 +1180,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-                    
+
                     {
                       officials.officials.list.length != 0 && officials.officials.list.data.map((i, k) => {
 
@@ -1254,9 +1276,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input 
-                       onKeyDown={handleKeyDown}
-                       onChange={(v) => setSearchItemList(v.target.value)}  
+                    <input
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}
                       type="email" className="form-control rounded ms-2" placeholder="Title" />
                   </div>
 
@@ -1362,6 +1384,7 @@ export default function Official({ params }) {
 
                                   onClick={() => {
 
+                                    console.log(i, "--> WHAT")
                                     setSelectedItem(i)
                                     setResident(i)
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
@@ -1404,9 +1427,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex align-items-center">
                     <span className="f-white">Search:</span>
-                    <input 
-                        onKeyDown={handleKeyDown}
-                        onChange={(v) => setSearchItemList(v.target.value)}  
+                    <input
+                      onKeyDown={handleKeyDown}
+                      onChange={(v) => setSearchItemList(v.target.value)}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
                   </div>
 
@@ -1546,33 +1569,33 @@ export default function Official({ params }) {
             {
               tab != 10 &&
               <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
-              <div>
-                
-                Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
+                <div>
+
+                  Showing <span className="fw-bold">{currentPage}</span> of <span class="fw-bold">{totalPage}</span>
+                </div>
+
+                <div className="d-flex align-items-center justify-content-center">
+
+                  <div
+                    onClick={() => paginate(null, 0)}
+                    className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{ width: "70px" }}>
+                    Prev
+                  </div>
+
+                  <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{ height: "50px", width: "50px", borderRadius: "25px" }}>
+                    1
+                  </div>
+
+
+                  <div
+                    onClick={() => paginate(null, 1)}
+                    className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{ width: "70px" }}>
+                    Next
+                  </div>
+
+                </div>
+
               </div>
-
-              <div className="d-flex align-items-center justify-content-center">
-
-              <div 
-                onClick={() => paginate(null, 0)}
-                className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{width: "70px"}}>
-                  Prev
-                </div>
-
-                <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{height: "50px", width:"50px", borderRadius: "25px"}}>
-                  1
-                </div>
-
-
-                <div 
-                   onClick={() => paginate(null, 1)}
-                  className="bg-yellow rounded p-2 f-white d-flex align-items-center justify-content-center" style={{width: "70px"}}>
-                  Next
-                </div>
-
-              </div>
-
-            </div>
             }
 
 
@@ -2098,7 +2121,7 @@ export default function Official({ params }) {
 
 
           {/* Confirm delete modal */}
-          { }
+          {console.log(tab)}
 
           <div id="deleteConfirmModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
@@ -2114,6 +2137,7 @@ export default function Official({ params }) {
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                   <button data-bs-dismiss="modal" onClick={() => {
 
+                    tab == 1 && deleteResident()
                     tab == 0 && deleteOffials()
                     tab == 3 && deleteDocumentType()
                   }} type="button" class="btn btn-primary bg-green">Yes</button>
