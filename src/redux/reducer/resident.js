@@ -63,7 +63,7 @@ export const editResidentApi = createAsyncThunk('user/changeResidentInformation'
 // deleteResidentInformation
 
 export const deleteResidentInformationApi = createAsyncThunk('user/deleteResidentInformation', async (data) => {
-  console.log('received', data)
+  
 
   const res = await apiClient.post('/deleteResidentInformation', {
       user_id: data.id
@@ -129,7 +129,7 @@ export const otpLoginApi = createAsyncThunk('user/otpLogin', async (data) => {
 
 export const createAppointmentApi = createAsyncThunk('user/createAppointment', async (data) => {
 
-  console.log('received', data)
+  
 
   const res = await apiClient.post('/createAppointment', {
     document_type_id: data.id,

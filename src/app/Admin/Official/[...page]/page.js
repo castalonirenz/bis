@@ -512,6 +512,67 @@ export default function Official({ params }) {
         token: token.token
       }
 
+      if (isEdit) {
+        try {
+          const result = await dispatch(editResidentApi(merge)).unwrap();
+
+          if (result.success) {
+            setSuccess(true)
+            setShowSuccess(true)
+            SetMessage(`Resident ${resident.first_name} information has been updated`)
+            setResident({
+              first_name: '',
+              middle_name: '',
+              last_name: '',
+              email: '',
+              pass: '',
+              birthday: '',
+              cell_number: '',
+              civil_status_id: '',
+              male_female: ''
+            })
+            setCount(count + 1)
+          }
+          else{
+            setSuccess(false)
+            setShowSuccess(true)
+          }
+        }
+        catch (error) {
+
+        }
+      }
+      else {
+        try {
+          const result = await dispatch(addResidentApi(merge)).unwrap();
+
+          if (result.success) {
+            setSuccess(true)
+            setShowSuccess(true)
+            SetMessage(`Resident ${resident.first_name} information has been added`)
+            setResident({
+              first_name: '',
+              middle_name: '',
+              last_name: '',
+              email: '',
+              pass: '',
+              birthday: '',
+              cell_number: '',
+              civil_status_id: '',
+              male_female: ''
+            })
+
+            setCount(count + 1)
+          }
+          else{
+            setSuccess(false)
+            setShowSuccess(true)
+          }
+        }
+        catch (error) {
+
+        }
+      }
 
       isEdit ? dispatch(editResidentApi(merge)) : dispatch(addResidentApi(merge))
 
@@ -530,11 +591,24 @@ export default function Official({ params }) {
       token: token.token
     }
 
-    console.log('di pumasok??', merge)
+
 
     try {
       const result = await dispatch(deleteResidentInformationApi(merge)).unwrap();
-      console.log("RESULT: ", result)
+
+
+      if (result.success == true) {
+        console.log("SUCCESS: ", result.success)
+        setShowSuccess(true)
+        setSuccess(true)
+        SetMessage(`Resident ${resident.first_name} has been deleted.`)
+        setCount(count + 1)
+      }
+      else {
+
+        setShowSuccess(true)
+        SetMessage('Something went wrong!!')
+      }
     }
     catch (error) {
 
@@ -1326,7 +1400,7 @@ export default function Official({ params }) {
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
                     {
-                      alluser.list.map((i, k) => {
+                      alluser.list.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
@@ -1384,7 +1458,7 @@ export default function Official({ params }) {
 
                                   onClick={() => {
 
-                                    console.log(i, "--> WHAT")
+
                                     setSelectedItem(i)
                                     setResident(i)
                                     document.getElementById(k + i.full_name + "button").classList.add('d-none')
@@ -2003,7 +2077,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-footer">
                   <button type="button" onClick={() => { }} class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
+                  <button data-bs-dismiss="modal" type="button" onClick={() => addResident()} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
             </div>
@@ -2121,7 +2195,7 @@ export default function Official({ params }) {
 
 
           {/* Confirm delete modal */}
-          {console.log(tab)}
+          { }
 
           <div id="deleteConfirmModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
