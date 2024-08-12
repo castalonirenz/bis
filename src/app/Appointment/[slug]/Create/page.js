@@ -113,7 +113,7 @@ export default function CreateAppointment() {
 
 
     const submit = () => {
-        
+
         let merge = {
             email,
             birthday
@@ -164,20 +164,20 @@ export default function CreateAppointment() {
 
                 const result = await dispatch(otpLoginApi(merge)).unwrap();
 
-                
+
                 // Handle success, e.g., navigate to another page
 
-                if(result.success){
+                if (result.success) {
                     setSuccessOTP(result.success)
                     setAccessToken(result.access_token)
                     setIsButtonDisabled(true)
                 }
-                else{
+                else {
                     setShowSuccess(true)
                     setMessage(result.error_msg)
                     setIsButtonDisabled(true)
                 }
-               
+
 
             } catch (error) {
 
@@ -210,9 +210,9 @@ export default function CreateAppointment() {
             const result = await dispatch(createAppointmentApi(data)).unwrap();
 
 
-            console.log('reuslt: ', result)
+            
 
-            if(result.success){
+            if (result.success) {
                 setIsButtonDisabled(false)
                 setMessage("Successfully created an appointment please check your email for more details")
                 setShowSuccess(true)
@@ -224,7 +224,7 @@ export default function CreateAppointment() {
                 setMessage('')
 
             }
-            else{
+            else {
                 setMessage("Something went wrong.")
                 setShowSuccess(true)
             }
@@ -243,21 +243,21 @@ export default function CreateAppointment() {
     useEffect(() => {
         //rotp
         // 
-        
+
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
         let momentDate = moment(birthday, 'YYYY-MM-DD', true).isValid();
 
-        
+
         if (emailRegex.test(email) && momentDate) {
-            
+
 
             setIsButtonDisabled(false)
         }
-        else{
-            
+        else {
+
             setIsButtonDisabled(true)
         }
 
@@ -268,19 +268,19 @@ export default function CreateAppointment() {
         //rotp
 
 
-        
+
         if (selectedDate != "" && selectedDoc != "" && files.length != 0) {
-            
+
 
             setIsButtonDisabled(false)
         }
-        else{
-            
+        else {
+
             setIsButtonDisabled(true)
         }
 
     }, [selectedDate, selectedDoc, files.length])
-    
+
 
 
     return (
@@ -325,16 +325,16 @@ export default function CreateAppointment() {
                             <input
                                 // onKeyDown={handleKeyDown}
                                 onChange={(v) => {
-                                   
-                                    if(v.target.value != ""){
+
+                                    if (v.target.value != "") {
                                         setIsButtonDisabled(false)
                                     }
-                                    else{
+                                    else {
                                         setIsButtonDisabled(true)
                                     }
                                     setOTP(v.target.value)
 
-                                  
+
                                 }}
                                 value={otp}
                                 type="email" className="form-control rounded mt-3" placeholder="Enter otp received in your email address" />
@@ -342,16 +342,16 @@ export default function CreateAppointment() {
                     }
 
                     {
-                        // success && successOTP &&
+                        success && successOTP &&
                         <div>
 
-                            
+
 
                             <div className="d-flex flex-column" >
-                          
+
                                 <label>Select date</label>
                                 <label className="fw-bold mt-3">{selectedDate}</label>
-                                <Calendar   
+                                <Calendar
                                     className="mt-3"
                                     onChange={(v) => {
 
@@ -364,8 +364,8 @@ export default function CreateAppointment() {
 
 
                             <div className="mt-3">
-                                
-                           
+
+
                                 <label>Select service</label>
 
                                 <select
@@ -401,14 +401,32 @@ export default function CreateAppointment() {
                                 {
                                     files.length != 0 && files.map((i, k) => {
                                         return (
-                                            <div 
-                                                onClick={() => {
-                                                    console.log(i, "--> chcek")
-                                                    setSelectedFileForViewing(i)
-                                                    setShowImage(true)
-                                                }}
+                                            <div
+                                               className="d-flex align-items-center justify-content-between mt-2"
+                                            >
+                                                <span 
+                                                    className="pointer"
+                                                     onClick={() => {
+                                                        
+                                                        setSelectedFileForViewing(i)
+                                                        setShowImage(true)
+                                                    }}
+                                                >{i.fileName}</span>
+
+                                                <div className="pointer"
+
+                                                    onClick={() => {
+                                                        let tmpArr = files
+                                                        tmpArr.splice(k, 1);
+
+                                                        
+                                                        setFiles([...tmpArr])
+                                                    }}
+                                                    
                                                 >
-                                                <span>{i.fileName}</span>
+                                                <i class="bi bi-trash" style={{fontSize:"30px", color:"red"}}></i>
+                                                </div>
+
                                             </div>
                                         )
                                     })
@@ -433,7 +451,7 @@ export default function CreateAppointment() {
                     {
                         success && !successOTP &&
                         <button
-                        disabled={isButtonDisabled}
+                            disabled={isButtonDisabled}
                             onClick={(v) => {
                                 submitOTP()
                                 v.preventDefault()
@@ -444,11 +462,11 @@ export default function CreateAppointment() {
 
                     {
                         success && successOTP &&
-                        <button 
-                        disabled={isButtonDisabled}
-                        onClick={() => {
-                            createAppoint()
-                        }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Create appointment</button>
+                        <button
+                            disabled={isButtonDisabled}
+                            onClick={() => {
+                                createAppoint()
+                            }} type="button" class="btn btn-primary bg-green mt-5 col-12" >Create appointment</button>
 
 
                     }
@@ -476,7 +494,7 @@ export default function CreateAppointment() {
                     </div>
                 }
 
-{
+                {
                     showImage &&
                     <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
                         <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
@@ -486,10 +504,10 @@ export default function CreateAppointment() {
                                 </h4>
                             </div>
                             <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
-                                <div style={{height:"700px", width:"100%"}}>
-                                <img 
-                                    style={{position:"relative", height:"700px", width:"100%"}}
-                                    src={selectedFileForViewing.base64} alt="Base64 Image" />
+                                <div style={{ height: "700px", width: "100%" }}>
+                                    <img
+                                        style={{ position: "relative", height: "700px", width: "100%" }}
+                                        src={selectedFileForViewing.base64} alt="Base64 Image" />
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
