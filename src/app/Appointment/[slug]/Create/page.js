@@ -41,7 +41,7 @@ export default function CreateAppointment() {
 
     const [showSuccess, setShowSuccess] = useState(false)
     const [message, setMessage] = useState('')
-    
+
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const [newResident, setNewResident] = useState(null)
@@ -60,7 +60,7 @@ export default function CreateAppointment() {
         civil_status_id: '',
         male_female: '',
         current_address: '',
-        voter_status:'',
+        voter_status: '',
         file_upload: ''
     })
 
@@ -88,16 +88,16 @@ export default function CreateAppointment() {
             .then(filesWithBase64 => {
                 // Update state with new files
                 setFiles(prevFiles => [...prevFiles, ...filesWithBase64]);
-                
+
                 console.log(filesWithBase64, "--> PASOK")
-              
+
             })
             .catch(error => {
                 // Handle error
 
             });
     }, []);
-    
+
 
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -216,12 +216,20 @@ export default function CreateAppointment() {
         ) {
 
             let base64List = []
-
+            
             files.map((i, k) => {
-                base64List.push(i.base64)
+
+                base64List.push(JSON.stringify({
+                    data: i.base64,
+                    file_name: i.fileName
+                }))
             })
-    
-         
+
+            image: {
+
+            }
+
+
             let merge = {
                 resident,
                 birthday: startDate,
@@ -229,40 +237,41 @@ export default function CreateAppointment() {
                 // token: token.token
             }
 
-       
-                try {
-                    const result = await dispatch(applyNewResidentApi(merge)).unwrap();
-                    
-                    if (result.success == true) {
-                        setSuccess(true)
-                        setShowSuccess(true)
-                        setMessage(`Successfully registered, kindly wait for the approval.`)
-                        setResident({
-                            first_name: '',
-                            middle_name: '',
-                            last_name: '',
-                            email: '',
-                            pass: '',
-                            birthday: '',
-                            cell_number: '',
-                            civil_status_id: '',
-                            male_female: '',
-                            current_address:'',
-                            voter_status: 0,
-                            file_upload: ''
-                        })
-                        
-                        setNewResident(null)
-                    }
-                    else {
-                        setSuccess(false)
-                        setShowSuccess(true)
-                    }
-                }
-                catch (error) {
+            console.log(merge, "--> BEFORE?")
 
+            try {
+                const result = await dispatch(applyNewResidentApi(merge)).unwrap();
+
+                if (result.success == true) {
+                    setSuccess(true)
+                    setShowSuccess(true)
+                    setMessage(`Successfully registered, kindly wait for the approval.`)
+                    setResident({
+                        first_name: '',
+                        middle_name: '',
+                        last_name: '',
+                        email: '',
+                        pass: '',
+                        birthday: '',
+                        cell_number: '',
+                        civil_status_id: '',
+                        male_female: '',
+                        current_address: '',
+                        voter_status: 0,
+                        file_upload: ''
+                    })
+
+                    setNewResident(null)
                 }
-            
+                else {
+                    setSuccess(false)
+                    setShowSuccess(true)
+                }
+            }
+            catch (error) {
+
+            }
+
 
 
 
@@ -714,7 +723,7 @@ export default function CreateAppointment() {
 
                         </div>
 
-                        
+
 
                         <div id='voterinput' class="mb-3">
                             <label class="form-label">Voter status</label>
@@ -760,20 +769,56 @@ export default function CreateAppointment() {
                             </div>
 
                         </div>
-                    
-                                
+
+
                         <div className="mt-5 mb-5" >
-                        <label class="form-label">Supporting Documents: <span className="fw-bold" style={{color:"red"}}>Valid ID</span></label>
-                        <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
-                                    <input {...getInputProps()} />
-                                    {
-                                        isDragActive ?
-                                            <p>Drop the files here ...</p> :
-                                            <p>Drag 'n' drop some files here, or click to select files</p>
-                                    }
+                            <label class="form-label">Supporting Documents: <span className="fw-bold" style={{ color: "red" }}>Valid ID</span></label>
+                            <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
+                                <input {...getInputProps()} />
+                                {
+                                    isDragActive ?
+                                        <p>Drop the files here ...</p> :
+                                        <p>Drag 'n' drop some files here, or click to select files</p>
+                                }
 
 
-                                </div>
+                            </div>
+
+                            <div className="mt-3">
+                                {
+                                    files.length != 0 && files.map((i, k) => {
+                                        return (
+                                            <div
+                                                className="d-flex align-items-center justify-content-between mt-2"
+                                            >
+                                                <span
+                                                    className="pointer"
+                                                    onClick={() => {
+
+                                                        setSelectedFileForViewing(i)
+                                                        setShowImage(true)
+                                                    }}
+                                                >{i.fileName}</span>
+
+                                                <div className="pointer"
+
+                                                    onClick={() => {
+                                                        let tmpArr = files
+                                                        tmpArr.splice(k, 1);
+
+
+                                                        setFiles([...tmpArr])
+                                                    }}
+
+                                                >
+                                                    <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
+                                                </div>
+
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>
 
                         <button type="button" onClick={() => {

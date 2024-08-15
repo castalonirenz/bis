@@ -48,7 +48,7 @@ export default function Official({ params }) {
 
 
     let slug = ''
-  
+
 
     if (event.key === 'Enter') {
       event.preventDefault(); // Optional: Prevents the default action if needed
@@ -58,20 +58,20 @@ export default function Official({ params }) {
         currentPage: 1,
         searchItemList
       }
-      
+
 
       // if (tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
       // if (tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
       // if (tab == 1) slug = dispatch(loadAllUsers(data)).unwrap();
 
       if (tab == 0) {
-        router.push('/Admin/Official/Staff/1/'+ searchItemList)
+        router.push('/Admin/Official/Staff/1/' + searchItemList)
       }
       if (tab == 1) {
         router.push('/Admin/Official/Resident/1/' + searchItemList)
       }
       if (tab == 2) {
-        router.push('/Admin/Official/Schedule/1/'+ searchItemList)
+        router.push('/Admin/Official/Schedule/1/' + searchItemList)
       }
       if (tab == 3) {
         router.push('/Admin/Official/Services/1/' + searchItemList)
@@ -85,11 +85,11 @@ export default function Official({ params }) {
       //   try {
       //     const result = await slug
 
-       
+
 
       //     setTotalPage(result.total_pages)
 
-          
+
       //     // Handle success, e.g., navigate to another page
       //   } catch (error) {
 
@@ -109,7 +109,7 @@ export default function Official({ params }) {
   const [message, SetMessage] = useState('')
 
   const [isEdit, setIsEdit] = useState(false);
-
+  const [isViewing, setIsViewing] = useState(false);
 
 
   const [selectedItem, setSelectedItem] = useState(null)
@@ -137,7 +137,8 @@ export default function Official({ params }) {
     birthday: '',
     cell_number: '',
     civil_status_id: '',
-    male_female: ''
+    male_female: '',
+    isPendingResident : 0
   })
 
   const [selectedResident, setSelectedResident] = useState({
@@ -149,7 +150,8 @@ export default function Official({ params }) {
     birthday: '',
     cell_number: '',
     civil_status_id: '',
-    male_female: ''
+    male_female: '',
+    isPendingResident : 0
   })
   // male 0 female 1
   // Resident
@@ -823,7 +825,7 @@ export default function Official({ params }) {
 
 
 
-  
+
   const changeTab = (v) => {
 
 
@@ -889,7 +891,20 @@ export default function Official({ params }) {
   }
 
 
-
+  const approveResident = () => {
+    // setResident({
+    //   first_name: '',
+    //   middle_name: '',
+    //   last_name: '',
+    //   email: '',
+    //   pass: '',
+    //   birthday: '',
+    //   cell_number: '',
+    //   civil_status_id: '',
+    //   male_female: '',
+    //   isPendingResident: 0
+    // })
+  }
 
   return (
     <main className={`container-fluid`}>
@@ -1404,13 +1419,25 @@ export default function Official({ params }) {
 
                 <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
 
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center col-6">
                     <span className="f-white">Search:</span>
                     <input
                       onKeyDown={handleKeyDown}
                       value={searchItemList}
                       onChange={(v) => setSearchItemList(v.target.value)}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
+
+                    <div className="col-6 ms-3">
+                      <button
+                        onClick={() => {
+
+                        }}
+                        className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
+                      >
+                        {/* <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i> */}
+                        <span className="fw-bold">Approvals</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div >
@@ -1463,11 +1490,14 @@ export default function Official({ params }) {
 
                     {
                       alluser.list.data.map((i, k) => {
+
                         return (
 
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
-                            <RowItem>
+                            <RowItem
+
+                            >
                               <span className="f-white">
                                 {i.first_name + " " + i.middle_name + " " + i.last_name}
                               </span>
@@ -1489,12 +1519,19 @@ export default function Official({ params }) {
                             </RowItem>
                             <RowItem>
                               <span className="f-white">
-                              {i.voter_status == 0 ? "Voter" : "Non-Voter"}
+                                {i.voter_status == 0 ? "Voter" : "Non-Voter"}
                               </span>
                             </RowItem>
-                            <RowItem>
-                              <span className="f-white">
-                              {i.isPendingResident == 0 ? "Pending" : "Registered"}
+                            <RowItem
+                              onClick={() => {
+                                setIsEdit(true)
+                                setIsViewing(true)
+                                setResident(i)
+                                setShowAddResident(true)
+                              }}
+                            >
+                              <span className="f-white pointer" style={{ fontWeight: i.isPendingResident == 1 ? "bold" : "normal", color: i.isPendingResident == 1 ? "yellow" : "#fff" }}>
+                                {i.isPendingResident == 1 ? "Pending" : "Registered"}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -2074,13 +2111,14 @@ export default function Official({ params }) {
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" style={{ maxHeight: "720px", overflowY: "scroll" }}>
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? "Edit Resident" : "Add Resident"}</h1>
+                    <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? (!isViewing ? "Edit Resident" : "View Resident") : "Add Resident"}</h1>
                   </div>
                   <div class="modal-body">
                     <div class="mb-3">
                       <label class="form-label">First name</label>
                       <input
                         id='fnameinput'
+                        disabled={isViewing}
                         value={resident.first_name}
                         onChange={(val) => {
 
@@ -2103,8 +2141,10 @@ export default function Official({ params }) {
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Middle name</label>
+                      <label
+                        class="form-label">Middle name</label>
                       <input
+                        disabled={isViewing}
                         value={resident.middle_name}
                         onChange={(val) => {
 
@@ -2123,6 +2163,7 @@ export default function Official({ params }) {
                       <label class="form-label">Last name</label>
                       <input
                         id='lnameinput'
+                        disabled={isViewing}
                         value={resident.last_name}
                         onChange={(val) => {
 
@@ -2148,6 +2189,7 @@ export default function Official({ params }) {
                       <label class="form-label">Email</label>
                       <input
                         id='emailinput'
+                        disabled={isViewing}
                         value={resident.Email == undefined ? resident.email : resident.Email}
                         onChange={(val) => {
                           if (val.target.value != "") {
@@ -2169,22 +2211,26 @@ export default function Official({ params }) {
 
                     <div class="mb-3 d-flex flex-column">
                       <label class="form-label">Birthday</label>
+                      <span className="fw-bold">{resident.birthday}</span>
 
-                      <Calendar
-                        id='bdayinput'
-                        className="mt-3"
-                        value={resident.birthday}
-                        onChange={(v) => {
-                          // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
+                      {!isViewing &&
+                        <Calendar
+                          id='bdayinput'
+                          className="mt-3"
+                          disabled={isViewing}
+                          value={resident.birthday}
+                          onChange={(v) => {
+                            // document.getElementById('bdayinput').style.border = '1px solid #dee2e6'
 
-                          setResident({
-                            ...resident, ...{
-                              birthday: moment(v).format("YYYY-MM-DD")
-                            }
-                          })
-                          setStartDate(moment(v).format("YYYY-MM-DD"))
-                        }}
-                      />
+                            setResident({
+                              ...resident, ...{
+                                birthday: moment(v).format("YYYY-MM-DD")
+                              }
+                            })
+                            setStartDate(moment(v).format("YYYY-MM-DD"))
+                          }}
+                        />
+                      }
 
                     </div>
 
@@ -2192,6 +2238,7 @@ export default function Official({ params }) {
                       <label class="form-label">Phone number</label>
                       <input
                         id='phoneinput'
+                        disabled={isViewing}
                         value={resident.cell_number}
                         onChange={(val) => {
 
@@ -2219,6 +2266,7 @@ export default function Official({ params }) {
                       <label class="form-label">Gender</label>
                       <div class="form-check">
                         <input
+                          disabled={isViewing}
                           checked={resident.male_female === 0 ? true : false}
                           onChange={() => {
 
@@ -2240,6 +2288,7 @@ export default function Official({ params }) {
                       { }
                       <div class="form-check">
                         <input
+                          disabled={isViewing}
                           checked={resident.male_female === 1 ? true : false}
                           onChange={() => {
 
@@ -2264,6 +2313,7 @@ export default function Official({ params }) {
                     <div class="mb-3">
                       <label class="form-label">Civil Status</label>
                       <select
+                        disabled={isViewing}
                         value={resident.civil_status_id}
                         id='civilinput'
                         onChange={(v) => {
@@ -2284,29 +2334,78 @@ export default function Official({ params }) {
 
                     </div>
 
+                    {
+                      isViewing &&
+
+                      <div class="mb-3 d-flex flex-column">
+                        <label class="form-label">Supporting documents</label>
+
+                        <img
+                          style={{ position: "relative", height: "300px", width: "100%" }}
+                          // src={resident.base64} 
+                          alt="Base64 Image" />
+
+                      </div>
+                    }
+
 
 
                   </div>
-                  <div class="modal-footer">
-                    <button type="button" onClick={() => {
-                      setResident({
-                        first_name: '',
-                        middle_name: '',
-                        last_name: '',
-                        email: '',
-                        pass: '',
-                        birthday: '',
-                        cell_number: '',
-                        civil_status_id: '',
-                        male_female: ''
-                      })
-                      setShowAddResident(false)
+                  {
+                    isViewing ?
+                      <div class="modal-footer">
+                        <button type="button" onClick={() => {
+                          setResident({
+                            first_name: '',
+                            middle_name: '',
+                            last_name: '',
+                            email: '',
+                            pass: '',
+                            birthday: '',
+                            cell_number: '',
+                            civil_status_id: '',
+                            male_female: '',
+                            isPendingResident: 0
+                          })
+                          setShowAddResident(false)
 
-                    }} class="btn btn-secondary">Close</button>
-                    <button type="button" onClick={() => {
-                      addResident()
-                    }} class="btn btn-primary bg-green">Save changes</button>
-                  </div>
+                        }} class="btn btn-secondary">Close</button>
+                       
+                        {
+                          resident.isPendingResident == 1 &&
+                          <>
+                            <button type="button" onClick={() => {
+                              // addResident()
+                              approveResident()
+                            }} class="btn btn-primary bg-green">Approve</button>
+                            <button type="button" onClick={() => {
+                              // addResident()
+                            }} class="btn btn-primary" style={{ backgroundColor: "red" }}>Reject</button>
+                          </>
+                        }
+                      </div>
+                      :
+                      <div class="modal-footer">
+                        <button type="button" onClick={() => {
+                          setResident({
+                            first_name: '',
+                            middle_name: '',
+                            last_name: '',
+                            email: '',
+                            pass: '',
+                            birthday: '',
+                            cell_number: '',
+                            civil_status_id: '',
+                            male_female: ''
+                          })
+                          setShowAddResident(false)
+
+                        }} class="btn btn-secondary">Close</button>
+                        <button type="button" onClick={() => {
+                          addResident()
+                        }} class="btn btn-primary bg-green">Save changes</button>
+                      </div>
+                  }
                 </div>
               </div>
             </div>
@@ -2475,8 +2574,8 @@ export default function Official({ params }) {
           {
             loading &&
             <div id="statusModal " class="modal fade show d-block">
-              <div class="d-flex align-items-center justify-content-center" style={{height:"100vh", backgroundColor:"rgba(0,0,0,0.4)"}}>
-                <div class="modal-content d-flex align-items-center" style={{backgroundColor:"transparent "}}>
+              <div class="d-flex align-items-center justify-content-center" style={{ height: "100vh", backgroundColor: "rgba(0,0,0,0.4)" }}>
+                <div class="modal-content d-flex align-items-center" style={{ backgroundColor: "transparent " }}>
                   <div class="">
                     <h2 className="f-white">
                       Loading .....
