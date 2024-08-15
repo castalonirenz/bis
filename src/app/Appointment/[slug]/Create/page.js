@@ -89,7 +89,7 @@ export default function CreateAppointment() {
                 // Update state with new files
                 setFiles(prevFiles => [...prevFiles, ...filesWithBase64]);
 
-                console.log(filesWithBase64, "--> PASOK")
+                
 
             })
             .catch(error => {
@@ -237,7 +237,7 @@ export default function CreateAppointment() {
                 // token: token.token
             }
 
-            console.log(merge, "--> BEFORE?")
+            
 
             try {
                 const result = await dispatch(applyNewResidentApi(merge)).unwrap();
@@ -260,7 +260,7 @@ export default function CreateAppointment() {
                         voter_status: 0,
                         file_upload: ''
                     })
-
+                    setFiles([])
                     setNewResident(null)
                 }
                 else {
