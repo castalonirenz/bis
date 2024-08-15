@@ -328,44 +328,55 @@ export default function Official({ params }) {
     }
 
     if(tab == 2){
-      try {
-        const result =  dispatch(viewAppointmentListApi(data)).unwrap();
 
+      const fetchData = async () => {
 
-        
-        // setTotalPage(result.total_pages)
+        try {
+          const result = await dispatch(viewAppointmentListApi(data)).unwrap();
 
-        // if (currentPage > result.total_pages) {
-        //   alert("Invalid url")
-        // }
+          setTotalPage(result.total_pages)
 
-        // Handle success, e.g., navigate to another page
-      } catch (error) {
+          if (currentPage > result.total_pages) {
+            alert("Invalid url")
+          }
 
-        // Handle error, e.g., show an error message
-      }
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+        setLoading(false)
+      };
+
+      fetchData();
+     
       setLoading(false)
     }
 
     if(tab == 4){
       
 
-      try {
-        const result =  dispatch(viewAllBlottersApi(data)).unwrap();
+      const fetchData = async () => {
 
+        try {
+          const result = await dispatch(viewAllBlottersApi(data)).unwrap();
 
-        
-        // setTotalPage(result.total_pages)
+          setTotalPage(result.total_pages)
 
-        // if (currentPage > result.total_pages) {
-        //   alert("Invalid url")
-        // }
+          if (currentPage > result.total_pages) {
+            alert("Invalid url")
+          }
 
-        // Handle success, e.g., navigate to another page
-      } catch (error) {
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
 
-        // Handle error, e.g., show an error message
-      }
+          // Handle error, e.g., show an error message
+        }
+        setLoading(false)
+      };
+
+      fetchData();
+
       setLoading(false)
     }
 
