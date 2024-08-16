@@ -1852,7 +1852,9 @@ export default function Official({ params }) {
                                 {i.status}
                               </span>
                             </RowItem>
-                            <RowItem>
+                            {
+                              i.status != "Rejected" ?
+                              <RowItem>
                               <span id={k + i.full_name + "action"}
                                 onClick={() => {
                                   document.getElementById(k + i.full_name + "button").classList.remove('d-none')
@@ -1966,10 +1968,8 @@ export default function Official({ params }) {
                                     <button
 
                                       onClick={() => {
-
-                                        setIsEdit(true)
-                                        setResident(i)
-                                        setShowAddResident(true)
+                                        window.open(`https://18.141.22.83/api/downloadAndReleaseDocument?appointment_id=${i.appointment_id}&download=0`)
+                                        
                                         document.getElementById(k + i.full_name + "button").classList.add('d-none')
                                         document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                       }}
@@ -1978,6 +1978,12 @@ export default function Official({ params }) {
                                   </div>
                               }
                             </RowItem>
+
+                            :
+                            <RowItem>
+                              
+                            </RowItem>
+                            }
 
                           </div>
 
