@@ -1527,16 +1527,8 @@ export default function Official({ params }) {
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.full_name + "action"}
-                                onClick={() => {
-                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
-
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.full_name + "button"} className="d-flex d-none">
+                            
+                              <div id={k + i.full_name + "button"} className="d-flex">
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#exampleModal"
@@ -1545,8 +1537,6 @@ export default function Official({ params }) {
 
                                     setSelectedItem(i)
 
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -1555,8 +1545,6 @@ export default function Official({ params }) {
 
                                   onClick={() => {
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -1708,16 +1696,8 @@ export default function Official({ params }) {
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.full_name + "action"}
-                                onClick={() => {
-                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
-
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.full_name + "button"} className="d-flex d-none">
+                            
+                              <div id={k + i.full_name + "button"} className="d-flex ">
 
                                 <button
 
@@ -1726,8 +1706,6 @@ export default function Official({ params }) {
                                     setIsEdit(true)
                                     setResident(i)
                                     setShowAddResident(true)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -1739,8 +1717,6 @@ export default function Official({ params }) {
 
                                     setSelectedItem(i)
                                     setResident(i)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -1855,18 +1831,9 @@ export default function Official({ params }) {
                             {
                               i.status != "Rejected" ?
                               <RowItem>
-                              <span id={k + i.full_name + "action"}
-                                onClick={() => {
-                                  document.getElementById(k + i.full_name + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.full_name + "action").classList.add('d-none')
-
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
                               {
                                 i.status == "Pending" ?
-                                  <div id={k + i.full_name + "button"} className="d-flex d-none">
+                                  <div id={k + i.full_name + "button"} className="d-flex ">
 
                                     <button
 
@@ -1908,8 +1875,6 @@ export default function Official({ params }) {
                   
                                         fetchData();
 
-                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                       }}
                                       type="button" class="btn btn-primary">Approve</button>
 
@@ -1954,8 +1919,6 @@ export default function Official({ params }) {
                   
                                         fetchData();
 
-                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
                                       }}
                                       type="button" class="btn btn-danger ms-3">Reject</button>
 
@@ -1981,7 +1944,7 @@ export default function Official({ params }) {
 
                             :
                             <RowItem>
-                              
+
                             </RowItem>
                             }
 
@@ -2082,16 +2045,8 @@ export default function Official({ params }) {
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.service + "action"}
-                                onClick={() => {
-
-                                  document.getElementById(k + i.service + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.service + "action").classList.add('d-none')
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.service + "button"} className="d-flex d-none">
+                             
+                              <div id={k + i.service + "button"} className="d-flex">
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
@@ -2110,8 +2065,6 @@ export default function Official({ params }) {
 
 
                                     setIsEdit(true)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -2120,8 +2073,6 @@ export default function Official({ params }) {
 
                                     viewCreatedTemplate(i)
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-warning ms-3">View</button>
 
@@ -2130,8 +2081,6 @@ export default function Official({ params }) {
 
                                   onClick={() => {
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
@@ -2242,16 +2191,7 @@ export default function Official({ params }) {
                               </span>
                             </RowItem>
                             <RowItem>
-                              <span id={k + i.service + "action"}
-                                onClick={() => {
-
-                                  document.getElementById(k + i.service + "button").classList.remove('d-none')
-                                  document.getElementById(k + i.service + "action").classList.add('d-none')
-                                }}
-                                className="f-white bg-yellow p-2 rounded">
-                                ACTION
-                              </span>
-                              <div id={k + i.service + "button"} className="d-flex d-none">
+                              <div id={k + i.service + "button"} className="d-flex">
 
                                 <button
                                   data-bs-toggle="modal" data-bs-target="#addBarangayServices"
@@ -2270,8 +2210,6 @@ export default function Official({ params }) {
 
 
                                     setIsEdit(true)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-primary">Edit</button>
 
@@ -2280,8 +2218,6 @@ export default function Official({ params }) {
 
                                     viewCreatedTemplate(i)
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-warning ms-3">View</button>
 
@@ -2290,8 +2226,6 @@ export default function Official({ params }) {
 
                                   onClick={() => {
                                     setSelectedItem(i)
-                                    document.getElementById(k + i.service + "button").classList.add('d-none')
-                                    document.getElementById(k + i.service + "action").classList.remove('d-none')
                                   }}
                                   type="button" class="btn btn-danger ms-3">Delete</button>
 
