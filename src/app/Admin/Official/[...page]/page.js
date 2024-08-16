@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, approveNewResidentApi, deleteResidentInformationApi, editResidentApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
+import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editResidentApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
@@ -24,7 +24,7 @@ import { useDropzone } from "react-dropzone";
 
 
 export default function Official({ params }) {
-  
+
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
@@ -127,6 +127,18 @@ export default function Official({ params }) {
     isPendingResident: 0
   })
 
+  const [selectedSchedule, setSelectedSchedule] = useState({
+    "appointment_id": '',
+    "user_id": '',
+    "full_name": "",
+    "document_type_id": '',
+    "document_type": "",
+    "schedule_date": "",
+    "status": "",
+    "supporting_file_ids": [
+    ]
+  })
+
   const [selectedResident, setSelectedResident] = useState({
     first_name: '',
     middle_name: '',
@@ -147,13 +159,18 @@ export default function Official({ params }) {
     // Convert files to base64 and update state
     const fileReaders = acceptedFiles.map(file => {
       const reader = new FileReader();
-      let tmpARr = files
-      tmpARr.push(file)
-      setFiles(tmpARr)
-      console.log(tmpARr, "--> FILE")
+      
+      reader.onloadend = () => {
+        // Process file as base64 here if needed
+        const base64String = reader.result;
+        
+        // Update state with new file
+        setFiles(prevFiles => [...prevFiles, file]);
+      };
+
+      reader.readAsDataURL(file);
+      return reader;
     });
-
-
   }, []);
 
 
@@ -1845,34 +1862,121 @@ export default function Official({ params }) {
                                 className="f-white bg-yellow p-2 rounded">
                                 ACTION
                               </span>
-                              <div id={k + i.full_name + "button"} className="d-flex d-none">
+                              {
+                                i.status == "Pending" ?
+                                  <div id={k + i.full_name + "button"} className="d-flex d-none">
 
-                                <button
+                                    <button
 
-                                  onClick={() => {
+                                      onClick={() => {
 
-                                    setIsEdit(true)
-                                    setResident(i)
-                                    setShowAddResident(true)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
-                                  }}
-                                  type="button" class="btn btn-primary">Edit</button>
+                                        setLoading()
+                                        setSelectedSchedule(i)
 
-                                <button
-                                  data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
+                                        let merge = {
+                                          token: token.token,
+                                          id: i.appointment_id,
+                                          status: 0
+                                        }
+                  
+                  
+                  
+                                        const fetchData = async () => {
+                  
+                                          try {
+                                            const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap();
+                                            
 
-                                  onClick={() => {
+                                            if(result.success){
+                                              setCount(count + 1)
+                                              setLoading(false)
+                                              setSuccess(true)
+                                              setShowSuccess(true)
+                                              SetMessage("Success in approving appointment.")
+                                            }
+                                            // setCount(count + 1)
+                                            // Handle success, e.g., navigate to another page
+                                          } catch (error) {
+                  
+                                            // Handle error, e.g., show an error message
+                                          }
+                  
+                                          setLoading(false)
+                                        };
+                  
+                                        fetchData();
 
+                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
+                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                      }}
+                                      type="button" class="btn btn-primary">Approve</button>
 
-                                    setSelectedItem(i)
-                                    setResident(i)
-                                    document.getElementById(k + i.full_name + "button").classList.add('d-none')
-                                    document.getElementById(k + i.full_name + "action").classList.remove('d-none')
-                                  }}
-                                  type="button" class="btn btn-danger ms-3">Delete</button>
+                                    <button
+                                      data-bs-toggle="modal"
 
-                              </div>
+                                      onClick={() => {
+
+                                        setLoading()
+                                        setSelectedSchedule(i)
+
+                                        let merge = {
+                                          token: token.token,
+                                          id: i.appointment_id,
+                                          status: 1
+                                        }
+                  
+                  
+                  
+                                        const fetchData = async () => {
+                  
+                                          try {
+                                            const result = await dispatch(approveOrRejectAppointmentApi(merge)).unwrap();
+                                            
+
+                                            if(result.success){
+                                              setCount(count + 1)
+                                              setLoading(false)
+                                              setSuccess(true)
+                                              setShowSuccess(true)
+                                              SetMessage("Success in rejecting appointment.")
+                                            }
+                                            // setCount(count + 1)
+                                            // Handle success, e.g., navigate to another page
+                                          } catch (error) {
+                  
+                                            // Handle error, e.g., show an error message
+                                          }
+                  
+                                          setLoading(false)
+                                        };
+                  
+                                        fetchData();
+
+                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
+                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                      }}
+                                      type="button" class="btn btn-danger ms-3">Reject</button>
+
+                                  </div>
+
+                                  :
+
+                                  <div id={k + i.full_name + "button"} className="d-flex d-none">
+
+                                    <button
+
+                                      onClick={() => {
+
+                                        setIsEdit(true)
+                                        setResident(i)
+                                        setShowAddResident(true)
+                                        document.getElementById(k + i.full_name + "button").classList.add('d-none')
+                                        document.getElementById(k + i.full_name + "action").classList.remove('d-none')
+                                      }}
+                                      type="button" class="btn btn-primary">View</button>
+
+                                  </div>
+                              }
                             </RowItem>
 
                           </div>
@@ -2928,29 +3032,29 @@ export default function Official({ params }) {
           }
 
 
-          {
-            showImage &&
-            <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
-              <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
-                <div>
-                  <h4>
-                    {selectedFileForViewing.fileName}
-                  </h4>
-                </div>
-                <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
-                  <div style={{ height: "700px", width: "100%" }}>
-                    <img
-                      style={{ position: "relative", height: "700px", width: "100%" }}
-                      src={selectedFileForViewing.base64} alt="Base64 Image" />
+            {
+              showImage &&
+              <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+                <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                  <div>
+                    <h4>
+                      {selectedFileForViewing.fileName}
+                    </h4>
                   </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
+                  <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+                    <div style={{ height: "700px", width: "100%" }}>
+                      <img
+                        style={{ position: "relative", height: "700px", width: "100%" }}
+                        src={selectedFileForViewing.base64} alt="Base64 Image" />
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
 
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          }
+            }
 
           {
             showImport &&
@@ -2977,63 +3081,71 @@ export default function Official({ params }) {
                       files.length != 0 && files.map((i, k) => {
                         return (
                           <div
-                          className="d-flex align-items-center justify-content-between mt-2"
-                      >
-                          <span
+                            className="d-flex align-items-center justify-content-between mt-2"
+                          >
+                            <span
                               className="pointer"
                               onClick={() => {
 
-                                  // setSelectedFileForViewing(i)
-                                  // setShowImage(true)
+                                // setSelectedFileForViewing(i)
+                                // setShowImage(true)
                               }}
-                          >{i.name}</span>
+                            >{i.name}</span>
 
-                          <div className="pointer"
+                            <div className="pointer"
 
                               onClick={() => {
-                                  let tmpArr = files
-                                  tmpArr.splice(k, 1);
+                                let tmpArr = files
+                                tmpArr.splice(k, 1);
 
 
-                                  setFiles([...tmpArr])
+                                setFiles([...tmpArr])
                               }}
 
-                          >
+                            >
                               <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
-                          </div>
+                            </div>
 
-                      </div>
+                          </div>
                         )
                       })
                     }
                   </div>
                   <div class="modal-footer">
-                  <button type="button" class="btn btn-primary bg-green" onClick={ async() => {
+                    <button type="button" class="btn btn-primary bg-green" onClick={async () => {
 
-                    let merge = {
-                      token: token.token,
-                      files
-                    }
-               
-                 
-
-                    const fetchData = async () => {
-
-                      try {
-                        const result = await dispatch(importExcelResidentsApi(merge)).unwrap();
-                          console.log("RESULT: ", result)
-                        // Handle success, e.g., navigate to another page
-                      } catch (error) {
-              
-                        // Handle error, e.g., show an error message
+                      let merge = {
+                        token: token.token,
+                        files
                       }
-              
-                      setLoading(false)
-                    };
-              
-                    fetchData();
 
-                  }}>Submit</button>
+                      setShowImport(false)
+
+                      const fetchData = async () => {
+
+                        try {
+                          const result = await dispatch(importExcelResidentsApi(merge)).unwrap();
+                         
+                          setShowSuccess(true)
+                          setSuccess(true)
+                          SetMessage('Success in importing resident information list.')
+                        
+                          // Handle success, e.g., navigate to another page
+                        } catch (error) {
+                          
+                          setShowSuccess(true)
+                          setSuccess(false)
+                         
+                          // Handle error, e.g., show an error message
+                        }
+                        setFiles([])
+                        setLoading(false)
+                        setCount(count + 1)
+                      };
+
+                      fetchData();
+
+                    }}>Submit</button>
                     <button type="button" class="btn btn-secondary" onClick={() => setShowImport(false)}>Close</button>
 
                   </div>
