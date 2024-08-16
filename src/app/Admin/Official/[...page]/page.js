@@ -2,12 +2,12 @@
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
-import { addResidentApi, approveNewResidentApi, deleteResidentInformationApi, editResidentApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
+import { addResidentApi, approveNewResidentApi, deleteResidentInformationApi, editResidentApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import 'react-calendar/dist/Calendar.css';
 import DatePicker from "react-datepicker";
@@ -19,11 +19,12 @@ import ReactQuill from "react-quill";
 import { addDocumentTypeApi, deleteDocumentTypeApi, getDocumentTypeApi, updateDocumentTypesApi } from "@/redux/reducer/document";
 import Calendar from "react-calendar";
 import moment from "moment";
+import { useDropzone } from "react-dropzone";
 
 
 
 export default function Official({ params }) {
-
+  
   const dispatch = useDispatch();
   const router = useRouter()
   const officials = useSelector(state => state)
@@ -34,6 +35,7 @@ export default function Official({ params }) {
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
+  const [showImport, setShowImport] = useState(false)
 
   const [showImage, setShowImage] = useState(false)
   const [selectedFileForViewing, setSelectedFileForViewing] = useState('')
@@ -63,10 +65,6 @@ export default function Official({ params }) {
       }
 
 
-      // if (tab == 0) slug = dispatch(loadOfficials(data)).unwrap();
-      // if (tab == 3) slug = dispatch(getDocumentTypeApi(data)).unwrap();
-      // if (tab == 1) slug = dispatch(loadAllUsers(data)).unwrap();
-
       if (tab == 0) {
         router.push('/Admin/Official/Staff/1/' + searchItemList)
       }
@@ -86,24 +84,6 @@ export default function Official({ params }) {
         router.push('/Admin/Official/Dashboard')
       }
 
-      // const fetchData = async () => {
-
-      //   try {
-      //     const result = await slug
-
-
-
-      //     setTotalPage(result.total_pages)
-
-
-      //     // Handle success, e.g., navigate to another page
-      //   } catch (error) {
-
-      //     // Handle error, e.g., show an error message
-      //   }
-      // };
-
-      // fetchData();
 
       // You can perform any action here, like submitting a form or calling a function
     }
@@ -130,7 +110,7 @@ export default function Official({ params }) {
   const [count, setCount] = useState(0)
 
   const [loading, setLoading] = useState(false)
-
+  const [files, setFiles] = useState([])
   // Resident
 
   const [startDate, setStartDate] = useState();
@@ -144,7 +124,7 @@ export default function Official({ params }) {
     cell_number: '',
     civil_status_id: '',
     male_female: '',
-    isPendingResident : 0
+    isPendingResident: 0
   })
 
   const [selectedResident, setSelectedResident] = useState({
@@ -157,12 +137,31 @@ export default function Official({ params }) {
     cell_number: '',
     civil_status_id: '',
     male_female: '',
-    isPendingResident : 0
+    isPendingResident: 0
   })
   // male 0 female 1
   // Resident
 
 
+  const onDrop = useCallback((acceptedFiles) => {
+    // Convert files to base64 and update state
+    const fileReaders = acceptedFiles.map(file => {
+      const reader = new FileReader();
+      let tmpARr = files
+      tmpARr.push(file)
+      setFiles(tmpARr)
+      console.log(tmpARr, "--> FILE")
+    });
+
+
+  }, []);
+
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop, accept: {
+      // 'image/*': [] // Accept only image files
+    }
+  })
 
   // Barangay services
 
@@ -188,7 +187,7 @@ export default function Official({ params }) {
     let getPageNumber = params.page[1]
     let getSearchItem = params.page[2]
 
-    
+
 
 
     if (getPage == "Staff") {
@@ -327,7 +326,7 @@ export default function Official({ params }) {
       fetchData();
     }
 
-    if(tab == 2){
+    if (tab == 2) {
 
       const fetchData = async () => {
 
@@ -349,12 +348,12 @@ export default function Official({ params }) {
       };
 
       fetchData();
-     
+
       setLoading(false)
     }
 
-    if(tab == 4){
-      
+    if (tab == 4) {
+
 
       const fetchData = async () => {
 
@@ -957,7 +956,7 @@ export default function Official({ params }) {
   }
 
 
-  const approveResident =  async () => {
+  const approveResident = async () => {
 
     setLoading(true)
     let merge = {
@@ -966,18 +965,18 @@ export default function Official({ params }) {
       status: 0
     }
 
-    
+
 
     try {
       const result = await dispatch(approveNewResidentApi(merge)).unwrap();
       setLoading(false)
-      
-      if(result.success == true){
-      
+
+      if (result.success == true) {
+
         setShowAddResident(false)
         setIsViewing(false)
         setSuccess(true)
-        SetMessage('Success in approving ' + resident.first_name + " as resident." )
+        SetMessage('Success in approving ' + resident.first_name + " as resident.")
         setShowSuccess(true)
         setResident({
           first_name: '',
@@ -993,15 +992,15 @@ export default function Official({ params }) {
         })
         setCount(count + 1)
       }
-      else{
+      else {
         setSuccess(false)
-        SetMessage('Something went wrong in approving ' + resident.first_name + " as resident." )
+        SetMessage('Something went wrong in approving ' + resident.first_name + " as resident.")
         setShowSuccess(true)
       }
 
-    } catch (error){
+    } catch (error) {
       setSuccess(false)
-      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident." )
+      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident.")
       setShowSuccess(true)
     }
 
@@ -1009,7 +1008,7 @@ export default function Official({ params }) {
 
   }
 
-  const rejectResident =  async () => {
+  const rejectResident = async () => {
 
     setLoading(true)
     let merge = {
@@ -1018,18 +1017,18 @@ export default function Official({ params }) {
       status: 1
     }
 
-    
-    
+
+
     try {
       const result = await dispatch(approveNewResidentApi(merge)).unwrap();
       setLoading(false)
-      
-      if(result.success == true){
-      
+
+      if (result.success == true) {
+
         setShowAddResident(false)
         setIsViewing(false)
         setSuccess(true)
-        SetMessage('Success in rejecting ' + resident.first_name + " as resident." )
+        SetMessage('Success in rejecting ' + resident.first_name + " as resident.")
         setShowSuccess(true)
         setResident({
           first_name: '',
@@ -1045,16 +1044,16 @@ export default function Official({ params }) {
         })
         setCount(count + 1)
       }
-      else{
+      else {
         setSuccess(false)
-        SetMessage('Something went wrong in rejecting ' + resident.first_name + " as resident." )
+        SetMessage('Something went wrong in rejecting ' + resident.first_name + " as resident.")
         setShowSuccess(true)
       }
 
-    } catch (error){
-      
+    } catch (error) {
+
       setSuccess(false)
-      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident." )
+      SetMessage('Something went wrong in approving ' + resident.first_name + " as resident.")
       setShowSuccess(true)
     }
 
@@ -1586,12 +1585,12 @@ export default function Official({ params }) {
                     <div className="col-6 ms-3">
                       <button
                         onClick={() => {
-
+                          setShowImport(true)
                         }}
                         className="primary bg-yellow p-2 rounded" style={{ border: "0px" }}
                       >
                         {/* <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i> */}
-                        <span className="fw-bold">Approvals</span>
+                        <span className="fw-bold">Import</span>
                       </button>
                     </div>
                   </div>
@@ -1644,7 +1643,7 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-                     
+
                     {
                       alluser.list.data.map((i, k) => {
 
@@ -2226,7 +2225,7 @@ export default function Official({ params }) {
                   </div>
 
                   <div className="d-flex align-items-center justify-content-center bg-green f-white ms-2 me-2" style={{ height: "50px", width: "50px", borderRadius: "25px" }}>
-                      {currentPage}
+                    {currentPage}
                   </div>
 
 
@@ -2660,24 +2659,24 @@ export default function Official({ params }) {
                         <label class="form-label">Supporting documents</label>
 
                         {/* resident.supporting_files_obj */}
-                        {}
-                          {resident.supporting_files_obj.lenght != 0 &&
-                            resident.supporting_files_obj.map((i, k) => {
+                        { }
+                        {resident.supporting_files_obj.lenght != 0 &&
+                          resident.supporting_files_obj.map((i, k) => {
 
-                              return(
-                                <span 
-                                  onClick={() => {
-                                    setSelectedFileForViewing({
-                                      fileName: i.file_name,
-                                      base64: i.base64_file
+                            return (
+                              <span
+                                onClick={() => {
+                                  setSelectedFileForViewing({
+                                    fileName: i.file_name,
+                                    base64: i.base64_file
 
-                                    })
-                                    setShowImage(true)
-                                  }}
-                                  className="pointer">{i.file_name}</span>
-                              )
-                            })
-                          }
+                                  })
+                                  setShowImage(true)
+                                }}
+                                className="pointer">{i.file_name}</span>
+                            )
+                          })
+                        }
 
                       </div>
                     }
@@ -2704,7 +2703,7 @@ export default function Official({ params }) {
                           setShowAddResident(false)
 
                         }} class="btn btn-secondary">Close</button>
-                       
+
                         {
                           resident.isPendingResident == 1 &&
                           <>
@@ -2822,6 +2821,13 @@ export default function Official({ params }) {
 
                     <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{first_name}'} as placeholder</span>
 
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{middle_name}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{last_name}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{cell_number}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{civil_status}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{birthday}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{gender}'} as placeholder</span>
+                    <span className="ms-3" style={{ fontSize: "12px", color: "red" }}>Ex. {'{current_address}'} as placeholder</span>
 
                   </div>
 
@@ -2922,29 +2928,120 @@ export default function Official({ params }) {
           }
 
 
-{
-                    showImage &&
-                    <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
-                        <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
-                            <div>
-                                <h4>
-                                    {selectedFileForViewing.fileName}
-                                </h4>
-                            </div>
-                            <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
-                                <div style={{ height: "700px", width: "100%" }}>
-                                    <img
-                                        style={{ position: "relative", height: "700px", width: "100%" }}
-                                        src={selectedFileForViewing.base64} alt="Base64 Image" />
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
+          {
+            showImage &&
+            <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+              <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                <div>
+                  <h4>
+                    {selectedFileForViewing.fileName}
+                  </h4>
+                </div>
+                <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+                  <div style={{ height: "700px", width: "100%" }}>
+                    <img
+                      style={{ position: "relative", height: "700px", width: "100%" }}
+                      src={selectedFileForViewing.base64} alt="Base64 Image" />
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onClick={() => setShowImage(false)}>Close</button>
 
-                                </div>
-                            </div>
-                        </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          {
+            showImport &&
+            <div id="statusModal " class="modal fade show d-flex align-items-center justify-content-center">
+              <div className="col-6  d-flex flex-column align-items-center justify-content-center box mt-5">
+                <div className="mt-5">
+                  <h4>
+                    Import xlsx file
+                  </h4>
+                </div>
+                <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
+                  <div style={{ width: "100%" }}>
+                    <div {...getRootProps()} style={{ borderStyle: "dotted" }}>
+                      <input {...getInputProps()} />
+                      {
+                        isDragActive ?
+                          <p>Drop the files here ...</p> :
+                          <p>Drag 'n' drop some files here, or click to select files</p>
+                      }
+
+
                     </div>
-                }
+                    {
+                      files.length != 0 && files.map((i, k) => {
+                        return (
+                          <div
+                          className="d-flex align-items-center justify-content-between mt-2"
+                      >
+                          <span
+                              className="pointer"
+                              onClick={() => {
+
+                                  // setSelectedFileForViewing(i)
+                                  // setShowImage(true)
+                              }}
+                          >{i.name}</span>
+
+                          <div className="pointer"
+
+                              onClick={() => {
+                                  let tmpArr = files
+                                  tmpArr.splice(k, 1);
+
+
+                                  setFiles([...tmpArr])
+                              }}
+
+                          >
+                              <i class="bi bi-trash" style={{ fontSize: "30px", color: "red" }}></i>
+                          </div>
+
+                      </div>
+                        )
+                      })
+                    }
+                  </div>
+                  <div class="modal-footer">
+                  <button type="button" class="btn btn-primary bg-green" onClick={ async() => {
+
+                    let merge = {
+                      token: token.token,
+                      files
+                    }
+               
+                 
+
+                    const fetchData = async () => {
+
+                      try {
+                        const result = await dispatch(importExcelResidentsApi(merge)).unwrap();
+                          console.log("RESULT: ", result)
+                        // Handle success, e.g., navigate to another page
+                      } catch (error) {
+              
+                        // Handle error, e.g., show an error message
+                      }
+              
+                      setLoading(false)
+                    };
+              
+                    fetchData();
+
+                  }}>Submit</button>
+                    <button type="button" class="btn btn-secondary" onClick={() => setShowImport(false)}>Close</button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
 
           {/* Modal */}
         </div>
