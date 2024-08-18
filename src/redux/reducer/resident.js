@@ -185,7 +185,9 @@ export const createAppointmentApi = createAsyncThunk('user/createAppointment', a
   const res = await apiClient.post('/createAppointment', {
     document_type_id: data.id,
     schedule_date: data.selectedDate,
-    file_upload: data.file_upload
+    file_upload: data.file_upload,
+    purpose: data.purpose
+
 
   }, {
     headers: {
