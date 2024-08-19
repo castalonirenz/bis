@@ -66,6 +66,13 @@ export default function CreateAppointment() {
 
 
 
+    useEffect(() => {
+
+        if (accessToken != "") {
+            getDocumentList()
+        }
+    }, [accessToken])
+
 
     const onDrop = useCallback((acceptedFiles) => {
         // Convert files to base64 and update state
@@ -282,13 +289,7 @@ export default function CreateAppointment() {
     }
 
 
-    useEffect(() => {
-
-        if (accessToken != "") {
-            getDocumentList()
-        }
-    }, [accessToken])
-
+  
 
     const submitOTP = () => {
 
