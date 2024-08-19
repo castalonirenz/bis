@@ -332,7 +332,12 @@ export default function CreateAppointment() {
         let base64List = []
 
         files.map((i, k) => {
-            base64List.push(i.base64)
+            let item = {
+                data: i.base64,
+                file_name: i.fileName
+            };
+            let encoded = JSON.stringify(item);
+            base64List.push(encoded);
         })
 
         let data = {
