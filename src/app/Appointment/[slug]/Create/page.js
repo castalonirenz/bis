@@ -354,19 +354,19 @@ export default function CreateAppointment() {
 
             const result = await dispatch(createAppointmentApi(data)).unwrap();
 
+            console.log(result.success, "--> nani")
 
 
-
-            if (result.success) {
+            if (result.success = true) {
+                setSuccess(true)
                 setIsButtonDisabled(false)
                 setMessage("Successfully created an appointment please check your email for more details")
                 setShowSuccess(true)
-                setSuccess(false)
                 setSuccessOTP(false)
                 setAccessToken('')
                 setOTP('')
                 setFiles([])
-                setMessage('')
+                setPurpose('')
 
             }
             else {
