@@ -229,6 +229,49 @@ export const viewAllBlottersApi = createAsyncThunk('user/viewAllBlotters', async
   return res.data;
 });
 
+export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', async (data) => {
+
+  console.log(data, "--> RECEIVED")
+
+  const res = await apiClient.post('/fileBlotterReport', {
+    complainee_name: data.complainee_name,
+    complainant_name: data.complainant_name,
+    status_resolved: data.status_resolved,
+    complaint_remarks: data.complaint_remarks
+
+
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', async (data) => {
+
+  console.log(data, "--> RECEIVED")
+
+  const res = await apiClient.post('/editBlotterReport', {
+    complainee_name: data.complainee_name,
+    complainant_name: data.complainant_name,
+    status_resolved: data.status_resolved,
+    complaint_remarks: data.complaint_remarks,
+    id: data.id
+
+
+  }, {
+    headers: {
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }
+  });
+  return res.data;
+});
+
+
+
 export const importExcelResidentsApi = createAsyncThunk('user/importExcelResidents', async (data) => {
 
 
