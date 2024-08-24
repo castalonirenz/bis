@@ -130,10 +130,10 @@ export const viewNewResidentRequestsApi = createAsyncThunk('user/viewNewResident
 
 
 
-export const approveNewResidentApi = createAsyncThunk('user/approveNewResident', async (data) => {
+export const approveNewResidentApi = createAsyncThunk('user/editNewResidentStatus', async (data) => {
 
 
-  const res = await apiClient.post('/approveNewResident', {
+  const res = await apiClient.post('/editNewResidentStatus', {
     user_id: data.id,
     approve_reject: data.status
   }, {
