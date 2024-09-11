@@ -271,3 +271,55 @@ a {
   background-color: white;
 }
 
+
+
+.sidebar {
+  height: 100%;
+  width: 0%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  /* background-color: #111; */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  transition: 0.5s;
+}
+
+.mainpage{
+  width: 100%;
+  padding: 20px;
+}
+
+.openSidebar{
+  width: 30%;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .openSidebar{
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  /* For tablets: */
+  
+  .openSidebar{
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  /* For desktop: */
+  .openSidebar{
+    width: 50%;
+  }
+}
+
+@media only screen and (min-width: 800px) {
+  /* For desktop: */
+  .openSidebar{
+    width: 30%;
+  }
+}

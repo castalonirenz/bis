@@ -7,6 +7,7 @@ const initialState = {
   signedIn: false,
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
+  list:''
 };
 
 // Create axios instance
@@ -20,7 +21,7 @@ apiClient.interceptors.response.use(
   response => response,
   error => {
     if (error.response && error.response.status === 401) {
-      console.log('Unauthorized - 401');
+      
       // Handle unauthorized access, e.g., redirect to login
     }
     return Promise.reject(error);
@@ -29,6 +30,7 @@ apiClient.interceptors.response.use(
 
 // Define async thunks
 export const loginUser = createAsyncThunk('user/loginUser', async (params) => {
+  console.log('before:', params)
   const res = await apiClient.post('/adminLogin', {
     email: params.email,
     pass: params.pass,
@@ -45,6 +47,25 @@ export const validateUser = createAsyncThunk('user/validateUser', async () => {
   });
   return res.data;
 });
+
+export const viewAdminLogsApi = createAsyncThunk('user/viewAdminLogs', async (data) => {
+  
+  
+  const res = await apiClient.get('/viewAdminLogs', {
+    headers:{
+      'Authorization': `Bearer ${data.token}`, // Replace with your actual token
+      'Content-Type': 'application/json',
+    }, params:{
+      search_value: data.searchItemList,
+      page_number: data.currentPage,
+      item_per_page: 10,
+    }
+  });
+  return res.data;
+});
+
+
+
 
 // Create slice
 const userSlice = createSlice({
@@ -71,14 +92,30 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.token = action.payload.access_token;
+        state.user = action.payload
         state.signedIn = true;  // Update signedIn status
       })
       .addCase(loginUser.rejected, (state) => {
-        console.log('pumasok ka sa fail')
+        
         state.status = 'failed';
         state.signedIn = false;  // Update signedIn status
-      });
+      });   
+
+      builder
+      .addCase(viewAdminLogsApi.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(viewAdminLogsApi.fulfilled, (state, action) => {
+        
+        state.status = 'succeeded';
+        state.list = action.payload;
+      })
+      .addCase(viewAdminLogsApi.rejected, (state) => {
+        
+        state.status = 'failed';
+      });   
   },
+
 });
 
 // Export actions and reducer

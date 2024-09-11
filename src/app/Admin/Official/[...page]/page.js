@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
 import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
 import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
-import { LogOut } from "@/redux/reducer/user";
+import { LogOut, viewAdminLogsApi } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -29,9 +29,15 @@ export default function Official({ params }) {
   const router = useRouter()
   const officials = useSelector(state => state)
   const alluser = useSelector(state => state.alluser)
+
   const documentList = useSelector(state => state.document)
   const dashboard = useSelector(state => state.officials.dashboardData)
   const token = useSelector(state => state.user)
+
+
+  const logs = useSelector(state => state.user.list)
+
+
   const [sample, setSample] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
   ])
@@ -49,7 +55,7 @@ export default function Official({ params }) {
   const [showAddResident, setShowAddResident] = useState(false)
 
 
-
+  const [isPending, setIsPending] = useState(0)
 
   // const handleKeyDown = (event) => {
 
@@ -102,7 +108,8 @@ export default function Official({ params }) {
       '/Admin/Official/Schedule/1/',
       '/Admin/Official/Services/1/',
       '/Admin/Official/Blotter/1/',
-      '/Admin/Official/Dashboard'
+      '/Admin/Official/Dashboard',
+      '/Admin/Official/Logs/1/'
     ];
 
     const path = tab < paths.length ? paths[tab] + searchItem : paths[paths.length - 1];
@@ -143,6 +150,9 @@ export default function Official({ params }) {
 
   const [searchVal, setSearchVal] = useState('')
   const [searchOfficial, setSearchOfficial] = useState([])
+
+  const [searchUserList, setSearchUser] = useState([])
+
   const [selectedSearchItem, setSelectedSearchItem] = useState('')
   const [count, setCount] = useState(0)
 
@@ -196,7 +206,14 @@ export default function Official({ params }) {
     complainee_name: '',
     complainant_name: '',
     status_resolved: '',
-    complaint_remarks: ''
+    complaint_remarks: '',
+    is_resident: null,
+    is_resident_complainant: null,
+    complainee_id: '',
+    complainant_id:'',
+    search: '',
+    searchFirst: '',
+    officer_on_duty: ''
   })
 
   //0 ongoing 1 solve
@@ -286,6 +303,11 @@ export default function Official({ params }) {
       seTab(10)
     }
 
+    if (getPage == "Logs") {
+      setCurrentPage(getPageNumber)
+      seTab(7)
+    }
+
     setSearchItemList(getSearchItem)
 
   }, [])
@@ -298,8 +320,11 @@ export default function Official({ params }) {
     let data = {
       token: token.token,
       currentPage,
-      searchItemList
+      searchItemList,
+      isPending,
+      per_page: 10
     }
+
 
     if (tab == 10) {
       const fetchData = async () => {
@@ -347,6 +372,7 @@ export default function Official({ params }) {
       fetchData();
     }
     if (tab == 1 || tab == 0) {
+
       const fetchData = async () => {
 
         try {
@@ -368,6 +394,29 @@ export default function Official({ params }) {
       fetchData();
     }
 
+    if (tab == 7) {
+      const fetchData = async () => {
+
+        try {
+          const result = await dispatch(viewAdminLogsApi(data)).unwrap();
+
+
+          setTotalPage(result.total_pages)
+
+          if (currentPage > result.total_pages) {
+
+          }
+
+          // Handle success, e.g., navigate to another page
+        } catch (error) {
+
+          // Handle error, e.g., show an error message
+        }
+        setLoading(false)
+      };
+
+      fetchData();
+    }
 
 
     if (tab == 3) {
@@ -421,7 +470,7 @@ export default function Official({ params }) {
 
     if (tab == 4) {
 
-
+      loadAll()
       const fetchData = async () => {
 
         try {
@@ -457,6 +506,7 @@ export default function Official({ params }) {
     //v search val
     // officials list
     let tmpArr = []
+
     alluser.list.data.map((i, k) => {
 
       let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
@@ -474,7 +524,68 @@ export default function Official({ params }) {
 
     })
 
+
     setSearchOfficial(tmpArr)
+  }
+
+  const searchUser = (v) => {
+
+
+    setSearchVal(v)
+    //v search val
+    // officials list
+    let tmpArr = []
+
+    alluser.user.data.map((i, k) => {
+
+      let fullname = i.first_name + " " + i.middle_name + " " + i.last_name
+
+
+      // Create a regular expression dynamically with case-insensitive flag
+      const regex = new RegExp(v, 'i');
+
+      // Perform the search
+      const found = regex.test(fullname);
+
+      if (found) {
+        tmpArr.push(i)
+      }
+
+    })
+
+
+    setSearchUser(tmpArr)
+  }
+
+  const loadAll = (v) => {
+
+    let data = {
+      token: token.token,
+      currentPage,
+      searchItemList: '',
+      isPending,
+      per_page: 1000000
+    }
+
+    const fetchData = async () => {
+
+      try {
+        const result = await dispatch(loadAllUsers(data)).unwrap();
+
+        setTotalPage(result.total_pages)
+
+
+        // Handle success, e.g., navigate to another page
+      } catch (error) {
+
+        // Handle error, e.g., show an error message
+      }
+
+      setLoading(false)
+    };
+
+
+    fetchData();
   }
 
   const deleteOffials = () => {
@@ -979,6 +1090,9 @@ export default function Official({ params }) {
     if (v == 10) {
       router.push('/Admin/Official/Dashboard')
     }
+    if (v == 7) {
+      router.push('/Admin/Official/Logs/1')
+    }
 
     // seTab(v)
   }
@@ -993,6 +1107,8 @@ export default function Official({ params }) {
     if (tab == 3) slug = "Services"
     if (tab == 1) slug = "Resident"
     if (tab == 4) slug = "Blotter"
+    if (tab == 7) slug = "Logs"
+
 
     if (k == 1) {
       //next
@@ -1130,102 +1246,141 @@ export default function Official({ params }) {
   }
 
   return (
-    <main className={`container-fluid`}>
+    <main className={``}>
       <Auth>
-        <div className="row vh-100" style={{ backgroundColor: "white" }}>
+        <div className="vh-100 w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
-          <div className="col-lg-4 p-5 d-flex flex-column bg-green side-bg">
+          <div id='sidebar' className="sidebar overflow-auto">
+            {/* asan */}
 
-            <div className="d-flex flex-column align-items-center logo-bg col-lg-12" style={{ height: "100px" }}>
+            <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
+
+              <div
+                className="d-flex align-items-center justify-content-center pointer"
+                style={{ position: "absolute", top: 20, right: 30 }}
+                onClick={() => {
+
+                  document.getElementById("sidebar").classList.remove("openSidebar");
+                }}
+              >
+                <i class="bi bi-arrow-bar-left f-white" style={{ fontSize: "36px" }}></i>
+                <span className="f-white" style={{ fontSize: "24px" }}>Close</span>
+              </div>
+
+              <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
+
+              </div>
+
+
+
+              {/* Navigation */}
+
+              <div className="flex-column mt-5">
+
+
+
+                <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded ${tab == 10 ? 'active-nav' : ''} pointer`}>
+                  <i class="bi bi-person f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Dashboard
+                  </span>
+                </div>
+
+
+
+                <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
+                  <i class="bi bi-person f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Barangay Officials
+                  </span>
+                </div>
+
+
+                <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded ${tab == 1 ? 'active-nav' : ''} pointer`}>
+
+                  <i class="bi bi-people-fill f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Manage Residents
+                  </span>
+                </div>
+
+
+                <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
+
+                  <i class="bi bi-calendar-date f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Schedules
+                  </span>
+                </div>
+
+
+                <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
+
+                  <i class="bi bi-person-fill-slash f-white icon"></i>
+                  <span className="f-white ms-2 nav-item">
+                    Blotter
+                  </span>
+                </div>
+
+                <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded ${tab == 3 ? 'active-nav' : ''} pointer`}>
+                  <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
+                  <span className="f-white nav-item ms-2">
+                    Services
+                  </span>
+                </div>
+
+
+                <div onClick={() => changeTab(7)} className={`p-4 w-100 rounded ${tab == 7 ? 'active-nav' : ''} pointer`}>
+                  <i class="bi bi-activity f-white icon"></i>
+                  <span className="f-white nav-item ms-2">
+                    Logs
+                  </span>
+                </div>
+
+
+
+              </div>
+              {/* Navigation */}
 
             </div>
-
-
-
-            {/* Navigation */}
-
-            <div className="flex-column mt-5">
-
-              <div onClick={() => changeTab(10)} className={`p-4 w-100 rounded ${tab == 10 ? 'active-nav' : ''} pointer`}>
-                <i class="bi bi-person f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Dashboard
-                </span>
-              </div>
-
-
-
-              <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded ${tab == 0 ? 'active-nav' : ''} pointer`}>
-                <i class="bi bi-person f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Barangay Officials
-                </span>
-              </div>
-
-
-              <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded ${tab == 1 ? 'active-nav' : ''} pointer`}>
-
-                <i class="bi bi-people-fill f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Manage Residents
-                </span>
-              </div>
-
-
-              <div onClick={() => changeTab(2)} className={`p-4 w-100 rounded ${tab == 2 ? 'active-nav' : ''} pointer`}>
-
-                <i class="bi bi-calendar-date f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Schedules
-                </span>
-              </div>
-
-
-              <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded ${tab == 4 ? 'active-nav' : ''} pointer`}>
-
-                <i class="bi bi-person-fill-slash f-white icon"></i>
-                <span className="f-white ms-2 nav-item">
-                  Blotter
-                </span>
-              </div>
-
-              <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded ${tab == 3 ? 'active-nav' : ''} pointer`}>
-                <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
-                <span className="f-white nav-item ms-2">
-                  Services
-                </span>
-              </div>
-
-
-
-            </div>
-            {/* Navigation */}
-
           </div>
 
-          <div className="col-lg-8 d-flex flex-column align-items-center justify-content-center mt-5" style={{}}>
+          <div className="mainpage flex-column align-items-center justify-content-center mt-5" style={{}}>
 
 
 
-            <div class="dropdown d-flex align-items-center justify-content-between w-100" >
+            <div class="dropdown d-flex align-items-center justify-content-between w-100 " >
 
-              <h4>
-                {
-                  tab == 10 && "Dashboard"
-                }
-                {
-                  tab == 0 && "Barangay Officials"
-                }
 
-                {
-                  tab == 1 && "Barangay Officials"
-                }
+              <div className="d-flex align-items-center justify-content-center">
+                <div
+                  onClick={() => {
 
-                {
-                  tab == 3 && "Barangay Services"
-                }
 
-              </h4>
+                    document.getElementById("sidebar").classList.add("openSidebar");
+                  }}
+                  className="pointer">
+                  <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
+                </div>
+                <h4 className="ms-5">
+                  {
+                    tab == 10 && "Dashboard"
+                  }
+                  {
+                    tab == 0 && "Barangay Officials"
+                  }
+
+                  {
+                    tab == 1 && "Barangay Officials"
+                  }
+
+                  {
+                    tab == 3 && "Barangay Services"
+                  }
+
+                </h4>
+              </div>
+
               <div style={{ position: "relative" }}>
                 <div
                   className="d-flex align-items-center justify-content-center"
@@ -1644,9 +1799,9 @@ export default function Official({ params }) {
                       }}
                       type="email" className="form-control rounded ms-2" placeholder="Search name" />
 
-                    
-                    
-                    <div className="col-6 ms-3">
+
+
+                    <div className="col-6 ms-3 d-flex">
                       <button
                         onClick={() => {
                           setShowImport(true)
@@ -1657,11 +1812,43 @@ export default function Official({ params }) {
                         <i class="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i>
                         <span className="fw-bold f-white ms-2">Import</span>
                       </button>
+
+                      <button
+                        onClick={() => {
+
+
+                          setIsPending(isPending == 0 ? 1 : 0)
+
+                          setCount(count + 1)
+                        }}
+                        className="ms-3 primary bg-yellow p-2 rounded d-flex align-items-center justify-content-center" style={{ border: "0px" }}
+                      >
+                        {/* <i className="bi bi-plus fw-bold" style={{ fontSize: "20px" }}></i> */}
+                        {/* <i class="bi bi-cloud-upload f-white" style={{ fontSize: "20px" }}></i> */}
+
+                        {
+                          isPending == 1 ?
+                            <i class="bi bi-person-check-fill" style={{ fontSize: "40px" }}></i>
+                            :
+                            <i class="bi bi-person-exclamation" style={{ fontSize: "40px" }}></i>
+                        }
+
+
+                        <span className="fw-bold f-white ms-2"
+                          style={{
+                            // color: isPending == 1 ? "#057350" : "white"
+                          }}
+                        >{isPending == 0 ? "View Pending Resident" : "View Registered Resident"}</span>
+                      </button>
+
+
                     </div>
+
                   </div>
 
-                  <div  className="d-flex">
-                  <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
+                  <div className="d-flex">
+
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadUsers')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "200px" }}>
 
@@ -1704,6 +1891,10 @@ export default function Official({ params }) {
                     <HeaderItem>
                       User Status
                     </HeaderItem>
+
+                    <HeaderItem>
+                      Appointments
+                    </HeaderItem>
                     <HeaderItem>
                       Action
                     </HeaderItem>
@@ -1715,9 +1906,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
-
+                    { }
                     {
-                      alluser.list.data.map((i, k) => {
+                      alluser.user.data.map((i, k) => {
 
                         return (
 
@@ -1750,6 +1941,7 @@ export default function Official({ params }) {
                                 {i.voter_status == 0 ? "Voter" : "Non-Voter"}
                               </span>
                             </RowItem>
+
                             <RowItem
                               onClick={() => {
                                 setIsEdit(true)
@@ -1760,6 +1952,12 @@ export default function Official({ params }) {
                             >
                               <span className="f-white pointer" style={{ fontWeight: i.isPendingResident == 1 ? "bold" : "normal", color: i.isPendingResident == 1 ? "yellow" : "#fff" }}>
                                 {i.isPendingResident == 1 ? "Pending" : "Registered"}
+                              </span>
+                            </RowItem>
+
+                            <RowItem>
+                              <span className="f-white">
+                                {i.appointments_made}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -1858,6 +2056,10 @@ export default function Official({ params }) {
 
                   {/* Table header */}
                   <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+
+                    <HeaderItem>
+                      Queing
+                    </HeaderItem>
                     <HeaderItem>
                       Date
                     </HeaderItem>
@@ -1887,6 +2089,11 @@ export default function Official({ params }) {
 
                           // Put dynamic className
                           <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.appointment_id}
+                              </span>
+                            </RowItem>
                             <RowItem>
                               <span className="f-white">
                                 {moment(i.schedule_date).format('MM/DD/YYYY')}
@@ -2209,9 +2416,9 @@ export default function Official({ params }) {
                         handleKeyDown(v.target.value)
                       }}
                       type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
-                 
-                      
-                 <button onClick={() => window.open('https://18.141.22.83/api/downloadBlotters')} type="button"
+
+
+                    <button onClick={() => window.open('https://18.141.22.83/api/downloadBlotters')} type="button"
                       class="btn btn-primary bg-yellow border-0 ms-3 d-flex align-items-center justify-content-center"
                       style={{ width: "300px" }}>
 
@@ -2304,7 +2511,8 @@ export default function Official({ params }) {
 
                                 <button
                                   onClick={() => {
-                                    console.log(i, '--> check')
+
+                                    console.log(i)
                                     setIsViewing(true)
                                     setShowBlotter(true)
                                     setBlotter(i)
@@ -2343,6 +2551,109 @@ export default function Official({ params }) {
             {/* Barangay services */}
 
             {
+              tab == 7 &&
+              <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
+
+                <div className="border-bottom p-2 pb-4 mt-3">
+                  <h2 className="f-white">Admin logs</h2>
+                </div>
+
+                <div className="d-flex mt-4 justify-content-between pb-4 border-bottom">
+
+                  <div className="d-flex align-items-center">
+                    <span className="f-white">Search:</span>
+                    <input
+                      // onKeyDown={handleKeyDown}
+                      onChange={(v) => {
+                        setSearchItemList(v.target.value)
+                        handleKeyDown(v.target.value)
+                      }}
+                      value={searchItemList}
+                      type="email" className="form-control rounded ms-2" id="exampleFormControlInput1" />
+                  </div>
+
+                  <div >
+                    <button
+                      data-bs-toggle="modal" data-bs-target="#addBarangayServices"
+                      className="primary bg-yellow p-2 rounded border-0"
+                    >
+                      <i className="bi bi-plus fw-bold f-white" style={{ fontSize: "20px" }}></i>
+                      <span className="fw-bold f-white">Document Type</span>
+                    </button>
+                  </div>
+                </div>
+
+
+                {/*  */}
+                <div className="border-bottom p-2 pb-4 mt-3">
+
+                  {/* Table header */}
+                  <div className="d-flex col-lg-12 align-items-center justify-content-around border-bottom pb-4" style={{}}>
+                    <HeaderItem>
+                      No.
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action type
+                    </HeaderItem>
+                    <HeaderItem>
+                      Description
+                    </HeaderItem>
+                    <HeaderItem>
+                      Action taker
+                    </HeaderItem>
+                  </div>
+
+
+
+                  {/* Table body */}
+                  { }
+
+                  <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
+
+                    {
+                      logs.length != 0 && logs.map((i, k) => {
+                        return (
+
+                          // Put dynamic className
+                          <div className='d-flex col-lg-12 justify-content-around row-item-container'>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.action_taker_id}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.action_type}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.log_details}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.admin_name}
+                              </span>
+                            </RowItem>
+                          </div>
+
+                        )
+                      })
+                    }
+
+                  </div>
+
+                  {/* Table body */}
+                </div>
+
+
+
+
+              </div>
+            }
+
+            {
               tab != 10 &&
               <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
                 <div>
@@ -2373,6 +2684,7 @@ export default function Official({ params }) {
 
               </div>
             }
+
 
 
           </div>
@@ -2566,6 +2878,37 @@ export default function Official({ params }) {
                     <h1 class="modal-title fs-5" id="addOfficialModalLabel"> {isEdit ? (!isViewing ? "Edit Resident" : "View Resident") : "Add Resident"}</h1>
                   </div>
                   <div class="modal-body">
+
+                    {
+                      isViewing &&
+
+                      <div class="mb-3">
+                        <label class="form-label">Appointment made</label>
+                        <input
+                          id='fnameinput'
+                          disabled={isViewing}
+                          value={resident.appointments_made}
+                          onChange={(val) => {
+
+                            if (val.target.value != "") {
+                              document.getElementById('fnameinput').style.border = '1px solid #dee2e6'
+                            }
+                            else {
+                              document.getElementById('fnameinput').style.border = '1px solid red'
+                            }
+
+                            setResident({
+                              ...resident, ...{
+                                first_name: val.target.value
+                              }
+                            })
+
+                          }}
+                          class="form-control" />
+
+                      </div>
+                    }
+
                     <div class="mb-3">
                       <label class="form-label">First name</label>
                       <input
@@ -3209,9 +3552,50 @@ export default function Official({ params }) {
                 </div>
                 <div class="d-flex align-items-center flex-column justify-content-center w-100 p-5" >
 
-                  <div class="mb-3 w-100">
+
+                {
+                        !isViewing && 
+
+                        <div className="d-flex align-items-center w-100 mb-3">
+                        <div class="form-check">
+                          <input 
+                            
+                            onChange={() => {
+    
+                              setBlotter({
+                                ...blotter, ...{
+                                  is_resident_complainant: true
+                                }
+                              })
+                            }}   
+                            class="form-check-input" type="radio" name="flexRadioDefault2" id="flexRadioDefault3" />
+                          <label class="form-check-label" for="flexRadioDefault3">
+                            Resident
+                          </label>
+                        </div>
+                        <div class="form-check ms-3">
+                          <input 
+                             onChange={() => {
+    
+                              setBlotter({
+                                ...blotter, ...{
+                                  is_resident_complainant: false
+                                }
+                              })
+                            }}
+                          class="form-check-input" type="radio" name="flexRadioDefaul2" id="flexRadioDefault4" />
+                          <label class="form-check-label" for="flexRadioDefault4">
+                            Non-resident
+                          </label>
+                        </div>
+                      </div>
+                      }
+
+
+                  <div class="mb-3 w-100" style={{position:"relative"}}>
                     <label class="form-label">Complainant</label>
                     <input
+                      disabled={isViewing ? true : false}
                       id='complainantinput'
                       // value={cost}
                       value={blotter.complainant_name}
@@ -3219,30 +3603,135 @@ export default function Official({ params }) {
 
                         setBlotter({
                           ...blotter, ...{
-                            complainant_name: val.target.value
+                            complainant_name: val.target.value,
+                            complainee_id: '',
+                            searchFirst: val.target.value
                           }
                         })
+
+                        searchUser(val.target.value)
 
                       }}
                       class="form-control" />
 
+            {
+                        blotter.searchFirst != "" && blotter.is_resident_complainant &&
+                      <div className="box position-absolute w-100" style={{ maxHeight: "300px", overflow: "scroll", width: "500px", zIndex: 999999 }}>
+                        {
+                          searchUserList.map((i, k) => {
+                            return (
+                              <div
+                                onClick={() => {
+                                  
+                                  setBlotter({
+                                    ...blotter, ...{
+                                      complainant_id: i.id,
+                                      complainant_name: i.full_name,
+                                      searchFirst: ''
+                                    }
+                                  })
+                                  console.log(i)
+                                }}
+                                className="search-item pointer">
+                                <span>
+                                  {i.first_name + " " + i.middle_name + " " + i.last_name}
+                                </span>
+                              </div>
+                            )
+                          })
+                        }
+                      </div>
+                    }
+
                   </div>
 
-                  <div class="mb-3 w-100">
+                      {
+                        !isViewing && 
+
+                        <div className="d-flex align-items-center w-100 mb-3">
+                        <div class="form-check">
+                          <input 
+                            
+                            onChange={() => {
+    
+                              setBlotter({
+                                ...blotter, ...{
+                                  is_resident: true
+                                }
+                              })
+                            }}   
+                            class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" />
+                          <label class="form-check-label" for="flexRadioDefault1">
+                            Resident
+                          </label>
+                        </div>
+                        <div class="form-check ms-3">
+                          <input 
+                             onChange={() => {
+    
+                              setBlotter({
+                                ...blotter, ...{
+                                  is_resident: false
+                                }
+                              })
+                            }}
+                          class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                          <label class="form-check-label" for="flexRadioDefault2">
+                            Non-resident
+                          </label>
+                        </div>
+                      </div>
+                      }
+
+                  <div class="mb-3 w-100" style={{ position: "relative" }}>
                     <label class="form-label">Complainee</label>
                     <input
                       id='complaineeinput'
                       // value={cost}
+                      disabled={isViewing ? true : false}
                       value={blotter.complainee_name}
                       onChange={(val) => {
                         setBlotter({
                           ...blotter, ...{
-                            complainee_name: val.target.value
+                            complainee_name: val.target.value,
+                            complainee_id: '',
+                            search: val.target.value
                           }
                         })
 
+
+                        searchUser(val.target.value)
+
                       }}
                       class="form-control" />
+                    {
+                        blotter.search != "" && blotter.is_resident &&
+                      <div className="box position-absolute w-100" style={{ maxHeight: "300px", overflow: "scroll", width: "500px" }}>
+                        {
+                          searchUserList.map((i, k) => {
+                            return (
+                              <div
+                                onClick={() => {
+                                  
+                                  setBlotter({
+                                    ...blotter, ...{
+                                      complainee_id: i.id,
+                                      complainee_name: i.full_name,
+                                      search: ''
+                                    }
+                                  })
+                                  console.log(i)
+                                }}
+                                className="search-item pointer">
+                                <span>
+                                  {i.first_name + " " + i.middle_name + " " + i.last_name}
+                                </span>
+                              </div>
+                            )
+                          })
+                        }
+                      </div>
+                    }
 
                   </div>
 
@@ -3263,6 +3752,23 @@ export default function Official({ params }) {
 
                   </div>
 
+                  <div class="mb-3 w-100">
+                    <label class="form-label">Officer on duty</label>
+                    <input
+                      id='inputofficer'
+                      // value={cost}
+                      value={blotter.officer_on_duty}
+                      onChange={(val) => {
+                        setBlotter({
+                          ...blotter, ...{
+                            officer_on_duty: val.target.value
+                          }
+                        })
+                      }}
+                      class="form-control" />
+
+                  </div>
+
 
                   <div class="mb-3 w-100">
                     <label class="form-label">Status</label>
@@ -3271,7 +3777,7 @@ export default function Official({ params }) {
                       value={blotter.status_resolved}
                       id='statusblotter'
                       onChange={(v) => {
-                        console.log(v.target.value, "--> WHAT")
+
                         setBlotter({
                           ...blotter, ...{
                             status_resolved: v.target.value
@@ -3299,24 +3805,28 @@ export default function Official({ params }) {
                           ...blotter
                         }
 
-                        console.log(merge, ' --> before')
+
                         try {
                           let result;
 
                           result = !isViewing ? await dispatch(fileBlotterReportApi(merge)).unwrap() : await dispatch(editBlotterReportApi(merge)).unwrap();
-                          console.log(result, "--> output", isViewing)
 
+                          setIsViewing(false)
                           setShowBlotter(false)
                           setSuccess(true)
                           setShowSuccess(true)
-                          SetMessage( !isViewing ?  'Blotter successfully created' : "Blotter successfully updated")
+                          SetMessage(!isViewing ? 'Blotter successfully created' : "Blotter successfully updated")
                           setCount(count + 1)
                           setBlotter({
                             complainee_name: '',
                             complainant_name: '',
                             status_resolved: '',
-                            complaint_remarks: ''
+                            complaint_remarks: '',
+                            is_resident: null,
+                            complainee_id: '',
+                            search: ''
                           })
+                         
                           setLoading(false)
                           // Handle success, e.g., navigate to another page
                         } catch (error) {

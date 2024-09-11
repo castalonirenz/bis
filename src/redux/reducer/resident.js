@@ -8,6 +8,9 @@ const initialState = {
   list: {
     data: []
   },
+  user: {
+    data: []
+  },
   status: 'idle',  // Start with 'idle' instead of 'false'
   token: '',
 };
@@ -32,7 +35,7 @@ apiClient.interceptors.response.use(
 // Define async thunks
 export const applyNewResidentApi = createAsyncThunk('user/applyNewResident', async (data) => {
   let params = data
-  
+
   const res = await apiClient.post('/applyNewResident', {
     ...params.resident, ...{
       birthday: moment(params.birthday).format("YYYY-MM-DD"),
@@ -106,7 +109,8 @@ export const loadAllUsers = createAsyncThunk('user/viewAllUsers', async (data) =
     }, params: {
       search_value: data.searchItemList,
       page_number: data.currentPage,
-      item_per_page: 10
+      item_per_page: data.per_page,
+      isPendingResident: data.isPending
     }
   });
   return res.data;
@@ -234,11 +238,13 @@ export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', a
   console.log(data, "--> RECEIVED")
 
   const res = await apiClient.post('/fileBlotterReport', {
-    complainee_name: data.complainee_name,
-    complainant_name: data.complainant_name,
+    complainee_name: data.complainee_id == "" ? data.complainee_name : '',
+    complainant_name: data.complainant_id == "" ? data.complainant_name : '',
     status_resolved: data.status_resolved,
-    complaint_remarks: data.complaint_remarks
-
+    complaint_remarks: data.complaint_remarks,
+    complainee_id: data.complainee_id,
+    complainant_id: data.complainant_id,
+    officer_on_duty: data.officer_on_duty
 
   }, {
     headers: {
@@ -258,7 +264,8 @@ export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', a
     complainant_name: data.complainant_name,
     status_resolved: data.status_resolved,
     complaint_remarks: data.complaint_remarks,
-    id: data.id
+    id: data.id,
+    officer_on_duty: data.officer_on_duty
 
 
   }, {
@@ -276,10 +283,10 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
 
 
   const formData = new FormData();
- 
-  
+
+
   data.files.map((i, k) => {
-    
+
     formData.append('file_upload', i);
   })
 
@@ -287,8 +294,8 @@ export const importExcelResidentsApi = createAsyncThunk('user/importExcelResiden
   formData.forEach((value, key) => {
     formDataObj[key] = value;
   });
-  
-  
+
+
   const res = await apiClient.post('/importExcelResidents', formData, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
@@ -330,14 +337,15 @@ const usersSlice = createSlice({
     builder
       .addCase(loadAllUsers.pending, (state) => {
         state.status = 'loading';
-        state.list.data = []
+        state.user.data = []
       })
       .addCase(loadAllUsers.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.list = action.payload;
+        // state.list = action.payload;
+        state.user = action.payload
       })
       .addCase(loadAllUsers.rejected, (state) => {
-        state.list.data = []
+        state.user.data = []
         state.status = 'failed';
       });
 
@@ -381,7 +389,7 @@ const usersSlice = createSlice({
         state.status = 'failed';
       });
 
-      builder
+    builder
       .addCase(viewAllBlottersApi.pending, (state) => {
         state.status = 'loading';
         state.list.data = []
