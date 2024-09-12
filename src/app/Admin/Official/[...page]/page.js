@@ -2612,8 +2612,9 @@ export default function Official({ params }) {
 
                   <div className="d-flex flex-column  col-lg-12 align-items-center justify-content-between table-mh" >
 
+                      {console.log(logs, "--> eto")}
                     {
-                      logs.length != 0 && logs.map((i, k) => {
+                      logs.length != 0 && logs.data.map((i, k) => {
                         return (
 
                           // Put dynamic className
