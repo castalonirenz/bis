@@ -1660,6 +1660,7 @@ export default function Official({ params }) {
                     <span className="f-white">Search:</span>
                     <input
                       // onKeyDown={handleKeyDown}
+                      value={searchItemList}
                       onChange={(v) => {
                         setSearchItemList(v.target.value)
                         handleKeyDown(v.target.value)
