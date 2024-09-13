@@ -1849,7 +1849,7 @@ export default function Official({ params }) {
                           style={{
                             // color: isPending == 1 ? "#057350" : "white"
                           }}
-                        >{isPending == 0 ? "View Pending Resident" : "View Registered Resident"}</span>
+                        >{alluser.isPending == 0 ? "View Pending Resident" : "View Registered Resident"}</span>
                       </button>
 
 
@@ -1868,7 +1868,7 @@ export default function Official({ params }) {
 
                     {
                       
-                      isPending == 0 &&
+                      alluser.isPending == 0 &&
                       <button
                       onClick={() => {
                         setShowAddResident(true)
