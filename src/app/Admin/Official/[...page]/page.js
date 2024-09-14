@@ -2301,6 +2301,7 @@ export default function Official({ params }) {
                         setIsCert(1)
                         setDocId('')
                         setServiceDesc('')
+                        setIsEdit(false)
                       }}
                       data-bs-toggle="modal" data-bs-target="#addBarangayServices"
                       className="primary bg-yellow p-2 rounded border-0"
@@ -3626,7 +3627,7 @@ export default function Official({ params }) {
                   <div class="mb-3 w-100" style={{position:"relative"}}>
                     <label class="form-label">Complainant</label>
                     <input
-                      disabled={isViewing ? true : false}
+                      disabled={isViewing ? true : (blotter.is_resident_complainant == null ? true : false)}
                       id='complainantinput'
                       // value={cost}
                       value={blotter.complainant_name}
@@ -3721,7 +3722,7 @@ export default function Official({ params }) {
                     <input
                       id='complaineeinput'
                       // value={cost}
-                      disabled={isViewing ? true : false}
+                      disabled={isViewing ? true : (blotter.is_resident == null ? true : false)}
                       value={blotter.complainee_name}
                       onChange={(val) => {
                         setBlotter({
