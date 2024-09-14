@@ -1115,6 +1115,7 @@ export default function Official({ params }) {
     if (tab == 1) slug = "Resident"
     if (tab == 4) slug = "Blotter"
     if (tab == 6) slug = "Logs"
+    if(tab == 2) slug = "Schedule"
 
 
     if (k == 1) {
@@ -2086,6 +2087,9 @@ export default function Official({ params }) {
                       Service
                     </HeaderItem>
                     <HeaderItem>
+                      Purpose
+                    </HeaderItem>
+                    <HeaderItem>
                       Status
                     </HeaderItem>
                     <HeaderItem>
@@ -2123,6 +2127,11 @@ export default function Official({ params }) {
                             <RowItem>
                               <span className="f-white">
                                 {i.document_type}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.purpose}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -3830,6 +3839,8 @@ export default function Official({ params }) {
 
                   <div >
                     <button
+
+                      // disabled={false}
                       onClick={async () => {
                         // setShowBlotter(true)
                         setLoading(true)

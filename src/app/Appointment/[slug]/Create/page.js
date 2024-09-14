@@ -417,7 +417,7 @@ export default function CreateAppointment() {
 
 
 
-        if (selectedDate != "" && selectedDoc != "" && files.length != 0) {
+        if (selectedDate != "" && selectedDoc != "" && files.length != 0 && purpose != "") {
 
 
             setIsButtonDisabled(false)
@@ -427,7 +427,7 @@ export default function CreateAppointment() {
             setIsButtonDisabled(true)
         }
 
-    }, [selectedDate, selectedDoc, files.length])
+    }, [selectedDate, selectedDoc, files.length, purpose])
 
 
 
