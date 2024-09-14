@@ -57,6 +57,7 @@ export default function Official({ params }) {
 
   const [isPending, setIsPending] = useState(0)
 
+  
   // const handleKeyDown = (event) => {
 
 
@@ -201,6 +202,7 @@ export default function Official({ params }) {
   // male 0 female 1
   // Resident
 
+  const [disabledBlotterButton, setDisabledBlotterButton] = useState(true)
 
   const [blotter, setBlotter] = useState({
     complainee_name: '',
@@ -215,6 +217,92 @@ export default function Official({ params }) {
     searchFirst: '',
     officer_on_duty: ''
   })
+
+  useEffect(() => {
+    // This effect runs whenever any specified property in the `blotter` object changes
+    
+
+    if(blotter.is_resident){
+
+      if(blotter.complainee_id == ""){
+        setDisabledBlotterButton(true)
+      }
+    }
+    else{
+      if(blotter.complainant_name == ""){
+        setDisabledBlotterButton(true)
+      }
+    }
+
+    if(blotter.is_resident_complainant){
+
+      if(blotter.complainant_id == ""){
+        setDisabledBlotterButton(true)
+      }
+    }
+    else{
+      if(blotter.complainee_name == ""){
+        setDisabledBlotterButton(true)
+      }
+    }
+
+    
+    console.log(blotter.is_resident , blotter.is_resident_complainant)
+    
+    console.log(blotter)
+
+    if(blotter.is_resident && blotter.is_resident_complainant){
+
+        if(blotter.complainant_id != "" && blotter.complainee_id != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != ""){
+          setDisabledBlotterButton(false)
+        }
+        else{
+          setDisabledBlotterButton(true)
+        }
+
+    }
+    else if(!blotter.is_resident && blotter.is_resident_complainant){
+      if(blotter.complainee_name != "" && blotter.complainant_id != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != ""){
+        setDisabledBlotterButton(false)
+      }
+      else{
+        setDisabledBlotterButton(true)
+      }
+    }
+
+    else if(blotter.is_resident && !blotter.is_resident_complainant){
+      
+      if(blotter.complainee_id != "" && blotter.complainant_name != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != ""){
+        setDisabledBlotterButton(false)
+      }
+      else{
+        setDisabledBlotterButton(true)
+      }
+    }
+
+    else if(!blotter.is_resident && !blotter.is_resident_complainant){
+      if(blotter.complainant_name != "" && blotter.complainee_name != "" && blotter.complaint_remarks != "" && blotter.officer_on_duty != "" && blotter.status_resolved != ""){
+        setDisabledBlotterButton(false)
+      }
+      else{
+        setDisabledBlotterButton(true)
+      }
+    }
+
+
+  }, [
+    blotter.complainee_name,
+    blotter.complainant_name,
+    blotter.status_resolved,
+    blotter.complaint_remarks,
+    blotter.is_resident,
+    blotter.is_resident_complainant,
+    blotter.complainee_id,
+    blotter.complainant_id,
+    blotter.search,
+    blotter.searchFirst,
+    blotter.officer_on_duty
+  ]);
 
   //0 ongoing 1 solve
 
@@ -471,7 +559,7 @@ export default function Official({ params }) {
 
     }
 
-    console.log(alluser)
+    
     if (tab == 4) {
 
       loadAll()
@@ -1115,6 +1203,7 @@ export default function Official({ params }) {
     if (tab == 1) slug = "Resident"
     if (tab == 4) slug = "Blotter"
     if (tab == 6) slug = "Logs"
+    if(tab == 2) slug = "Schedule"
 
 
     if (k == 1) {
@@ -2086,6 +2175,9 @@ export default function Official({ params }) {
                       Service
                     </HeaderItem>
                     <HeaderItem>
+                      Purpose
+                    </HeaderItem>
+                    <HeaderItem>
                       Status
                     </HeaderItem>
                     <HeaderItem>
@@ -2123,6 +2215,11 @@ export default function Official({ params }) {
                             <RowItem>
                               <span className="f-white">
                                 {i.document_type}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.purpose}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -2462,6 +2559,7 @@ export default function Official({ params }) {
                           complaint_remarks: '',
                           is_resident: null,
                           complainee_id: '',
+                          complainant_id: '',
                           search: ''
                         })
                         setShowBlotter(true)
@@ -3595,7 +3693,8 @@ export default function Official({ params }) {
                               setBlotter({
                                 ...blotter, ...{
                                   is_resident_complainant: true,
-                                  complainant_name: ""
+                                  complainant_name: "",
+                                  complainant_id: ''
                                 }
                               })
                             }}   
@@ -3611,7 +3710,8 @@ export default function Official({ params }) {
                               setBlotter({
                                 ...blotter, ...{
                                   is_resident_complainant: false,
-                                   complainant_name: ""
+                                   complainant_name: "",
+                                    complainant_id: ''
                                 }
                               })
                             }}
@@ -3636,7 +3736,7 @@ export default function Official({ params }) {
                         setBlotter({
                           ...blotter, ...{
                             complainant_name: val.target.value,
-                            complainee_id: '',
+                            complainant_id: '',
                             searchFirst: val.target.value
                           }
                         })
@@ -3689,7 +3789,8 @@ export default function Official({ params }) {
                               setBlotter({
                                 ...blotter, ...{
                                   is_resident: true,
-                                  complainee_name: ''
+                                  complainee_name: '',
+                                  complainee_id: ''
                                 }
                               })
                             }}   
@@ -3705,7 +3806,8 @@ export default function Official({ params }) {
                               setBlotter({
                                 ...blotter, ...{
                                   is_resident: false,
-                                  complainee_name: ''
+                                  complainee_name: '', 
+                                  complainee_id:''
                                 }
                               })
                             }}
@@ -3830,6 +3932,9 @@ export default function Official({ params }) {
 
                   <div >
                     <button
+
+                      // disabled={false}
+                      disabled={disabledBlotterButton}
                       onClick={async () => {
                         // setShowBlotter(true)
                         setLoading(true)
@@ -3858,6 +3963,7 @@ export default function Official({ params }) {
                             complaint_remarks: '',
                             is_resident: null,
                             complainee_id: '',
+                            complainant_id: '',
                             search: ''
                           })
                          
