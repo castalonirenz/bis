@@ -317,7 +317,7 @@ a {
 
 
 .mainpage{
-  width: 90%;
+  width: 100%;
   padding: 20px;
 }
 
@@ -330,7 +330,7 @@ a {
 }
 
 .openSidebar-full{
-  width: 100%;
+  width: 40%;
 }
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
