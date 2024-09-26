@@ -1305,12 +1305,12 @@ export default function Official({ params }) {
   return (
     <main className={``}>
       <Auth>
-        <div className="vh-100 w-100" style={{ backgroundColor: "white", display: "flex" }}>
+        <div className="w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
           <div id='sidebar'
             className="overflow-auto sidebar">
          
-            <div id='menu' className="w-100" style={{overflow:"scroll"}}>
+            <div id='menu' className="w-100">
               { /* asan */}
 
             
