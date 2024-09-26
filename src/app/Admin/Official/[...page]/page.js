@@ -1317,7 +1317,7 @@ export default function Official({ params }) {
               { /* asan */}
 
             
-              <div className="col-lg-12 p-5 d-flex flex-column bg-green side-bg">
+              <div  className="col-lg-12 p-5 d-flex flex-column bg-green">
               <div
                   onClick={() => {
 
@@ -1330,13 +1330,14 @@ export default function Official({ params }) {
                       document.getElementById("sidebar").classList.remove("openSidebar-full");
 
                       document.getElementById("sidebar").classList.add("sidebar");
+                      document.getElementById("sidebarbg").classList.remove('logo-bg')
                       // document.getElementById("sidebar").style.width = "auto"
                       setOpenSide(false)
                     }
                     else{
                       document.getElementById("menu").classList.add("openSidebar");
                       document.getElementById("sidebar").classList.add("openSidebar-full");
-
+                      document.getElementById("sidebarbg").classList.add('logo-bg')
                       document.getElementById("sidebar").classList.remove("sidebar");
 
                       setOpenSide(true)
@@ -1347,7 +1348,7 @@ export default function Official({ params }) {
                   className="pointer">
                   <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
                 </div>
-                <div className="d-flex flex-column align-items-center logo-bg col-lg-12 mt-5" style={{ height: "100px" }}>
+                <div id='sidebarbg' className="d-flex flex-column align-items-center  col-lg-12 mt-5" style={{ height: "100px" }}>
 
                 </div>
 
@@ -1496,14 +1497,14 @@ export default function Official({ params }) {
                     if(document.getElementById("menu").classList.contains("openSidebar")){
                       document.getElementById("menu").classList.remove("openSidebar");
                       document.getElementById("sidebar").classList.remove("openSidebar-full");
-
+                      document.getElementById("sidebarbg").classList.remove('logo-bg')
                       setOpenSide(false)
                     }
                     else{
                       
                       document.getElementById("menu").classList.add("openSidebar");
                       document.getElementById("sidebar").classList.add("openSidebar-full");
-
+                      document.getElementById("sidebarbg").classList.add('logo-bg')
                       setOpenSide(true)
                     }
 
