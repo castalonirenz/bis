@@ -96,7 +96,7 @@ export default function CreateAppointment() {
                 // Update state with new files
                 setFiles(prevFiles => [...prevFiles, ...filesWithBase64]);
 
-                
+
 
             })
             .catch(error => {
@@ -176,9 +176,12 @@ export default function CreateAppointment() {
 
     const addResident = async () => {
 
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        let validateEmail = emailPattern.test(resident.email);
 
 
-
+        const numberPattern = /^09\d{9}$/;
+        let validateNumber = numberPattern.test(resident.cell_number);
 
 
         if (resident.first_name == "") {
@@ -190,7 +193,7 @@ export default function CreateAppointment() {
         }
 
 
-        if (resident.email == "") {
+        if (resident.email == "" || !validateEmail) {
             document.getElementById('emailinput').style.border = '1px solid red'
         }
 
@@ -198,7 +201,7 @@ export default function CreateAppointment() {
             // document.getElementById('bdayinput').style.border = '1px solid red'
         }
 
-        if (resident.cell_number == "") {
+        if (resident.cell_number == "" || !validateNumber) {
             document.getElementById('phoneinput').style.border = '1px solid red'
         }
         if (resident.current_address == "") {
@@ -218,12 +221,12 @@ export default function CreateAppointment() {
         }
 
         if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-            && resident.male_female !== "" && resident.civil_status_id != ""
+            && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber
 
         ) {
 
             let base64List = []
-            
+
             files.map((i, k) => {
 
                 base64List.push(JSON.stringify({
@@ -244,7 +247,7 @@ export default function CreateAppointment() {
                 // token: token.token
             }
 
-            
+
 
             try {
                 const result = await dispatch(applyNewResidentApi(merge)).unwrap();
@@ -289,7 +292,7 @@ export default function CreateAppointment() {
     }
 
 
-  
+
 
     const submitOTP = () => {
 
@@ -299,14 +302,14 @@ export default function CreateAppointment() {
         }
 
         const fetchData = async () => {
-            
+
             try {
 
                 const result = await dispatch(otpLoginApi(merge)).unwrap();
 
 
                 // Handle success, e.g., navigate to another page
-                
+
                 if (result.success) {
                     setSuccessOTP(result.success)
                     setAccessToken(result.access_token)
@@ -320,7 +323,7 @@ export default function CreateAppointment() {
 
 
             } catch (error) {
-                
+
                 setShowSuccess(true)
                 setMessage("Invalid OTP")
                 setIsButtonDisabled(true)
@@ -358,7 +361,7 @@ export default function CreateAppointment() {
 
             const result = await dispatch(createAppointmentApi(data)).unwrap();
 
-          
+
             if (result.error == false || result.success == true) {
                 setSuccess(true)
                 setIsButtonDisabled(false)
@@ -591,7 +594,7 @@ export default function CreateAppointment() {
 
                         <div class="mb-3 d-flex flex-column">
                             <label class="form-label">Birthday</label>
-                            <span>{resident.birthday}</span>
+                            <span>{moment(resident.birthday).format('YYYY-MM-DD')}</span>
                             <Calendar
                                 id='bdayinput'
                                 className="mt-3"
@@ -638,23 +641,29 @@ export default function CreateAppointment() {
 
                         <div class="mb-3">
                             <label class="form-label">Phone number</label>
+                            <small className="ms-3">Format: 09xxxxxxxxx</small>
                             <input
                                 id='phoneinput'
                                 value={resident.cell_number}
                                 onChange={(val) => {
 
-                                    if (val.target.value != "") {
-                                        document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
-                                    }
-                                    else {
-                                        document.getElementById('phoneinput').style.border = '1px solid red'
-                                    }
+                                    const numberPattern = /^\d+(\.\d+)?$/; // Matches integers and decimals
+                                    let validate = numberPattern.test(val.target.value);
 
-                                    setResident({
-                                        ...resident, ...{
-                                            cell_number: val.target.value
+                                    if (validate) {
+                                        if (val.target.value != "") {
+                                            document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
                                         }
-                                    })
+                                        else {
+                                            document.getElementById('phoneinput').style.border = '1px solid red'
+                                        }
+
+                                        setResident({
+                                            ...resident, ...{
+                                                cell_number: val.target.value
+                                            }
+                                        })
+                                    }
 
                                 }}
                                 class="form-control" />
@@ -830,11 +839,11 @@ export default function CreateAppointment() {
                             </div>
                         </div>
 
-                        <button 
+                        <button
                             disabled={files.length == 0 ? true : false}
                             type="button" onClick={() => {
-                            addResident()
-                        }} class="btn btn-primary bg-green">Submit</button>
+                                addResident()
+                            }} class="btn btn-primary bg-green">Submit</button>
 
 
                     </div>
@@ -917,7 +926,7 @@ export default function CreateAppointment() {
                                         }}
                                     />
                                 </div>
-                                
+
                                 <div className="d-flex flex-column mt-3">
                                     <span className="">Purpose</span>
                                     <input

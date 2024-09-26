@@ -812,9 +812,12 @@ export default function Official({ params }) {
   const addResident = async () => {
 
 
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    let validateEmail = emailPattern.test(resident.email);
 
-
-
+    
+    const numberPattern = /^09\d{9}$/;
+    let validateNumber = numberPattern.test(resident.cell_number);
 
     if (resident.first_name == "") {
       document.getElementById('fnameinput').style.border = '1px solid red'
@@ -825,7 +828,7 @@ export default function Official({ params }) {
     }
 
 
-    if (resident.email == "") {
+    if (resident.email == "" || !validateEmail) {
       document.getElementById('emailinput').style.border = '1px solid red'
     }
 
@@ -833,7 +836,7 @@ export default function Official({ params }) {
       // document.getElementById('bdayinput').style.border = '1px solid red'
     }
 
-    if (resident.cell_number == "") {
+    if (resident.cell_number == "" || !validateNumber) {
       document.getElementById('phoneinput').style.border = '1px solid red'
     }
 
@@ -846,7 +849,7 @@ export default function Official({ params }) {
     }
 
     if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-      && resident.male_female !== "" && resident.civil_status_id != ""
+      && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber
 
     ) {
 
@@ -3213,7 +3216,7 @@ export default function Official({ params }) {
 
                     <div class="mb-3 d-flex flex-column">
                       <label class="form-label">Birthday</label>
-                      <span className="fw-bold">{resident.birthday}</span>
+                      <span className="fw-bold">{moment(resident.birthday).format('YYYY-MM-DD')}</span>
 
                       {!isViewing &&
                         <Calendar
@@ -3238,24 +3241,31 @@ export default function Official({ params }) {
 
                     <div class="mb-3">
                       <label class="form-label">Phone number</label>
+                      <small className="ms-3">Format: 09xxxxxxxxx</small>
                       <input
                         id='phoneinput'
                         disabled={isViewing}
                         value={resident.cell_number}
                         onChange={(val) => {
 
-                          if (val.target.value != "") {
-                            document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
-                          }
-                          else {
-                            document.getElementById('phoneinput').style.border = '1px solid red'
-                          }
+                          const numberPattern = /^\d+(\.\d+)?$/; // Matches integers and decimals
+                          let validate = numberPattern.test(val.target.value);
 
-                          setResident({
-                            ...resident, ...{
-                              cell_number: val.target.value
+
+                          if(validate){
+                            if (val.target.value != "") {
+                              document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
                             }
-                          })
+                            else {
+                              document.getElementById('phoneinput').style.border = '1px solid red'
+                            }
+  
+                            setResident({
+                              ...resident, ...{
+                                cell_number: val.target.value
+                              }
+                            })
+                          }
 
                         }}
                         class="form-control" />
