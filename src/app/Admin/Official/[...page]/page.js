@@ -133,7 +133,8 @@ export default function Official({ params }) {
     cell_number: '',
     civil_status_id: '',
     male_female: '',
-    isPendingResident: 0
+    isPendingResident: 0,
+    supporting_files_obj : []
   })
 
   const [selectedSchedule, setSelectedSchedule] = useState({
@@ -815,6 +816,7 @@ export default function Official({ params }) {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let validateEmail = emailPattern.test(resident.email);
 
+    console.log(resident, "--> CHECK")
     
     const numberPattern = /^09\d{9}$/;
     let validateNumber = numberPattern.test(resident.cell_number);
@@ -855,7 +857,7 @@ export default function Official({ params }) {
 
       let merge = {
         resident,
-        birthday: startDate,
+        birthday: resident.birthday,
         token: token.token
       }
 
@@ -878,6 +880,7 @@ export default function Official({ params }) {
               cell_number: '',
               civil_status_id: '',
               male_female: '',
+              
             })
             setCount(count + 1)
             setShowAddResident(false)
@@ -2018,8 +2021,10 @@ export default function Official({ params }) {
                       alluser.isPending == 0 &&
                       <button
                         onClick={() => {
-                          setShowAddResident(true)
                           setIsEdit(false)
+                          setIsViewing(false)
+                          setShowAddResident(true)
+                       
                         }}
                         className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
                       >
@@ -2128,7 +2133,10 @@ export default function Official({ params }) {
 
                                     setIsEdit(true)
                                     setIsViewing(true)
-                                    setResident(i)
+                                    setResident({
+                                      ...i,
+                                      email: i.Email
+                                    })
                                     setShowAddResident(true)
                                   }}
                                   type="button" class="btn btn-primary"><i class="bi bi-eye"></i></button>
@@ -2141,7 +2149,10 @@ export default function Official({ params }) {
 
                                     setIsViewing(false)
                                     setIsEdit(true)
-                                    setResident(i)
+                                    setResident({
+                                      ...i,
+                                      email: i.Email
+                                    })
                                     setShowAddResident(true)
                                   }}
                                   type="button" class="btn btn-primary ms-3"><i class="bi bi-pencil"></i></button>
@@ -2970,7 +2981,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button onClick={() => updateOfficial()} type="button" class="btn btn-primary bg-green" data-bs-dismiss="modal">Save changes</button>
+                  <button onClick={() => updateOfficial()} type="button" class="btn btn-primary bg-green" data-bs-dismiss="modal">Save change</button>
                 </div>
               </div>
             </div>
@@ -3066,7 +3077,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" data-bs-dismiss="modal" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes</button>
+                  <button type="button" data-bs-dismiss="modal" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes!!</button>
                 </div>
               </div>
             </div>
@@ -3354,8 +3365,8 @@ export default function Official({ params }) {
                         <label class="form-label">Supporting documents</label>
 
                         {/* resident.supporting_files_obj */}
-                        { }
-                        {resident.supporting_files_obj.lenght != 0 &&
+                        { console.log(resident)}
+                        {resident.supporting_files_obj.length != 0 || resident.supporting_files_obj  != undefined &&
                           resident.supporting_files_obj.map((i, k) => {
 
                             return (
@@ -3393,7 +3404,8 @@ export default function Official({ params }) {
                             cell_number: '',
                             civil_status_id: '',
                             male_female: '',
-                            isPendingResident: 0
+                            isPendingResident: 0,
+                            supporting_files_obj : []
                           })
                           setShowAddResident(false)
 

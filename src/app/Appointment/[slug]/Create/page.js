@@ -918,6 +918,7 @@ export default function CreateAppointment() {
                                     <label>Select date</label>
                                     <label className="fw-bold mt-3">{selectedDate}</label>
                                     <Calendar
+                                        minDate={new Date()}
                                         className="mt-3"
                                         onChange={(v) => {
 
