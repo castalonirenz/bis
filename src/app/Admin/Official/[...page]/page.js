@@ -1311,13 +1311,13 @@ export default function Official({ params }) {
         <div className="w-100" style={{ backgroundColor: "white", display: "flex" }}>
 
           <div id='sidebar'
-            className="overflow-auto sidebar">
+            className="overflow-auto sidebar bg-green">
          
             <div id='menu' className="w-100">
               { /* asan */}
 
             
-              <div  className="col-lg-12 p-5 d-flex flex-column bg-green">
+              <div  className="col-lg-12 p-5 d-flex flex-column">
               <div
                   onClick={() => {
 
