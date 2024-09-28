@@ -61,7 +61,8 @@ export default function CreateAppointment() {
         male_female: '',
         current_address: '',
         voter_status: '',
-        file_upload: ''
+        file_upload: '',
+        current_address: ''
     })
 
 
@@ -220,8 +221,13 @@ export default function CreateAppointment() {
             document.getElementById('civilinput').style.border = '1px solid red'
         }
 
+       
+        if (resident.current_address == "") {
+            document.getElementById('currentinput').style.border = '1px solid red'
+        }
+
         if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-            && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber
+            && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber && resident.current_address != ""
 
         ) {
 
@@ -268,7 +274,8 @@ export default function CreateAppointment() {
                         male_female: '',
                         current_address: '',
                         voter_status: 0,
-                        file_upload: ''
+                        file_upload: '',
+                        current_address: ''
                     })
                     setFiles([])
                     setNewResident(null)
@@ -568,6 +575,32 @@ export default function CreateAppointment() {
                                 class="form-control" />
 
                         </div>
+
+                        <div class="mb-3">
+                      <label class="form-label">Current address</label>
+                      <input
+                        id='addressinput'
+                        disabled={isViewing}
+                        value={resident.current_address}
+                        onChange={(val) => {
+
+                          if (val.target.value != "") {
+                            document.getElementById('addressinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('addressinput').style.border = '1px solid red'
+                          }
+
+                          setResident({
+                            ...resident, ...{
+                              current_address: val.target.value
+                            }
+                          })
+
+                        }}
+                        class="form-control" />
+
+                    </div>
 
                         <div class="mb-3">
                             <label class="form-label">Email</label>
