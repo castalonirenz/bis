@@ -134,7 +134,8 @@ export default function Official({ params }) {
     civil_status_id: '',
     male_female: '',
     isPendingResident: 0,
-    supporting_files_obj : []
+    supporting_files_obj : [],
+    current_address: ''
   })
 
   const [selectedSchedule, setSelectedSchedule] = useState({
@@ -816,7 +817,7 @@ export default function Official({ params }) {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let validateEmail = emailPattern.test(resident.email);
 
-    console.log(resident, "--> CHECK")
+    
     
     const numberPattern = /^09\d{9}$/;
     let validateNumber = numberPattern.test(resident.cell_number);
@@ -850,8 +851,12 @@ export default function Official({ params }) {
       document.getElementById('civilinput').style.border = '1px solid red'
     }
 
+    if (resident.current_address == "") {
+      document.getElementById('addressinput').style.border = '1px solid red'
+    }
+
     if (resident.first_name != "" && resident.last_name != "" && resident.birthday != "" && resident.cell_number != ""
-      && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber
+      && resident.male_female !== "" && resident.civil_status_id != "" && validateEmail && validateNumber && resident.current_address != ""
 
     ) {
 
@@ -880,6 +885,7 @@ export default function Official({ params }) {
               cell_number: '',
               civil_status_id: '',
               male_female: '',
+              current_address: ''
               
             })
             setCount(count + 1)
@@ -913,7 +919,8 @@ export default function Official({ params }) {
               birthday: '',
               cell_number: '',
               civil_status_id: '',
-              male_female: ''
+              male_female: '',
+              current_address: ''
             })
             setShowAddResident(false)
             setCount(count + 1)
@@ -1235,7 +1242,8 @@ export default function Official({ params }) {
           cell_number: '',
           civil_status_id: '',
           male_female: '',
-          isPendingResident: 0
+          isPendingResident: 0,
+          current_address: ''
         })
         setCount(count + 1)
       }
@@ -1287,7 +1295,8 @@ export default function Official({ params }) {
           cell_number: '',
           civil_status_id: '',
           male_female: '',
-          isPendingResident: 0
+          isPendingResident: 0,
+          current_address: ''
         })
         setCount(count + 1)
       }
@@ -2045,6 +2054,9 @@ export default function Official({ params }) {
                       Fullname
                     </HeaderItem>
                     <HeaderItem>
+                      Address
+                    </HeaderItem>
+                    <HeaderItem>
                       Age
                     </HeaderItem>
                     <HeaderItem>
@@ -2087,6 +2099,11 @@ export default function Official({ params }) {
                             >
                               <span className="f-white">
                                 {i.first_name + " " + i.middle_name + " " + i.last_name}
+                              </span>
+                            </RowItem>
+                            <RowItem>
+                              <span className="f-white">
+                                {i.current_address}
                               </span>
                             </RowItem>
                             <RowItem>
@@ -3203,6 +3220,32 @@ export default function Official({ params }) {
                     </div>
 
                     <div class="mb-3">
+                      <label class="form-label">Current address</label>
+                      <input
+                        id='addressinput'
+                        disabled={isViewing}
+                        value={resident.current_address}
+                        onChange={(val) => {
+
+                          if (val.target.value != "") {
+                            document.getElementById('addressinput').style.border = '1px solid #dee2e6'
+                          }
+                          else {
+                            document.getElementById('addressinput').style.border = '1px solid red'
+                          }
+
+                          setResident({
+                            ...resident, ...{
+                              current_address: val.target.value
+                            }
+                          })
+
+                        }}
+                        class="form-control" />
+
+                    </div>
+
+                    <div class="mb-3">
                       <label class="form-label">Email</label>
                       <input
                         id='emailinput'
@@ -3365,7 +3408,7 @@ export default function Official({ params }) {
                         <label class="form-label">Supporting documents</label>
 
                         {/* resident.supporting_files_obj */}
-                        { console.log(resident)}
+                        { }
                         {resident.supporting_files_obj.length != 0 || resident.supporting_files_obj  != undefined &&
                           resident.supporting_files_obj.map((i, k) => {
 
