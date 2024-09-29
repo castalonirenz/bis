@@ -265,17 +265,29 @@ export const fileBlotterReportApi = createAsyncThunk('user/fileBlotterReport', a
 export const editBlotterReportApi = createAsyncThunk('user/editBlotterReport', async (data) => {
 
   
-
-  const res = await apiClient.post('/editBlotterReport', {
-    complainee_name: data.complainee_name,
-    complainant_name: data.complainant_name,
+  let bodystuff = {
     status_resolved: data.status_resolved,
     complaint_remarks: data.complaint_remarks,
     id: data.id,
     officer_on_duty: data.officer_on_duty
-
-
-  }, {
+  };
+  if(data.complainee_id == null)
+  {
+    bodystuff.complainee_name = data.complainee_name
+  }
+  else
+  {
+    bodystuff.complainee_id = data.complainee_id
+  }
+  if(data.complainant_id == null)
+  {
+    bodystuff.complainant_name = data.complainant_name
+  }
+  else
+  {
+    bodystuff.complainant_id = data.complainant_id
+  }
+  const res = await apiClient.post('/editBlotterReport', bodystuff, {
     headers: {
       'Authorization': `Bearer ${data.token}`, // Replace with your actual token
       'Content-Type': 'application/json',
