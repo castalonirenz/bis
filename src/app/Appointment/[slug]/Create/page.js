@@ -580,7 +580,6 @@ export default function CreateAppointment() {
                       <label class="form-label">Current address</label>
                       <input
                         id='addressinput'
-                        disabled={isViewing}
                         value={resident.current_address}
                         onChange={(val) => {
 

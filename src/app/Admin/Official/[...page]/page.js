@@ -1,7 +1,7 @@
 'use client'
 import Button from "@/components/Button";
 import { HeaderItem, RowItem } from "@/components/RowItem";
-import { addOfficials, dashboardViewApi, deleteOffialsApi, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
+import { addOfficials, dashboardViewApi, deleteOffialsApi, filterData, loadOfficials, updateOfficials } from "@/redux/reducer/officials";
 import { addResidentApi, approveNewResidentApi, approveOrRejectAppointmentApi, deleteResidentInformationApi, editBlotterReportApi, editResidentApi, fileBlotterReportApi, importExcelResidentsApi, loadAllUsers, logOutResident, settingPeding, viewAllBlottersApi, viewAppointmentListApi } from "@/redux/reducer/resident";
 import { LogOut, viewAdminLogsApi } from "@/redux/reducer/user";
 import Auth from "@/security/Auth";
@@ -32,6 +32,9 @@ export default function Official({ params }) {
 
   const documentList = useSelector(state => state.document)
   const dashboard = useSelector(state => state.officials.dashboardData)
+  const dashboarFilter = useSelector(state => state.officials.dashboard_filter)
+
+  console.log(dashboard, "--> check me please")
   const token = useSelector(state => state.user)
 
   const [openSide, setOpenSide] = useState(false)
@@ -54,6 +57,7 @@ export default function Official({ params }) {
   const [searchItemList, setSearchItemList] = useState('')
 
   const [showAddResident, setShowAddResident] = useState(false)
+  const [dashboard_filter, setDashboardFilter] = useState('all')
 
 
   const [isPending, setIsPending] = useState(0)
@@ -134,7 +138,7 @@ export default function Official({ params }) {
     civil_status_id: '',
     male_female: '',
     isPendingResident: 0,
-    supporting_files_obj : [],
+    supporting_files_obj: [],
     current_address: ''
   })
 
@@ -374,7 +378,7 @@ export default function Official({ params }) {
       currentPage,
       searchItemList,
       isPending: alluser.isPending,
-      per_page: 10
+      per_page: 10,
     }
 
 
@@ -424,6 +428,12 @@ export default function Official({ params }) {
       fetchData();
     }
     if (tab == 1 || tab == 0) {
+
+      data = {
+        ...data,
+        dashboard_filter: dashboarFilter
+      }
+
 
 
       const fetchData = async () => {
@@ -525,6 +535,10 @@ export default function Official({ params }) {
 
     if (tab == 4) {
 
+      data = {
+        ...data,
+        dashboard_filter: dashboarFilter
+      }
       loadAll()
       const fetchData = async () => {
 
@@ -817,8 +831,8 @@ export default function Official({ params }) {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     let validateEmail = emailPattern.test(resident.email);
 
-    
-    
+
+
     const numberPattern = /^09\d{9}$/;
     let validateNumber = numberPattern.test(resident.cell_number);
 
@@ -886,7 +900,7 @@ export default function Official({ params }) {
               civil_status_id: '',
               male_female: '',
               current_address: ''
-              
+
             })
             setCount(count + 1)
             setShowAddResident(false)
@@ -1141,28 +1155,29 @@ export default function Official({ params }) {
 
 
     if (v == 0) {
-      router.push('/Admin/Official/Staff/1')
+      router.replace('/Admin/Official/Staff/1')
     }
     if (v == 1) {
-      router.push('/Admin/Official/Resident/1')
+      router.replace('/Admin/Official/Resident/1')
     }
     if (v == 2) {
-      router.push('/Admin/Official/Schedule/1')
+      router.replace('/Admin/Official/Schedule/1')
     }
     if (v == 3) {
-      router.push('/Admin/Official/Services/1')
+      router.replace('/Admin/Official/Services/1')
     }
     if (v == 4) {
-      router.push('/Admin/Official/Blotter/1')
+      router.replace('/Admin/Official/Blotter/1')
     }
     if (v == 10) {
-      router.push('/Admin/Official/Dashboard')
+      router.replace('/Admin/Official/Dashboard')
     }
     if (v == 6) {
-      router.push('/Admin/Official/Logs/1')
+      router.replace('/Admin/Official/Logs/1')
     }
 
     // seTab(v)
+    setCount(count + 1)
   }
 
 
@@ -1324,19 +1339,19 @@ export default function Official({ params }) {
 
           <div id='sidebar'
             className="overflow-auto sidebar bg-green">
-         
+
             <div id='menu' className="w-100">
               { /* asan */}
 
-            
-              <div  className="col-lg-12 p-5 d-flex flex-column">
-              <div
+
+              <div className="col-lg-12 p-5 d-flex flex-column">
+                <div
                   onClick={() => {
 
-                
-                    
 
-                    if(document.getElementById("menu").classList.contains("openSidebar")){
+
+
+                    if (document.getElementById("menu").classList.contains("openSidebar")) {
 
                       document.getElementById("menu").classList.remove("openSidebar");
                       document.getElementById("sidebar").classList.remove("openSidebar-full");
@@ -1346,7 +1361,7 @@ export default function Official({ params }) {
                       // document.getElementById("sidebar").style.width = "auto"
                       setOpenSide(false)
                     }
-                    else{
+                    else {
                       document.getElementById("menu").classList.add("openSidebar");
                       document.getElementById("sidebar").classList.add("openSidebar-full");
                       document.getElementById("sidebarbg").classList.add('logo-bg')
@@ -1376,12 +1391,12 @@ export default function Official({ params }) {
                     <i class="bi bi-person f-white icon"></i>
 
                     {
-                      openSide 
-                       &&   <span className="f-white ms-2 nav-item">
-                       Dashboard
-                     </span>
+                      openSide
+                      && <span className="f-white ms-2 nav-item">
+                        Dashboard
+                      </span>
                     }
-                  
+
                   </div>
 
 
@@ -1389,26 +1404,30 @@ export default function Official({ params }) {
                   <div onClick={() => changeTab(0)} className={`p-4 w-100 rounded nav-container ${tab == 0 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-person f-white icon"></i>
                     {
-                        openSide  &&
+                      openSide &&
                       <span className="f-white ms-2 nav-item">
-                      Barangay Officials
-                    </span>
+                        Barangay Officials
+                      </span>
                     }
-               
+
                   </div>
 
 
-                  <div onClick={() => changeTab(1)} className={`p-4 w-100 rounded nav-container ${tab == 1 ? 'active-nav' : ''} pointer`}>
+                  <div onClick={() => {
+                    dispatch(filterData('all'))
+                    changeTab(1)
+                  }
+                  } className={`p-4 w-100 rounded nav-container ${tab == 1 ? 'active-nav' : ''} pointer`}>
 
                     <i class="bi bi-people-fill f-white icon"></i>
 
                     {
-                        openSide  &&
+                      openSide &&
                       <span className="f-white ms-2 nav-item">
-                      Manage Residents
-                    </span>
+                        Manage Residents
+                      </span>
                     }
-                  
+
                   </div>
 
 
@@ -1417,39 +1436,41 @@ export default function Official({ params }) {
                     <i class="bi bi-calendar-date f-white icon"></i>
 
                     {
-                        openSide  &&
+                      openSide &&
                       <span className="f-white ms-2 nav-item">
-                      Schedules
-                    </span>
+                        Schedules
+                      </span>
                     }
-                   
+
                   </div>
 
 
-                  <div onClick={() => changeTab(4)} className={`p-4 w-100 rounded nav-container ${tab == 4 ? 'active-nav' : ''} pointer`}>
+                  <div onClick={() => {
+                    dispatch(filterData('all'))
+                    changeTab(4)}} className={`p-4 w-100 rounded nav-container ${tab == 4 ? 'active-nav' : ''} pointer`}>
 
                     <i class="bi bi-person-fill-slash f-white icon"></i>
 
                     {
-                        openSide  &&
+                      openSide &&
                       <span className="f-white ms-2 nav-item">
-                      Blotter
-                    </span>
+                        Blotter
+                      </span>
                     }
 
-                 
+
                   </div>
 
                   <div onClick={() => changeTab(3)} className={`p-4 w-100 rounded nav-container ${tab == 3 ? 'active-nav' : ''} pointer`}>
                     <i class="bi bi-file-earmark-diff-fill f-white icon" ></i>
 
                     {
-                        openSide  &&
+                      openSide &&
                       <span className="f-white nav-item ms-2">
-                      Services
-                    </span>
+                        Services
+                      </span>
                     }
-                  
+
                   </div>
 
 
@@ -1457,27 +1478,27 @@ export default function Official({ params }) {
                     <i class="bi bi-activity f-white icon"></i>
 
                     {
-                        openSide  &&
+                      openSide &&
                       <span className="f-white nav-item ms-2">
-                      Logs
-                    </span>
+                        Logs
+                      </span>
                     }
-                 
+
                   </div>
 
                   <div onClick={async () => {
-                      try {
-                        const result = await dispatch(LogOut());
-                        const a = await dispatch(logOutResident());
+                    try {
+                      const result = await dispatch(LogOut());
+                      const a = await dispatch(logOutResident());
 
-                        router.replace('/', { scroll: false })
-                        // Handle success, e.g., navigate to another page
-                      } catch (error) {
+                      router.replace('/', { scroll: false })
+                      // Handle success, e.g., navigate to another page
+                    } catch (error) {
 
-                        // Handle error, e.g., show an error message
-                      }
-
+                      // Handle error, e.g., show an error message
                     }
+
+                  }
                   } className={`p-4 w-100 rounded nav-container pointer`}>
                     {/* <i class="bi bi-activity f-white icon"></i> */}
                     <span className="f-white nav-item ms-2 fw-bold">
@@ -1486,7 +1507,7 @@ export default function Official({ params }) {
                   </div>
 
 
-                  
+
                 </div>
                 {/* Navigation */}
 
@@ -1494,40 +1515,40 @@ export default function Official({ params }) {
             </div>
           </div>
 
-          <div 
-            
+          <div
+
             className="mainpage flex-column align-items-center justify-content-center mt-5" style={{}}>
             <div class="dropdown d-flex align-items-center justify-content-between w-100 " >
 
-            <div
-                  onClick={() => {
-
-                    
-                    
-                    
-
-                    if(document.getElementById("menu").classList.contains("openSidebar")){
-                      document.getElementById("menu").classList.remove("openSidebar");
-                      document.getElementById("sidebar").classList.remove("openSidebar-full");
-                      document.getElementById("sidebarbg").classList.remove('logo-bg')
-                      setOpenSide(false)
-                    }
-                    else{
-                      
-                      document.getElementById("menu").classList.add("openSidebar");
-                      document.getElementById("sidebar").classList.add("openSidebar-full");
-                      document.getElementById("sidebarbg").classList.add('logo-bg')
-                      setOpenSide(true)
-                    }
+              <div
+                onClick={() => {
 
 
-                  }}
-                  className="pointer menuicon">
-                  <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
-                </div>
+
+
+
+                  if (document.getElementById("menu").classList.contains("openSidebar")) {
+                    document.getElementById("menu").classList.remove("openSidebar");
+                    document.getElementById("sidebar").classList.remove("openSidebar-full");
+                    document.getElementById("sidebarbg").classList.remove('logo-bg')
+                    setOpenSide(false)
+                  }
+                  else {
+
+                    document.getElementById("menu").classList.add("openSidebar");
+                    document.getElementById("sidebar").classList.add("openSidebar-full");
+                    document.getElementById("sidebarbg").classList.add('logo-bg')
+                    setOpenSide(true)
+                  }
+
+
+                }}
+                className="pointer menuicon">
+                <i class="bi bi-list" style={{ fontSize: "32px" }}></i>
+              </div>
 
               <div className="d-flex align-items-center justify-content-center">
-              
+
                 <h4 className="ms-5">
                   {
                     tab == 10 && "Dashboard"
@@ -1645,7 +1666,14 @@ export default function Official({ params }) {
                   <h4>Resident Information</h4>
                   <div className="col-12 d-flex">
 
-                    <div className="d-flex bg-green p-3 align-items-center rounded">
+                    <div 
+                      onClick={() => {
+                        dispatch(filterData('all'))
+                        router.push('/Admin/Official/Resident/1/')
+
+
+                      }}
+                    className="d-flex bg-green p-3 align-items-center rounded">
                       <i class="bi bi-house-door f-white" style={{ fontSize: "50px" }}></i>
                       <div className="flex-column d-flex ms-3 align-items-center">
                         <span className="f-white">
@@ -1658,8 +1686,59 @@ export default function Official({ params }) {
                       </div>
                     </div>
 
+                    <div 
+                      onClick={() => {
+                        dispatch(filterData('all'))
+                        dispatch(settingPeding(0))
 
-                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
+                        router.push('/Admin/Official/Resident/1/')
+
+
+                      }}
+                    className="d-flex bg-green p-3 align-items-center rounded ms-3">
+                      <i class="bi bi-house-door f-white" style={{ fontSize: "50px" }}></i>
+                      <div className="flex-column d-flex ms-3 align-items-center">
+                        <span className="f-white">
+                          Count of Registered Residents
+                        </span>
+
+                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                          {dashboard.non_pending_resident}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div 
+                      onClick={() => {
+                        dispatch(filterData('all'))
+                        dispatch(settingPeding(1))
+
+                        router.push('/Admin/Official/Resident/1/')
+
+
+                      }}
+                    className="d-flex bg-green p-3 align-items-center rounded ms-3">
+                      <i class="bi bi-house-door f-white" style={{ fontSize: "50px" }}></i>
+                      <div className="flex-column d-flex ms-3 align-items-center">
+                        <span className="f-white">
+                          Count of Pending Residents
+                        </span>
+
+                        <span className="f-yellow mt-3" style={{ fontSize: "26px", fontWeight: "bold" }}>
+                          {dashboard.pending_resident}
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div
+                      onClick={() => {
+                        dispatch(filterData('male'))
+                        router.push('/Admin/Official/Resident/1/')
+
+
+                      }}
+                      className="d-flex bg-green p-3 align-items-center rounded ms-3">
                       <i class="bi bi-gender-male f-white" style={{ fontSize: "50px" }}></i>
                       <div className="flex-column d-flex ms-3 align-items-center">
                         <span className="f-white">
@@ -1673,7 +1752,14 @@ export default function Official({ params }) {
                     </div>
 
 
-                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
+                    <div
+                      onClick={() => {
+                        dispatch(filterData('female'))
+                        router.push('/Admin/Official/Resident/1/')
+
+
+                      }}
+                      className="d-flex bg-green p-3 align-items-center rounded ms-3">
                       <i class="bi bi-gender-female f-white" style={{ fontSize: "50px" }}></i>
                       <div className="flex-column d-flex ms-3 align-items-center">
                         <span className="f-white">
@@ -1687,7 +1773,14 @@ export default function Official({ params }) {
                     </div>
 
 
-                    <div className="d-flex bg-green p-3 align-items-center rounded ms-3">
+                    <div
+                      onClick={() => {
+                        dispatch(filterData('senior'))
+                        router.push('/Admin/Official/Resident/1/')
+
+
+                      }}
+                      className="d-flex bg-green p-3 align-items-center rounded ms-3">
                       <i class="bi bi-person-wheelchair f-white" style={{ fontSize: "50px" }}></i>
                       <div className="flex-column d-flex ms-3 align-items-center">
                         <span className="f-white">
@@ -1730,7 +1823,14 @@ export default function Official({ params }) {
                     <h4>Complaints</h4>
 
                     <div className="d-flex">
-                      <div className=" d-flex">
+                      <div 
+                          onClick={() => {
+                            dispatch(filterData('unresolved'))
+                            router.push('/Admin/Official/Blotter/1/')
+    
+    
+                          }}
+                      className=" d-flex">
 
                         <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
                           <i class="bi bi-hand-thumbs-down f-white" style={{ fontSize: "50px" }}></i>
@@ -1746,7 +1846,14 @@ export default function Official({ params }) {
                         </div>
                       </div>
 
-                      <div className=" d-flex ms-3">
+                      <div 
+                          onClick={() => {
+                            dispatch(filterData('ongoing'))
+                            router.push('/Admin/Official/Blotter/1/')
+    
+    
+                          }}
+                      className=" d-flex ms-3">
 
                         <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
                           <i class="bi bi-lightning f-white" style={{ fontSize: "50px" }}></i>
@@ -1764,7 +1871,14 @@ export default function Official({ params }) {
                     </div>
 
 
-                    <div className="d-flex mt-3">
+                    <div 
+                       onClick={() => {
+                        dispatch(filterData('settled'))
+                        router.push('/Admin/Official/Blotter/1/')
+
+
+                      }}
+                    className="d-flex mt-3">
                       <div className=" d-flex">
 
                         <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
@@ -1781,7 +1895,14 @@ export default function Official({ params }) {
                         </div>
                       </div>
 
-                      <div className=" d-flex ms-3">
+                      <div 
+                        onClick={() => {
+                          dispatch(filterData('dismissed'))
+                          router.push('/Admin/Official/Blotter/1/')
+  
+  
+                        }}
+                      className=" d-flex ms-3">
 
                         <div className="d-flex bg-green p-3 align-items-center justify-content-center rounded" style={{ width: "200px" }}>
                           <i class="bi bi-x-octagon-fill f-white" style={{ fontSize: "50px" }}></i>
@@ -2033,7 +2154,7 @@ export default function Official({ params }) {
                           setIsEdit(false)
                           setIsViewing(false)
                           setShowAddResident(true)
-                       
+
                         }}
                         className="primary bg-yellow p-2 rounded ms-3" style={{ border: "0px" }}
                       >
@@ -2158,7 +2279,7 @@ export default function Official({ params }) {
                                   }}
                                   type="button" class="btn btn-primary"><i class="bi bi-eye"></i></button>
 
-                               
+
 
                                 <button
 
@@ -3307,14 +3428,14 @@ export default function Official({ params }) {
                           let validate = numberPattern.test(val.target.value);
 
 
-                          if(validate){
+                          if (validate) {
                             if (val.target.value != "") {
                               document.getElementById('phoneinput').style.border = '1px solid #dee2e6'
                             }
                             else {
                               document.getElementById('phoneinput').style.border = '1px solid red'
                             }
-  
+
                             setResident({
                               ...resident, ...{
                                 cell_number: val.target.value
@@ -3409,7 +3530,7 @@ export default function Official({ params }) {
 
                         {/* resident.supporting_files_obj */}
                         { }
-                        {resident.supporting_files_obj.length != 0 || resident.supporting_files_obj  != undefined &&
+                        {resident.supporting_files_obj.length != 0 || resident.supporting_files_obj != undefined &&
                           resident.supporting_files_obj.map((i, k) => {
 
                             return (
@@ -3448,7 +3569,7 @@ export default function Official({ params }) {
                             civil_status_id: '',
                             male_female: '',
                             isPendingResident: 0,
-                            supporting_files_obj : []
+                            supporting_files_obj: []
                           })
                           setShowAddResident(false)
 
