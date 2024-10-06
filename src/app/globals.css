@@ -438,3 +438,12 @@ a {
   /* background-color: yellow; */
   transform: scale(1.1);
 }
+.hideScroll{
+  overflow: hidden; /* Hides the scrollbar */
+  overflow-y: scroll; /* Still allows vertical scrolling */
+  scrollbar-width: none; /* For Firefox */
+}
+
+.hideScroll::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Edge */
+}
