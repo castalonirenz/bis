@@ -34,7 +34,7 @@ export default function Official({ params }) {
   const dashboard = useSelector(state => state.officials.dashboardData)
   const dashboarFilter = useSelector(state => state.officials.dashboard_filter)
 
-  console.log(dashboard, "--> check me please")
+  
   const token = useSelector(state => state.user)
 
   const [openSide, setOpenSide] = useState(false)
@@ -326,7 +326,7 @@ export default function Official({ params }) {
     let getPageNumber = params.page[1]
     let getSearchItem = params.page[2]
 
-
+    console.log(getPage, "--> TANGA")
 
 
     if (getPage == "Staff") {
@@ -381,6 +381,7 @@ export default function Official({ params }) {
       per_page: 10,
     }
 
+    
 
     if (tab == 10) {
       const fetchData = async () => {
@@ -795,7 +796,7 @@ export default function Official({ params }) {
           status: '',
         })
 
-        setSelectedSearchItem(null)
+        
 
         setCount(count + 1)
         SetMessage('Successfully added a barangay official')
@@ -1177,7 +1178,7 @@ export default function Official({ params }) {
     }
 
     // seTab(v)
-    setCount(count + 1)
+    // setCount(count + 1)
   }
 
 
@@ -1936,7 +1937,7 @@ export default function Official({ params }) {
 
               <div className="mt-3 min-w-table flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">Current Barangay Officials</h2>
                 </div>
 
@@ -1969,7 +1970,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2072,7 +2073,7 @@ export default function Official({ params }) {
               tab == 1 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">Resident Records</h2>
                 </div>
 
@@ -2167,7 +2168,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2331,7 +2332,7 @@ export default function Official({ params }) {
               tab == 2 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">Schedule</h2>
                 </div>
 
@@ -2372,7 +2373,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2584,7 +2585,7 @@ export default function Official({ params }) {
               tab == 3 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">List of Document Type</h2>
                 </div>
 
@@ -2626,7 +2627,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2745,7 +2746,7 @@ export default function Official({ params }) {
               tab == 4 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
                   <h2 className="f-white">Blotter</h2>
                 </div>
 
@@ -2798,7 +2799,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -2912,7 +2913,7 @@ export default function Official({ params }) {
               tab == 6 &&
               <div className="mt-3 d-flex flex-column  justify-content-center w-100 p-5 rounded bg-green" >
 
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
                   <h2 className="f-white fw-bold">Admin logs</h2>
                 </div>
 
@@ -2935,7 +2936,7 @@ export default function Official({ params }) {
 
 
                 {/*  */}
-                <div className="border-bottom p-2 pb-4 mt-3" style={{ overflow: "scroll" }}>
+                <div className="border-bottom p-2 pb-4 mt-3 hideScroll" style={{ overflow: "scroll" }}>
 
                   {/* Table header */}
                   <div className="w-100 align-items-center justify-content-around border-bottom pb-4 table-mh" style={{}}>
@@ -3215,7 +3216,7 @@ export default function Official({ params }) {
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" data-bs-dismiss="modal" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes!!</button>
+                  <button type="button" data-bs-dismiss="modal" onClick={() => addOfficial()} class="btn btn-primary bg-green">Save changes</button>
                 </div>
               </div>
             </div>
