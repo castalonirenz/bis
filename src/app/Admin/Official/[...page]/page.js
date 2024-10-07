@@ -112,7 +112,7 @@ export default function Official({ params }) {
 
 
   // 0 - BO,   MR -1,    SCHEDULES - 2, BR - 3, Services - 4 Dashboard -10
-  const [tab, seTab] = useState(10)
+  const [tab, seTab] = useState(null)
 
   const [searchVal, setSearchVal] = useState('')
   const [searchOfficial, setSearchOfficial] = useState([])
@@ -326,39 +326,46 @@ export default function Official({ params }) {
     let getPageNumber = params.page[1]
     let getSearchItem = params.page[2]
 
-    console.log(getPage, "--> TANGA")
+    
 
 
     if (getPage == "Staff") {
+      
       setCurrentPage(getPageNumber)
       seTab(0)
     }
     if (getPage == "Services") {
+      
       setCurrentPage(getPageNumber)
       seTab(3)
     }
 
     if (getPage == "Schedule") {
+      
       setCurrentPage(getPageNumber)
       seTab(2)
     }
 
     if (getPage == "Resident") {
+      
       setCurrentPage(getPageNumber)
       seTab(1)
     }
 
     if (getPage == "Blotter") {
+      
       setCurrentPage(getPageNumber)
       seTab(4)
     }
 
     if (getPage == "Dashboard") {
+      
       setCurrentPage(getPageNumber)
       seTab(10)
     }
 
     if (getPage == "Logs") {
+      
       setCurrentPage(getPageNumber)
       seTab(6)
     }
@@ -372,7 +379,8 @@ export default function Official({ params }) {
 
   useEffect(() => {
     setLoading(true)
-
+    
+    console.log(tab, "--> current tab")
     let data = {
       token: token.token,
       currentPage,
@@ -428,7 +436,7 @@ export default function Official({ params }) {
 
       fetchData();
     }
-    if (tab == 1 || tab == 0) {
+    if (tab == 1) {
 
       data = {
         ...data,
@@ -546,8 +554,9 @@ export default function Official({ params }) {
         try {
           const result = await dispatch(viewAllBlottersApi(data)).unwrap();
 
+          
           setTotalPage(result.total_pages)
-
+          
           if (currentPage > result.total_pages) {
             // alert("Invalid url")
           }
@@ -567,6 +576,8 @@ export default function Official({ params }) {
 
 
   }, [tab, count]);
+
+  
 
 
   const searchAddOfficial = (v) => {
@@ -643,7 +654,7 @@ export default function Official({ params }) {
       try {
         const result = await dispatch(loadAllUsers(data)).unwrap();
 
-        setTotalPage(result.total_pages)
+        // setTotalPage(result.total_pages)
 
 
         // Handle success, e.g., navigate to another page
@@ -3013,7 +3024,7 @@ export default function Official({ params }) {
 
               </div>
             }
-
+       
             {
               tab != 10 &&
               <div className="col-12 d-flex align-items-center justify-content-between mt-5 mb-5">
