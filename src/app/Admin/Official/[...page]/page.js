@@ -424,6 +424,11 @@ export default function Official({ params }) {
 
           if (currentPage > result.total_pages) {
             // alert("Invalid url")
+
+           let pge = result.total_pages
+
+            router.replace('/Admin/Official/Staff/' + pge)
+
           }
 
           // Handle success, e.g., navigate to another page
@@ -477,7 +482,11 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
+            let pge = result.total_pages
 
+            router.replace('/Admin/Official/Logs/' + pge)
+
+          
           }
 
           // Handle success, e.g., navigate to another page
@@ -502,7 +511,11 @@ export default function Official({ params }) {
           setTotalPage(result.total_pages)
 
           if (currentPage > result.total_pages) {
+            let pge = result.total_pages
 
+            router.replace('/Admin/Official/Services/' + pge)
+
+          
           }
 
           // Handle success, e.g., navigate to another page
@@ -527,6 +540,11 @@ export default function Official({ params }) {
 
           if (currentPage > result.total_pages) {
             // alert("Invalid url")
+            let pge = result.total_pages
+
+            router.replace('/Admin/Official/Schedule/' + pge)
+
+          
           }
 
           // Handle success, e.g., navigate to another page
@@ -559,6 +577,11 @@ export default function Official({ params }) {
           
           if (currentPage > result.total_pages) {
             // alert("Invalid url")
+            let pge = result.total_pages
+
+            router.replace('/Admin/Official/Blotter/' + pge)
+
+          
           }
 
           // Handle success, e.g., navigate to another page
@@ -690,6 +713,8 @@ export default function Official({ params }) {
           position: '',
           status: '',
         })
+
+        setCurrentPage
 
         setSelectedItem(null)
 
