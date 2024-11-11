@@ -119,7 +119,8 @@ export default function CreateAppointment() {
         let data = {
             token: accessToken,
             currentPage: 1,
-            searchItemList: ''
+            searchItemList: '',
+            per_page: 999999999
         }
 
 
